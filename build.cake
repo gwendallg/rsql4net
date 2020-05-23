@@ -106,7 +106,7 @@ Task("Upload-Coverage-Report")
             CommitAuthor = lastCommit.Author.Name,
             CommitMessage = lastCommit.MessageShort,
             CommitId = version.Sha,
-            RepoToken = "Ee2WELHZk5rns4D9nGDBWgfroT48JNsUI"
+            RepoToken = "8bwJpPNnKrVZC0eneKc0zVk0VV9Hdw7ce"
         });
      }
 });
@@ -117,7 +117,7 @@ Task("Package")
         NuGetPack("./src/RSql4Net/RSql4Net.nuspec", new NuGetPackSettings{
             Version = version.SemVer,
             OutputDirectory = artifactDirectory,
-            Verbosity = NuGetVerbosity.Detailed,
+            Verbosity = NuG etVerbosity.Detailed,
         }
     );
 });
