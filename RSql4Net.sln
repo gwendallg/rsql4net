@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.0.0
+MinimumVisualStudioVersion = 10.0.0.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSql4Net.Samples", "src\RSql4Net.Samples\RSql4Net.Samples.csproj", "{17EC0770-1890-4DDC-A7CF-F43495C330F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSql4Net", "src\RSql4Net\RSql4Net.csproj", "{582C3079-93E5-42BB-98C4-BDFAB21AABE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSql4Net.Tests", "src\RSql4Net.Tests\RSql4Net.Tests.csproj", "{0CDE2FBD-3B71-4764-8905-6166F7FEE352}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{940D2D4E-EDC9-4695-875F-39AECF982169}"
+ProjectSection(SolutionItems) = preProject
+	build-with-sonarqube copy.cake = build-with-sonarqube copy.cake
+	build.cake = build.cake
+	build.sh = build.sh
+	LICENSE = LICENSE
+	README.md = README.md
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17EC0770-1890-4DDC-A7CF-F43495C330F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17EC0770-1890-4DDC-A7CF-F43495C330F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17EC0770-1890-4DDC-A7CF-F43495C330F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17EC0770-1890-4DDC-A7CF-F43495C330F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{582C3079-93E5-42BB-98C4-BDFAB21AABE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{582C3079-93E5-42BB-98C4-BDFAB21AABE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{582C3079-93E5-42BB-98C4-BDFAB21AABE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{582C3079-93E5-42BB-98C4-BDFAB21AABE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CDE2FBD-3B71-4764-8905-6166F7FEE352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CDE2FBD-3B71-4764-8905-6166F7FEE352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CDE2FBD-3B71-4764-8905-6166F7FEE352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CDE2FBD-3B71-4764-8905-6166F7FEE352}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

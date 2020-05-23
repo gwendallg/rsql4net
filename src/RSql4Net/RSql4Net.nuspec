@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>RSql4Net</id>
+        <version>$version$</version>
+        <title>RSql4Net</title>
+        <authors>Gwendall Garnier</authors>
+        <owners>Gwendall Garnier</owners>
+        <licenseUrl>https://github.com/gwendallg/RSql4Net/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/gwendallg/RSql4Net</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Sloader Config</description>
+        <releaseNotes>
+            ## Version 0.1 ##
+            Init
+        </releaseNotes>
+        <copyright>Copyright 2017</copyright>
+        <tags>RSql</tags>
+        <dependencies>
+            <group targetFramework=".NETCoreApp3.1">
+                <dependency id="Antlr4.Runtime.Standard" version="4.8.0" exclude="Build,Analyzers" />
+                <dependency id="Microsoft.AspNetCore" version="2.2.0" exclude="Build,Analyzers" />
+                <dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.2.5" exclude="Build,Analyzers" />
+                <dependency id="Microsoft.Extensions.Caching.Memory" version="3.1.4" exclude="Build,Analyzers" />
+            </group>
+        </dependencies>
+    </metadata>
+</package>
