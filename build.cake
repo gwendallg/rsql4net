@@ -8,19 +8,17 @@
 
 var target = Argument("target", "Report");
 var configuration = Argument("configuration", "debug");
+var lastCommit = GitLogTip("./");
 
 GitVersion version;
-//GitLink link;
 
 var testProjectsRelativePaths = new string[]
 {
     "RSql4Net.Tests/RSql4Net.Tests.csproj",
 };
 
-/*  Change the output artifacts and their configuration here. */
 var coverageDirectory = Directory(@".\coverage-results\");
 var artifactDirectory = Directory(@".\artifacts\");
-
 var coverageFileName = "coverage.xml";
 var reportTypes = "Html";
 var coverageFilePath = coverageDirectory + File(coverageFileName);
@@ -31,7 +29,6 @@ Task("Clean")
     CleanDirectory("src/RSql4Net/bin/"+configuration);
     CleanDirectory("src/RSql4Net.Tests/bin/"+configuration);
     CleanDirectory("src/RSql4Net.Samples/bin/"+configuration);
-
     if (!DirectoryExists(coverageDirectory))
         CreateDirectory(coverageDirectory);
     else
@@ -101,16 +98,21 @@ Task("Upload-Coverage-Report")
     .IsDependentOn("Tests")
     .Does(() =>
 {
-    CoverallsNet("./coverage-results/coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
+    if(BuildSystem.TravisCI.IsRunningOnTravisCI)
     {
-        CommitBranch = version.BranchName,
-        CommitId = version.Sha,
-        RepoToken = "Ee2WELHZk5rns4D9nGDBWgfroT48JNsUI"
-    });
+        CoverallsNet("./coverage-results/coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
+        {
+            CommitBranch = version.BranchName,
+            CommitAuthor = lastCommit.Author.Name,
+            CommitMessage = lastCommit.MessageShort,
+            CommitId = version.Sha,
+            RepoToken = "Ee2WELHZk5rns4D9nGDBWgfroT48JNsUI"
+        });
+     }
 });
 
 Task("Package")
-    .IsDependentOn("Upload-Coverage-Report")
+    .IsDependentOn("Build")
     .Does(() =>{
         NuGetPack("./src/RSql4Net/RSql4Net.nuspec", new NuGetPackSettings{
             Version = version.SemVer,
@@ -120,9 +122,8 @@ Task("Package")
     );
 });
 
-
 Task("Report")
-    .IsDependentOn("Package")
+    .IsDependentOn("Tests")
     .Does(() =>
 {
     if(!BuildSystem.TravisCI.IsRunningOnTravisCI)
