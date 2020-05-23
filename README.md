@@ -3,7 +3,7 @@
 RSql4Net
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/gwendallg/rsql4net/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE)
 
 RSql4Net is aspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lamba expression.
 
@@ -11,8 +11,8 @@ RSql4Net is aspNet Core extension that will make it easier for you to write your
 
 | Branch                      |  Result       |
 |-----------------------------|---------------|
-| master                      |  ![](https://api.travis-ci.org/gwendallg/RSql4Net.png?branch=master)       |
-| develop                     |  ![](https://api.travis-ci.org/gwendallg/RSql4Net.png?branch=develop)       |
+| master                      |  ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master)       |
+| develop                     |  ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop)       |
 
 ## Code Coverage
 
