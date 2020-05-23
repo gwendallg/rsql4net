@@ -16,6 +16,13 @@ RSql4Net is aspNet Core extension that will make it easier for you to write your
 
 ## Code Coverage
 
+| Branch                      |  Result       |
+|-----------------------------|---------------|
+| master                      |  [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=master)      |
+| develop                     |  [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop)       |
+
+
+
 ## Table of Contents
 1. Installations
 2. Quick start
