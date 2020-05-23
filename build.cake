@@ -117,7 +117,7 @@ Task("Package")
         NuGetPack("./src/RSql4Net/RSql4Net.nuspec", new NuGetPackSettings{
             Version = version.SemVer,
             OutputDirectory = artifactDirectory,
-            Verbosity = NuG etVerbosity.Detailed,
+            Verbosity = NuGetVerbosity.Detailed,
         }
     );
 });
