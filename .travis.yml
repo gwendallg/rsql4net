@@ -24,5 +24,6 @@ script:
   - dotnet tool install --global coverlet.console --version 1.7.1
   - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8
   - dotnet tool install --global coveralls.net --version 1.0.0
+  - dotnet tool install --global GitVersion.Tool --version 5.3.4
   - export PATH="$PATH:$HOME/.dotnet/tools"
   - ./build.sh
