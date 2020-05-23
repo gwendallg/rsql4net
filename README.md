@@ -33,13 +33,9 @@ dotnet add package RSql4Net
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // autumn.mvc configuration
+            ...
             services
-                .AddRSql(options =>
-                    options
-                        // snake_case "Search" convert to "search"
-                        .NamingStrategy(new SnakeCaseNamingStrategy())
-                        .HostingEnvironment(HostingEnvironment))
+                .AddRSql();
             ...
         }
 ```
@@ -49,7 +45,7 @@ dotnet add package RSql4Net
 ```csharp
 	// like Get operation
  	[HttpGet]
-        public IActionResult Get(Expression<Func<[your model], bool>> filter,
+        public IActionResult Get(IQuery<[your model]> filter,
             IPageable<[your model]> pageable)
 	{
 		// your code here
