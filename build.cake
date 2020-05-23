@@ -105,7 +105,7 @@ Task("Upload-Coverage-Report")
     {
         CommitBranch = version.BranchName,
         CommitId = version.Sha,
-        RepoToken = "T2tzLqme8mgjdWWozVgqG7fcUhb9qAGJg"
+        RepoToken = "Ee2WELHZk5rns4D9nGDBWgfroT48JNsUI"
     });
 });
 
