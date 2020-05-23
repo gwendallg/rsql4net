@@ -112,7 +112,7 @@ Task("Upload-Coverage-Report")
 });
 
 Task("Package")
-    .IsDependentOn("Build")
+    .IsDependentOn("Upload-Coverage-Report")
     .Does(() =>{
         NuGetPack("./src/RSql4Net/RSql4Net.nuspec", new NuGetPackSettings{
             Version = version.SemVer,
@@ -123,7 +123,7 @@ Task("Package")
 });
 
 Task("Report")
-    .IsDependentOn("Tests")
+    .IsDependentOn("Package")
     .Does(() =>
 {
     if(!BuildSystem.TravisCI.IsRunningOnTravisCI)
