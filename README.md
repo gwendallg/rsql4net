@@ -1,33 +1,24 @@
 
 <p align="center">
-RSql4Net
+<img src="docs/logo.svg" alt="logo" height="100">
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE)
 
-RSql4Net is aspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lamba expression.
+RSql4Net is AspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lambda expression.
 
 ## Continuous integration
 
-| Branch                      |  Result       |
-|-----------------------------|---------------|
-| master                      |  ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master)       |
-| develop                     |  ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop)       |
-
-## Code Coverage
-
-| Branch                      |  Result       |
-|-----------------------------|---------------|
-| master                      |  [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=master)      |
-| develop                     |  [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop)       |
-
+| Branch                      |  Version      | Build        | Coverage       | Nuget       |
+|-----------------------------|---------------|----------------|--------------|--------------|
+| master                      |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=master)](https://coveralls.io/github/gwendallg/rsql4net?branch=master)| |
+| develop                     |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop)| |
 
 
 ## Table of Contents
-1. Installations
+1. Installation
 2. Quick start
 3. Samples
-- [x] .NET Core 2.0+
 
 ## Installation
 ```
