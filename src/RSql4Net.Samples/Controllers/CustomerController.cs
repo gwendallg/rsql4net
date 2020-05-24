@@ -23,7 +23,7 @@ namespace RSql4Net.Samples.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll(IQuery<Customer> query,
+        public IActionResult Get(IQuery<Customer> query,
             IPageable<Customer> pageable)
         {
             if (!ModelState.IsValid)

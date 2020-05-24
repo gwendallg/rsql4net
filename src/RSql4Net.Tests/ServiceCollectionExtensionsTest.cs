@@ -1,10 +1,10 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using RSql4Net.Configurations;
 using Xunit;
 using  FluentAssertions;
+using Moq;
 
 namespace RSql4Net.Tests
 {
@@ -15,8 +15,9 @@ namespace RSql4Net.Tests
         {
             var serviceCollection = new ServiceCollection();
             var applicationPartManager = new ApplicationPartManager();
-            var mvcBuilder = new MvcBuilder(serviceCollection, applicationPartManager);
-            ServiceCollectionExtensions.AddRSql(mvcBuilder);
+            var mock = new Mock<IMvcBuilder>();
+            mock.SetupGet(m => m.Services).Returns(serviceCollection);
+            ServiceCollectionExtensions.AddRSql(mock.Object);
 
             var expected1 = serviceCollection
                     .SingleOrDefault(c => c.ServiceType == typeof(Settings));

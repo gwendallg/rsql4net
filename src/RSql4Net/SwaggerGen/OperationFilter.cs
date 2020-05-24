@@ -1,16 +1,16 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using RSql4Net.Configurations;
 using RSql4Net.Models.Paging;
 using RSql4Net.Models.Queries;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Linq;
-using Microsoft.OpenApi.Any;
 
-namespace RSql4Net.Samples
+namespace RSql4Net.SwaggerGen
 {
-    public class RSql4NetOperationFilter : IOperationFilter
+    public class OperationFilter : IOperationFilter
     {
         private readonly Settings _settings;
 
@@ -22,10 +22,11 @@ namespace RSql4Net.Samples
                                                (type.GetGenericTypeDefinition() == typeof(IPageable<>) ||
                                                 type.GetGenericTypeDefinition() == typeof(Pageable<>)));
 
-        public RSql4NetOperationFilter(Settings settings)
+        public OperationFilter(Settings settings)
         {
             _settings = settings;
         }
+
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
@@ -51,11 +52,7 @@ namespace RSql4Net.Samples
             {
                 In = ParameterLocation.Query,
                 Name = _settings.QueryField,
-                Schema = new OpenApiSchema()
-                {
-                    Type = "string"
-                }
-                
+                Schema = new OpenApiSchema() {Type = "string"}
             };
             operation.Parameters.Add(parameter);
 
@@ -71,43 +68,30 @@ namespace RSql4Net.Samples
                 Name = _settings.PageNumberField,
                 Schema = new OpenApiSchema()
                 {
-                    Type = "number",
-                    Default = new OpenApiInteger(0),
-                    Description = "Page number"
+                    Type = "number", Default = new OpenApiInteger(0), Description = "Page number"
                 }
-                
             };
             operation.Parameters.Add(parameter);
-            
+
             parameter = new OpenApiParameter
             {
                 In = ParameterLocation.Query,
                 Name = _settings.PageSizeField,
                 Schema = new OpenApiSchema()
                 {
-                    Type = "number",
-                    Default = new OpenApiInteger(_settings.PageSize),
-                    Description = "Page size"
+                    Type = "number", Default = new OpenApiInteger(_settings.PageSize), Description = "Page size"
                 }
-                
             };
             operation.Parameters.Add(parameter);
-            
+
             parameter = new OpenApiParameter
             {
                 In = ParameterLocation.Query,
                 Name = _settings.SortField,
                 Schema = new OpenApiSchema()
                 {
-                    Type = "array",
-                    Items = new OpenApiSchema()
-                    {
-                        Type = "string",
-                        Description = "Sort"
-                    }
-                    
+                    Type = "array", Items = new OpenApiSchema() {Type = "string", Description = "Sort"}
                 }
-                
             };
             operation.Parameters.Add(parameter);
         }

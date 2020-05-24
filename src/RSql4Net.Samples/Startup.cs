@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using RSql4Net.Samples.Models;
+using RSql4Net.SwaggerGen;
 
 namespace RSql4Net.Samples
 {
@@ -50,7 +51,7 @@ namespace RSql4Net.Samples
             services.AddSingleton(GetSampleData());
             services.AddSwaggerGen(c =>
             {
-                c.OperationFilter<RSql4NetOperationFilter>();
+                c.OperationFilter<OperationFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
         }

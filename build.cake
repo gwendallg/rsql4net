@@ -114,10 +114,16 @@ Task("Upload-Coverage-Report")
 Task("Package")
     .IsDependentOn("Upload-Coverage-Report")
     .Does(() =>{
-        NuGetPack("./src/RSql4Net/RSql4Net.nuspec", new NuGetPackSettings{
+        NuGetPack("./src/RSql4Net/RSql4Net.csproj", new NuGetPackSettings{
             Version = version.SemVer,
             OutputDirectory = artifactDirectory,
+            IncludeReferencedProjects = true,
             Verbosity = NuGetVerbosity.Detailed,
+            Copyright = "MIT",
+            ProjectUrl = new Uri("https://github.com/gwendallg/rsql4net"),
+            RequireLicenseAcceptance = true,
+            Description = "Rsql4net is AspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lambda expression. Install it and test it!",
+            KeepTemporaryNuSpecFile = true
         }
     );
 });
