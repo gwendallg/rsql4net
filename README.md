@@ -11,8 +11,8 @@ RSql4Net is AspNet Core extension that will make it easier for you to write your
 
 | Branch                      |  Version      | Build        | Coverage       | Nuget       |
 |-----------------------------|---------------|----------------|--------------|--------------|
-| master                      |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=master)](https://coveralls.io/github/gwendallg/rsql4net?branch=master)| |
-| develop                     |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop)| |
+| master                      |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=master)](https://coveralls.io/github/gwendallg/rsql4net?branch=master) |
+| develop                     |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop) |
 
 
 ## Table of Contents
@@ -45,15 +45,15 @@ dotnet add package RSql4Net
 ```csharp
 	// like Get operation
  	[HttpGet]
-        public IActionResult Get(IQuery<[your model]> filter,
-            IPageable<[your model]> pageable)
+        public IActionResult Get(IRSqlQuery<[your model]> filter,
+            IRSqlPageable<[your model]> pageable)
 	{
 		// your code here
 	}
 ```
 4. Use for filter your data
 
-Examples of RSQL expressions in both FIQL-like:
+Examples of RSql expressions in both FIQL-like:
 
 * return all items where **name equal Kill Bill and year > 2003"**
     - **?query=name=="Kill Bill";year=gt=2003** *( or ?search=name=="Kill Bill";year>2003 )*
@@ -104,6 +104,6 @@ Examples of Sort criteria
 
 ## And ...
 
-* See RSql4Net.Samples project for samples ( http://localhost:5000/swagger ) ...
+* See RSql4Net.Samples project for samples 
 * See https://github.com/jirutka/rsql-parser
 * See http://tools.ietf.org/html/draft-nottingham-atompub-fiql-00
