@@ -12,7 +12,7 @@ namespace RSql4Net.Tests.Models.Queries
         public void ShouldBeNotQueryModelBinder()
         {
             var modelBinderProviderContextMock = new MockModelBinderProviderContext(typeof(string));
-            var expected = new QueryModelBinderProvider(new Settings());
+            var expected = new RSqlQueryModelBinderProvider(new Settings());
             expected.GetBinder(modelBinderProviderContextMock)
                 .Should().BeNull();
         }
@@ -21,8 +21,8 @@ namespace RSql4Net.Tests.Models.Queries
         public void ShouldBeQueryModelBinder()
         {
             var modelBinderProviderContextMock =
-                new MockModelBinderProviderContext(typeof(Query<Customer>));
-            var expected = new QueryModelBinderProvider(new Settings());
+                new MockModelBinderProviderContext(typeof(RSqlQuery<Customer>));
+            var expected = new RSqlQueryModelBinderProvider(new Settings());
             expected.GetBinder(modelBinderProviderContextMock)
                 .Should().NotBeNull();
         }

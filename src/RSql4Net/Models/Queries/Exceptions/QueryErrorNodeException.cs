@@ -9,7 +9,7 @@ namespace RSql4Net.Models.Queries.Exceptions
     {
         public QueryErrorNodeException(IErrorNode origin,
             Exception innerException = null) : base(origin,
-            string.Format("Error parsing : {0}", origin?.ToStringTree()), innerException)
+            $"Error parsing : {origin?.ToStringTree()}", innerException)
         {
         }
 

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries.Exceptions
 {
-    public class QueryComparisonInvalidMatchTypeExceptionTest : QueryExceptionTest
+    public class CommonQueryComparisonInvalidMatchTypeExceptionTest : CommonQueryExceptionTest
     {
         [Fact]
         public void ShoudBeThrow()

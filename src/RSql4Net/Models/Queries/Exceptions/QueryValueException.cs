@@ -4,9 +4,9 @@ using System.Runtime.Serialization;
 namespace RSql4Net.Models.Queries.Exceptions
 {
     [Serializable]
-    public abstract class QueryValueException : QueryException<QueryParser.ValueContext>
+    public abstract class QueryValueException : QueryException<RSqlQueryParser.ValueContext>
     {
-        protected QueryValueException(QueryParser.ValueContext origin, string message, Exception innerException = null)
+        protected QueryValueException(RSqlQueryParser.ValueContext origin, string message, Exception innerException = null)
             : base(origin, message, innerException)
         {
         }

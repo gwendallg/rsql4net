@@ -5,20 +5,20 @@ namespace RSql4Net.Models.Paging
     /// <summary>
     ///     Default implementation of IPage
     /// </summary>
-    public class Page<T> : IPage<T> where T : class
+    public class RSqlPage<T> : IRSqlPage<T> where T : class
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:RSql4Net.Models.Paging.Page`1" /> class.
         /// </summary>
-        public Page() : this(new List<T>()) { }
+        public RSqlPage() : this(new List<T>()) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:RSql4Net.Models.Paging.Page`1" /> class.
         /// </summary>
         /// <param name="content">Content.</param>
-        /// <param name="pageable">Pageable.</param>
+        /// <param name="irSqlPageable">Pageable.</param>
         /// <param name="total">Total.</param>
-        public Page(List<T> content, IPageable<T> pageable = null, long? total = null)
+        public RSqlPage(List<T> content, IRSqlPageable<T> irSqlPageable = null, long? total = null)
         {
             Content = content ?? new List<T>();
             if (total == null)
@@ -36,22 +36,22 @@ namespace RSql4Net.Models.Paging
                 NumberOfElements = Content.Count;
             }
 
-            if (pageable == null)
+            if (irSqlPageable == null)
             {
                 return;
             }
 
-            Number = pageable.PageNumber();
-            HasPrevious = pageable.PageNumber() > 0;
-            HasNext = TotalElements > NumberOfElements + (Number * pageable.PageSize());
+            Number = irSqlPageable.PageNumber();
+            HasPrevious = irSqlPageable.PageNumber() > 0;
+            HasNext = TotalElements > NumberOfElements + (Number * irSqlPageable.PageSize());
             if (TotalElements <= 0)
             {
                 return;
             }
 
-            var mod = (int)TotalElements % pageable.PageSize();
+            var mod = (int)TotalElements % irSqlPageable.PageSize();
             var quo = (int)TotalElements - mod;
-            TotalPages = (quo / pageable.PageSize()) + (mod > 0 ? 1 : 0);
+            TotalPages = (quo / irSqlPageable.PageSize()) + (mod > 0 ? 1 : 0);
         }
 
         /// <summary>

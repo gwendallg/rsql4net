@@ -13,9 +13,9 @@ namespace RSql4Net.Tests.Models.Queries
 {
     public class NamingStrategyTest
     {
-        protected Expression<Func<MockQuery, bool>> BuildExpression(Settings settings, string query)
+        private Expression<Func<MockQuery, bool>> BuildExpression(Settings settings, string query)
         {
-            var queryModelBinder = new QueryModelBinder<MockQuery>(settings);
+            var queryModelBinder = new RSqlQueryModelBinder<MockQuery>(settings);
             var dic = new Dictionary<string, StringValues> {[settings.QueryField] = query};
             return queryModelBinder
                 .Build(new QueryCollection(dic))

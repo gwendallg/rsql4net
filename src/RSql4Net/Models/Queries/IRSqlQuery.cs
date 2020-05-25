@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace RSql4Net.Models.Queries
 {
-    public interface IQuery<T>
+    public interface IRSqlQuery<T>
     {
         Expression<Func<T, bool>> Value();
     }

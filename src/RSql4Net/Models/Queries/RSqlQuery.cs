@@ -6,14 +6,14 @@ namespace RSql4Net.Models.Queries
     /// <summary>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Query<T> : IQuery<T>
+    public class RSqlQuery<T> : IRSqlQuery<T>
     {
         private readonly Expression<Func<T, bool>> _value;
 
         /// <summary>
         /// </summary>
         /// <param name="value"></param>
-        public Query(Expression<Func<T, bool>> value)
+        public RSqlQuery(Expression<Func<T, bool>> value)
         {
             _value = value ?? throw new ArgumentNullException(nameof(value));
         }

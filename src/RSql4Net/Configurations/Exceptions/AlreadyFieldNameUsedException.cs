@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace RSql4Net.Configurations.Exceptions
 {
     [Serializable]
-    public class AlreadyFieldNameUsedException : RSql4NetException
+    public class AlreadyFieldNameUsedException : RSqlException
     {
         public AlreadyFieldNameUsedException(string fieldName, string value) : base(
             $"Field name {fieldName} already used by {value}")

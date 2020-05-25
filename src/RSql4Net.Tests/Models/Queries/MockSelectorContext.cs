@@ -1,4 +1,4 @@
-﻿using static RSql4Net.Models.Queries.QueryParser;
+﻿using static RSql4Net.Models.Queries.RSqlQueryParser;
 
 namespace RSql4Net.Tests.Models.Queries
 {

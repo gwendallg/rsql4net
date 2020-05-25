@@ -3,23 +3,23 @@
     /// <summary>
     ///     Default implement of Pageable.
     /// </summary>
-    public class Pageable<T> : IPageable<T> where T : class
+    public class RSqlPageable<T> : IRSqlPageable<T> where T : class
     {
         private readonly int _pageNumber;
         private readonly int _pageSize;
-        private readonly Sort<T> _sort;
+        private readonly RSqlSort<T> _rSqlSort;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:RSql4Net.Models.Paging.Pageable`1" /> class.
         /// </summary>
         /// <param name="pageNumber">Page number.</param>
         /// <param name="pageSize">Page size.</param>
-        /// <param name="sort">Sort.</param>
-        public Pageable(int pageNumber, int pageSize, Sort<T> sort = null)
+        /// <param name="rSqlSort">Sort.</param>
+        public RSqlPageable(int pageNumber, int pageSize, RSqlSort<T> rSqlSort = null)
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;
-            _sort = sort;
+            _rSqlSort = rSqlSort;
         }
 
         /// <summary>
@@ -44,9 +44,9 @@
         ///     Gets the sort.
         /// </summary>
         /// <value>The sort.</value>
-        public Sort<T> Sort()
+        public RSqlSort<T> Sort()
         {
-            return _sort;
+            return _rSqlSort;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public class ComparisonSubObjectExpressionTest : QueryTest
+    public class ComparisonSubObjectExpressionTest : CommonQueryTest
     {
         [Fact]
         public void ShouldBeEquals()

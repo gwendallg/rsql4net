@@ -6,7 +6,7 @@ namespace RSql4Net.Models.Queries.Exceptions
     [Serializable]
     public class QueryComparisonInvalidComparatorSelectionException : QueryComparisonException
     {
-        public QueryComparisonInvalidComparatorSelectionException(QueryParser.ComparisonContext origin,
+        public QueryComparisonInvalidComparatorSelectionException(RSqlQueryParser.ComparisonContext origin,
             Exception innerException = null) : base(origin,
             $"Invalid selector : {origin?.selector()?.GetText()}", innerException)
         {

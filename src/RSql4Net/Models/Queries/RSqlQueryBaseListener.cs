@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Query.g by ANTLR 4.6
+// Generated from RSqlQuery.g by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -28,193 +28,193 @@ using IToken = Antlr4.Runtime.IToken;
 using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
-/// This class provides an empty implementation of <see cref="IQueryListener"/>,
+/// This class provides an empty implementation of <see cref="IRSqlQueryListener"/>,
 /// which can be extended to create a listener which only needs to handle a subset
 /// of the available methods.
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.6")]
 [System.CLSCompliant(false)]
-public partial class QueryBaseListener : IQueryListener {
+public partial class RSqlQueryBaseListener : IRSqlQueryListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.selector"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.selector"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSelector([NotNull] QueryParser.SelectorContext context) { }
+	public virtual void EnterSelector([NotNull] RSqlQueryParser.SelectorContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.selector"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.selector"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSelector([NotNull] QueryParser.SelectorContext context) { }
+	public virtual void ExitSelector([NotNull] RSqlQueryParser.SelectorContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.eval"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.eval"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEval([NotNull] QueryParser.EvalContext context) { }
+	public virtual void EnterEval([NotNull] RSqlQueryParser.EvalContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.eval"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.eval"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEval([NotNull] QueryParser.EvalContext context) { }
+	public virtual void ExitEval([NotNull] RSqlQueryParser.EvalContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.or"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.or"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterOr([NotNull] QueryParser.OrContext context) { }
+	public virtual void EnterOr([NotNull] RSqlQueryParser.OrContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.or"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.or"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitOr([NotNull] QueryParser.OrContext context) { }
+	public virtual void ExitOr([NotNull] RSqlQueryParser.OrContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.and"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.and"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAnd([NotNull] QueryParser.AndContext context) { }
+	public virtual void EnterAnd([NotNull] RSqlQueryParser.AndContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.and"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.and"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAnd([NotNull] QueryParser.AndContext context) { }
+	public virtual void ExitAnd([NotNull] RSqlQueryParser.AndContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.constraint"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.constraint"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterConstraint([NotNull] QueryParser.ConstraintContext context) { }
+	public virtual void EnterConstraint([NotNull] RSqlQueryParser.ConstraintContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.constraint"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.constraint"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitConstraint([NotNull] QueryParser.ConstraintContext context) { }
+	public virtual void ExitConstraint([NotNull] RSqlQueryParser.ConstraintContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.group"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.group"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGroup([NotNull] QueryParser.GroupContext context) { }
+	public virtual void EnterGroup([NotNull] RSqlQueryParser.GroupContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.group"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.group"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGroup([NotNull] QueryParser.GroupContext context) { }
+	public virtual void ExitGroup([NotNull] RSqlQueryParser.GroupContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.comparison"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.comparison"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterComparison([NotNull] QueryParser.ComparisonContext context) { }
+	public virtual void EnterComparison([NotNull] RSqlQueryParser.ComparisonContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.comparison"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.comparison"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitComparison([NotNull] QueryParser.ComparisonContext context) { }
+	public virtual void ExitComparison([NotNull] RSqlQueryParser.ComparisonContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.comparator"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.comparator"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterComparator([NotNull] QueryParser.ComparatorContext context) { }
+	public virtual void EnterComparator([NotNull] RSqlQueryParser.ComparatorContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.comparator"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.comparator"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitComparator([NotNull] QueryParser.ComparatorContext context) { }
+	public virtual void ExitComparator([NotNull] RSqlQueryParser.ComparatorContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.comp_fiql"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.comp_fiql"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterComp_fiql([NotNull] QueryParser.Comp_fiqlContext context) { }
+	public virtual void EnterComp_fiql([NotNull] RSqlQueryParser.Comp_fiqlContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.comp_fiql"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.comp_fiql"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitComp_fiql([NotNull] QueryParser.Comp_fiqlContext context) { }
+	public virtual void ExitComp_fiql([NotNull] RSqlQueryParser.Comp_fiqlContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.comp_alt"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.comp_alt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterComp_alt([NotNull] QueryParser.Comp_altContext context) { }
+	public virtual void EnterComp_alt([NotNull] RSqlQueryParser.Comp_altContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.comp_alt"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.comp_alt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitComp_alt([NotNull] QueryParser.Comp_altContext context) { }
+	public virtual void ExitComp_alt([NotNull] RSqlQueryParser.Comp_altContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.reserved"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.reserved"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReserved([NotNull] QueryParser.ReservedContext context) { }
+	public virtual void EnterReserved([NotNull] RSqlQueryParser.ReservedContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.reserved"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.reserved"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReserved([NotNull] QueryParser.ReservedContext context) { }
+	public virtual void ExitReserved([NotNull] RSqlQueryParser.ReservedContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.single_quote"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.single_quote"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSingle_quote([NotNull] QueryParser.Single_quoteContext context) { }
+	public virtual void EnterSingle_quote([NotNull] RSqlQueryParser.Single_quoteContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.single_quote"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.single_quote"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSingle_quote([NotNull] QueryParser.Single_quoteContext context) { }
+	public virtual void ExitSingle_quote([NotNull] RSqlQueryParser.Single_quoteContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.double_quote"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.double_quote"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDouble_quote([NotNull] QueryParser.Double_quoteContext context) { }
+	public virtual void EnterDouble_quote([NotNull] RSqlQueryParser.Double_quoteContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.double_quote"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.double_quote"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDouble_quote([NotNull] QueryParser.Double_quoteContext context) { }
+	public virtual void ExitDouble_quote([NotNull] RSqlQueryParser.Double_quoteContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.arguments"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.arguments"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterArguments([NotNull] QueryParser.ArgumentsContext context) { }
+	public virtual void EnterArguments([NotNull] RSqlQueryParser.ArgumentsContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.arguments"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.arguments"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitArguments([NotNull] QueryParser.ArgumentsContext context) { }
+	public virtual void ExitArguments([NotNull] RSqlQueryParser.ArgumentsContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.value"/>.
+	/// Enter a parse tree produced by <see cref="RSqlQueryParser.value"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterValue([NotNull] QueryParser.ValueContext context) { }
+	public virtual void EnterValue([NotNull] RSqlQueryParser.ValueContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.value"/>.
+	/// Exit a parse tree produced by <see cref="RSqlQueryParser.value"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitValue([NotNull] QueryParser.ValueContext context) { }
+	public virtual void ExitValue([NotNull] RSqlQueryParser.ValueContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

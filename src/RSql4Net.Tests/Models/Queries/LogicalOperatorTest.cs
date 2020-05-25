@@ -2,7 +2,7 @@
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public class LogicalOperatorTest : QueryTest
+    public class LogicalOperatorTest : CommonQueryTest
     {
         [Fact]
         public void AndSimpleTest()

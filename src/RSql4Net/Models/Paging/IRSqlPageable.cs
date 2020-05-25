@@ -3,7 +3,7 @@
     /// <summary>
     ///     Pageable interface
     /// </summary>
-    public interface IPageable<T> where T : class
+    public interface IRSqlPageable<T> where T : class
     {
         /// <summary>
         ///     Gets the page number.
@@ -21,6 +21,6 @@
         ///     Gets the sort.
         /// </summary>
         /// <value>The sort.</value>
-        Sort<T> Sort();
+        RSqlSort<T> Sort();
     }
 }

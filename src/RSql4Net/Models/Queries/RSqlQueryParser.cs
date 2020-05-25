@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Query.g by ANTLR 4.6
+// Generated from RSqlQuery.g by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -32,7 +32,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.6")]
 [System.CLSCompliant(false)]
-public partial class QueryParser : Parser {
+public partial class RSqlQueryParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
@@ -69,20 +69,20 @@ public partial class QueryParser : Parser {
 		}
 	}
 
-	public override string GrammarFileName { get { return "Query.g"; } }
+	public override string GrammarFileName { get { return "RSqlQuery.g"; } }
 
 	public override string[] RuleNames { get { return ruleNames; } }
 
 	public override string SerializedAtn { get { return _serializedATN; } }
 
-	static QueryParser() {
+	static RSqlQueryParser() {
 		decisionToDFA = new DFA[_ATN.NumberOfDecisions];
 		for (int i = 0; i < _ATN.NumberOfDecisions; i++) {
 			decisionToDFA[i] = new DFA(_ATN.GetDecisionState(i), i);
 		}
 	}
 
-	public QueryParser(ITokenStream input)
+	public RSqlQueryParser(ITokenStream input)
 		: base(input)
 	{
 		Interpreter = new ParserATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
@@ -94,15 +94,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_selector; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterSelector(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitSelector(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSelector(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -154,22 +154,22 @@ public partial class QueryParser : Parser {
 		public OrContext or() {
 			return GetRuleContext<OrContext>(0);
 		}
-		public ITerminalNode Eof() { return GetToken(QueryParser.Eof, 0); }
+		public ITerminalNode Eof() { return GetToken(RSqlQueryParser.Eof, 0); }
 		public EvalContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_eval; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterEval(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitEval(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitEval(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -210,15 +210,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_or; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterOr(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitOr(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOr(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -273,15 +273,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_and; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterAnd(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitAnd(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAnd(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -336,15 +336,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_constraint; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterConstraint(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitConstraint(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitConstraint(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -401,15 +401,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_group; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterGroup(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitGroup(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitGroup(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -454,15 +454,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comparison; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterComparison(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitComparison(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComparison(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -504,15 +504,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comparator; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterComparator(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitComparator(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComparator(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -556,9 +556,9 @@ public partial class QueryParser : Parser {
 	}
 
 	public partial class Comp_fiqlContext : ParserRuleContext {
-		public ITerminalNode[] LETTER() { return GetTokens(QueryParser.LETTER); }
+		public ITerminalNode[] LETTER() { return GetTokens(RSqlQueryParser.LETTER); }
 		public ITerminalNode LETTER(int i) {
-			return GetToken(QueryParser.LETTER, i);
+			return GetToken(RSqlQueryParser.LETTER, i);
 		}
 		public Comp_fiqlContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -566,15 +566,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comp_fiql; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterComp_fiql(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitComp_fiql(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComp_fiql(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -639,15 +639,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comp_alt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterComp_alt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitComp_alt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComp_alt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -699,15 +699,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_reserved; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterReserved(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitReserved(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitReserved(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -750,15 +750,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_single_quote; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterSingle_quote(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitSingle_quote(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSingle_quote(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -826,15 +826,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_double_quote; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterDouble_quote(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitDouble_quote(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDouble_quote(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -908,15 +908,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_arguments; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterArguments(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitArguments(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitArguments(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -993,15 +993,15 @@ public partial class QueryParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_value; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.EnterValue(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IQueryListener typedListener = listener as IQueryListener;
+			IRSqlQueryListener typedListener = listener as IRSqlQueryListener;
 			if (typedListener != null) typedListener.ExitValue(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IQueryVisitor<TResult> typedVisitor = visitor as IQueryVisitor<TResult>;
+			IRSqlQueryVisitor<TResult> typedVisitor = visitor as IRSqlQueryVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitValue(this);
 			else return visitor.VisitChildren(this);
 		}

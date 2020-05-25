@@ -15,7 +15,7 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void ShouldBeThrowArgumentNullException()
         {
-            var pageable = new Pageable<Customer>(2, 10);
+            var pageable = new RSqlPageable<Customer>(2, 10);
             
             // ArgumentNullException : obj
             this.Invoking(f => { QueryableExtensions.Page(null, pageable); })
@@ -34,7 +34,7 @@ namespace RSql4Net.Tests.Models.Queries
             var customers = new Faker<Customer>()
                 .CustomInstantiator(f=> new Customer(){Id = id++})
                 .Generate(100).AsQueryable();
-            var pageable = new Pageable<Customer>(2, 10);
+            var pageable = new RSqlPageable<Customer>(2, 10);
 
             var expected = QueryableExtensions.Page(customers, pageable);
             var first = customers.Skip(20).First();
@@ -62,9 +62,9 @@ namespace RSql4Net.Tests.Models.Queries
             var orderBy = new List<Expression<Func<Customer,object>>>();
             Expression<Func<Customer, object>> a = (c) => c.Id;
             orderBy.Add(a);
-            var sort = new Sort<Customer>(orderBy);
+            var sort = new RSqlSort<Customer>(orderBy);
             
-            var pageable = new Pageable<Customer>(2, 10, sort);
+            var pageable = new RSqlPageable<Customer>(2, 10, sort);
 
             var expected = QueryableExtensions.Page(customers, pageable);
             var first = customers.OrderBy(c=>c.Id).Skip(20).First();
@@ -92,9 +92,9 @@ namespace RSql4Net.Tests.Models.Queries
             var orderBy = new List<Expression<Func<Customer,object>>>();
             Expression<Func<Customer, object>> a = (c) => c.Id;
             orderBy.Add(a);
-            var sort = new Sort<Customer>(orderDescendingBy: orderBy);
+            var sort = new RSqlSort<Customer>(orderDescendingBy: orderBy);
             
-            var pageable = new Pageable<Customer>(2,10, sort);
+            var pageable = new RSqlPageable<Customer>(2,10, sort);
 
             var expected = QueryableExtensions.Page(customers, pageable);
             var first = customers.OrderByDescending(c=>c.Id).Skip(20).First();

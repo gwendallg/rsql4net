@@ -8,9 +8,9 @@ using RSql4Net.Models.Queries.Exceptions;
 
 namespace RSql4Net.Models.Queries
 {
-    public static class QueryExpressionHelper
+    public static class RSqlQueryExpressionHelper
     {
-        private static readonly IList<Type> EqOrNeqOrInOrOutAutorizedType = new List<Type>
+        private static readonly IList<Type> EqOrNeqOrInOrOutAuthorizedType = new List<Type>
         {
             typeof(string),
             typeof(bool),
@@ -37,7 +37,7 @@ namespace RSql4Net.Models.Queries
             typeof(byte?)
         };
 
-        private static readonly IList<Type> LtOrGtOrLeOrLeAutorizedType = new List<Type>
+        private static readonly IList<Type> LtOrGtOrLeOrLeAuthorizedType = new List<Type>
         {
             typeof(short),
             typeof(short?),
@@ -78,16 +78,16 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetAndExpression<T>(
-            IQueryVisitor<Expression<Func<T, bool>>> visitor, QueryParser.AndContext context)
+            IRSqlQueryVisitor<Expression<Func<T, bool>>> visitor, RSqlQueryParser.AndContext context)
         {
             if (visitor == null)
             {
-                throw new ArgumentException(nameof(visitor));
+                throw new ArgumentNullException(nameof(visitor));
             }
 
             if (context == null)
             {
-                throw new ArgumentException(nameof(context));
+                throw new ArgumentNullException(nameof(context));
             }
 
             if (context.constraint().Length == 0)
@@ -118,16 +118,16 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetOrExpression<T>(
-            IQueryVisitor<Expression<Func<T, bool>>> visitor, QueryParser.OrContext context)
+            IRSqlQueryVisitor<Expression<Func<T, bool>>> visitor, RSqlQueryParser.OrContext context)
         {
             if (visitor == null)
             {
-                throw new ArgumentException(nameof(visitor));
+                throw new ArgumentNullException(nameof(visitor));
             }
 
             if (context == null)
             {
-                throw new ArgumentException(nameof(context));
+                throw new ArgumentNullException(nameof(context));
             }
 
             if (context.and().Length == 0)
@@ -159,7 +159,7 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetIsNullExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
@@ -170,7 +170,7 @@ namespace RSql4Net.Models.Queries
                 throw new QueryComparisonInvalidComparatorSelectionException(context);
             }
 
-            var values = QueryGetValueHelper.GetValues(typeof(bool), context.arguments());
+            var values = RSqlQueryGetValueHelper.GetValues(typeof(bool), context.arguments());
             if (!values.Any())
             {
                 throw new QueryComparisonNotEnoughArgumentException(context);
@@ -195,24 +195,9 @@ namespace RSql4Net.Models.Queries
         }
 
         private static object GetUniqueValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            if (expressionValue == null)
-            {
-                throw new ArgumentNullException(nameof(expressionValue));
-            }
-
-            if (parameter == null)
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
-
             var value = context.arguments().value();
             if (value.Length == 0)
             {
@@ -224,34 +209,19 @@ namespace RSql4Net.Models.Queries
                 throw new QueryComparisonTooManyArgumentException(context);
             }
 
-            return QueryGetValueHelper.GetValue<T>(parameter, expressionValue, context, namingStrategy);
+            return RSqlQueryGetValueHelper.GetValue<T>(parameter, expressionValue, context, namingStrategy);
         }
 
         private static List<object> GetMultipleValue(ParameterExpression parameter, ExpressionValue expressionValue,
-            QueryParser.ComparisonContext context)
+            RSqlQueryParser.ComparisonContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            if (expressionValue == null)
-            {
-                throw new ArgumentNullException(nameof(expressionValue));
-            }
-
-            if (parameter == null)
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
-
             var value = context.arguments().value();
             if (value.Length == 0)
             {
                 throw new QueryComparisonNotEnoughArgumentException(context);
             }
 
-            return QueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
+            return RSqlQueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
         }
 
         /// <summary>
@@ -263,11 +233,11 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetEqExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
-            if (!EqOrNeqOrInOrOutAutorizedType.Contains(expressionValue.Property.PropertyType) &&
+            if (!EqOrNeqOrInOrOutAuthorizedType.Contains(expressionValue.Property.PropertyType) &&
                 (!expressionValue.Property.PropertyType.IsEnum &&
                  !(expressionValue.Property.PropertyType.IsGenericType &&
                    expressionValue.Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
@@ -315,7 +285,7 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetNeqExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             if (parameter == null)
@@ -342,11 +312,11 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetLtExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
-            if (!LtOrGtOrLeOrLeAutorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
                 throw new QueryComparisonInvalidComparatorSelectionException(context);
             }
@@ -375,11 +345,11 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetLeExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
-            if (!LtOrGtOrLeOrLeAutorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
                 throw new QueryComparisonInvalidComparatorSelectionException(context);
             }
@@ -408,11 +378,11 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetGtExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
-            if (!LtOrGtOrLeOrLeAutorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
                 throw new QueryComparisonInvalidComparatorSelectionException(context);
             }
@@ -433,17 +403,17 @@ namespace RSql4Net.Models.Queries
         }
 
         private static ExpressionValue GetSelector<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy)
         {
             if (parameter == null)
             {
-                throw new ArgumentException(nameof(parameter));
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             if (context == null)
             {
-                throw new ArgumentException(nameof(context));
+                throw new ArgumentNullException(nameof(context));
             }
 
             if (!ExpressionValue.TryParse<T>(parameter, context.selector().GetText(), namingStrategy,
@@ -464,11 +434,11 @@ namespace RSql4Net.Models.Queries
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetGeExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
-            if (!LtOrGtOrLeOrLeAutorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
                 throw new QueryComparisonInvalidComparatorSelectionException(context);
             }
@@ -494,7 +464,7 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <returns></returns>
         private static Expression<Func<T, bool>> GetLkExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
@@ -503,7 +473,7 @@ namespace RSql4Net.Models.Queries
                 throw new QueryComparisonInvalidComparatorSelectionException(context);
             }
 
-            var values = QueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
+            var values = RSqlQueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
             if (!values.Any())
             {
                 throw new QueryComparisonNotEnoughArgumentException(context);
@@ -547,7 +517,7 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetInExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
@@ -567,7 +537,7 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetOutExpression<T>(ParameterExpression parameter,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             if (parameter == null)

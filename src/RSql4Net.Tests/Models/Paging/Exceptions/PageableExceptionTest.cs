@@ -7,7 +7,7 @@ using RSql4Net.Models.Paging.Exceptions;
 
 namespace RSql4Net.Tests.Models.Paging.Exceptions
 {
-    public class PageableExceptionTest<T> where T : PageableException 
+    public class PageableExceptionTest<T> where T : RSqlPageableException 
     {
         protected void OnShouldBeSerializable() 
         {

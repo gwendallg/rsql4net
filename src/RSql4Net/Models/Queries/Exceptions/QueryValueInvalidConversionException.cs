@@ -6,9 +6,9 @@ namespace RSql4Net.Models.Queries.Exceptions
     [Serializable]
     public class QueryValueInvalidConversionException : QueryValueException
     {
-        public QueryValueInvalidConversionException(QueryParser.ValueContext origin, Type type,
+        public QueryValueInvalidConversionException(RSqlQueryParser.ValueContext origin, Type type,
             Exception innerException = null) : base(origin,
-            string.Format("{0} is not convertible to {1}.{2}", origin?.GetText(), type?.Namespace, type?.Name),
+            $"{origin?.GetText()} is not convertible to {type?.Namespace}.{type?.Name}",
             innerException)
         {
         }

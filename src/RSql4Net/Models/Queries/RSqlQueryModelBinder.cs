@@ -9,11 +9,11 @@ using RSql4Net.Configurations;
 
 namespace RSql4Net.Models.Queries
 {
-    public class QueryModelBinder<T> : IModelBinder
+    public class RSqlQueryModelBinder<T> : IModelBinder
     {
         private readonly Settings _settings;
 
-        public QueryModelBinder(Settings settings)
+        public RSqlQueryModelBinder(Settings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
@@ -38,34 +38,34 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="queryCollection"></param>
         /// <returns></returns>
-        public IQuery<T> Build(IQueryCollection queryCollection)
+        public IRSqlQuery<T> Build(IQueryCollection queryCollection)
         {
             if (
                 !queryCollection.TryGetValue(_settings.QueryField, out var query) ||
                 string.IsNullOrWhiteSpace(query.FirstOrDefault()))
             {
-                return  new Query<T>(QueryExpressionHelper.True<T>());
+                return  new RSqlQuery<T>(RSqlQueryExpressionHelper.True<T>());
             }
            
             return CreateAndAddCacheQuery(query.FirstOrDefault());
         }
 
-        private IQuery<T> CreateAndAddCacheQuery(string query)
+        private IRSqlQuery<T> CreateAndAddCacheQuery(string query)
         {
             if (_settings.QueryCache != null
                 && _settings.QueryCache.TryGetValue(query, out var resultCache))
             {
-                return resultCache as IQuery<T>;
+                return resultCache as IRSqlQuery<T>;
             }
 
             var antlrInputStream = new AntlrInputStream(query);
-            var lexer = new QueryLexer(antlrInputStream);
+            var lexer = new RSqlQueryLexer(antlrInputStream);
             var commonTokenStream = new CommonTokenStream(lexer);
-            var parser = new QueryParser(commonTokenStream);
+            var parser = new RSqlQueryParser(commonTokenStream);
             var or = parser.or();
-            var visitor = new DefaultQueryVisitor<T>(_settings.NamingStrategy);
+            var visitor = new RSqlDefaultQueryVisitor<T>(_settings.NamingStrategy);
             var value = visitor.Visit(or);
-            var result = new Query<T>(value);
+            var result = new RSqlQuery<T>(value);
             if (_settings.QueryCache == null)
             {
                 return result;

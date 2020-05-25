@@ -14,7 +14,14 @@ namespace RSql4Net.Tests.Models.Paging
 {
     public class PageableModelBinderTest
     {
-
+        [Fact]
+        public void ShouldBeThrowArgumentNullException()
+        {
+            this.Invoking((a) => new RSqlPageableModelBinder<Customer>(null))
+                .Should()
+                .Throw<ArgumentNullException>();
+        }
+        
         [Fact]
         public async void ShouldBeBindModelAsyncTest()
         {
@@ -34,10 +41,10 @@ namespace RSql4Net.Tests.Models.Paging
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-            var pageableModelBinder = new PageableModelBinder<Customer>(new Settings());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
             await pageableModelBinder.BindModelAsync(mock);
 
-            var expected = mock.Result.Model as IPageable<Customer>;
+            var expected = mock.Result.Model as IRSqlPageable<Customer>;
 
             expected.Should().NotBeNull();
 
@@ -73,7 +80,7 @@ namespace RSql4Net.Tests.Models.Paging
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-            var pageableModelBinder = new PageableModelBinder<Customer>(new Settings());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
             await pageableModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result;
@@ -96,7 +103,7 @@ namespace RSql4Net.Tests.Models.Paging
                         new KeyValuePair<string, StringValues>("Sort", new StringValues("Name;desc,BirthDate"))
                     }
                 ));
-            var pageableModelBinder = new PageableModelBinder<Customer>(new Settings());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
             var expected = pageableModelBinder.Build(queryCollection);
 
             // exp
@@ -128,7 +135,7 @@ namespace RSql4Net.Tests.Models.Paging
                             new StringValues(Convert.ToString(pageNumber)))
                     }
                 ));
-            var pageableModelBinder = new PageableModelBinder<Customer>(new Settings());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
             var expected = pageableModelBinder.Build(queryColletion);
 
             expected.PageNumber()
@@ -146,7 +153,7 @@ namespace RSql4Net.Tests.Models.Paging
                         new KeyValuePair<string, StringValues>("PageSize", new StringValues(Convert.ToString(pageSize)))
                     }
                 ));
-            var pageableModelBinder = new PageableModelBinder<Customer>(new Settings());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
             var expected = pageableModelBinder.Build(queryColletion);
 
             expected.PageSize()

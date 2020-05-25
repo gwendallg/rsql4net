@@ -32,12 +32,12 @@ namespace RSql4Net.Models
         {
             if (parameter == null)
             {
-                throw new ArgumentException(nameof(parameter));
+                throw new ArgumentNullException(nameof(parameter));
             }
 
-            if (selector == null)
+            if (selector == null || string.IsNullOrEmpty(selector))
             {
-                throw new ArgumentException(nameof(selector));
+                throw new ArgumentNullException(nameof(selector));
             }
 
             Expression lastMember = parameter;

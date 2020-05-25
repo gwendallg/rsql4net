@@ -20,7 +20,7 @@ namespace RSql4Net.Tests.Models.Paging.Exceptions
                         new KeyValuePair<string, StringValues>("PageSize", new StringValues("a"))
                     }
                 ));
-            var expected = new PageableModelBinder<object>(new Settings());
+            var expected = new RSqlPageableModelBinder<object>(new Settings());
 
             expected
                 .Invoking(f => f.Build(queryCollection))

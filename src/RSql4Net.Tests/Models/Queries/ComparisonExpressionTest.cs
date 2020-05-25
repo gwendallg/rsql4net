@@ -14,16 +14,16 @@ namespace RSql4Net.Tests.Models.Queries
         protected ComparisonExpressionTest()
         {
             Settings = new Settings {QueryField = "q"};
-            QueryModelBinder = new QueryModelBinder<MockQuery>(Settings);
+            RSqlQueryModelBinder = new RSqlQueryModelBinder<MockQuery>(Settings);
         }
 
         protected Settings Settings { get; }
-        protected QueryModelBinder<MockQuery> QueryModelBinder { get; }
+        protected RSqlQueryModelBinder<MockQuery> RSqlQueryModelBinder { get; }
 
         protected Func<MockQuery, bool> BuildExpression(string query)
         {
             var dic = new Dictionary<string, StringValues> {[Settings.QueryField] = query};
-            return QueryModelBinder
+            return RSqlQueryModelBinder
                 .Build(new QueryCollection(dic))
                 .Value()
                 .Compile();

@@ -3,18 +3,18 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using FluentAssertions;
-using static RSql4Net.Models.Queries.QueryParser;
+using RSql4Net.Models.Queries;
 
 namespace RSql4Net.Tests.Models.Queries.Exceptions
 {
-    public abstract class QueryExceptionTest : QueryTest
+    public abstract class CommonQueryExceptionTest : CommonQueryTest
     {
         protected void OnShouldBeSerializable<T>() where T : Exception
         {
             var mockSelectorContext = new MockSelectorContext("A");
             var mockArgumentsContext = new MockArgumentsContext("A");
             var mockComparisonContext = new MockComparisonContext(mockSelectorContext, mockArgumentsContext);
-            var constructor = typeof(T).GetConstructor(new[] {typeof(ComparisonContext), typeof(Exception)});
+            var constructor = typeof(T).GetConstructor(new[] {typeof(RSqlQueryParser.ComparisonContext), typeof(Exception)});
 
             var actual = (T)constructor.Invoke(new object[] {mockComparisonContext, null});
             var fileName = Path.GetRandomFileName();

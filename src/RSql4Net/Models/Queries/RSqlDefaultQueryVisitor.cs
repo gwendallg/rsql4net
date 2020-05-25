@@ -10,7 +10,7 @@ namespace RSql4Net.Models.Queries
     ///     default rsql visitor
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class DefaultQueryVisitor<T> : QueryBaseVisitor<Expression<Func<T, bool>>>
+    public class RSqlDefaultQueryVisitor<T> : RSqlQueryBaseVisitor<Expression<Func<T, bool>>>
     {
         private readonly NamingStrategy _namingStrategy;
         private readonly ParameterExpression _parameter;
@@ -19,7 +19,7 @@ namespace RSql4Net.Models.Queries
         ///     create instance of object
         /// </summary>
         /// <param name="namingStrategy"></param>
-        public DefaultQueryVisitor(NamingStrategy namingStrategy)
+        public RSqlDefaultQueryVisitor(NamingStrategy namingStrategy)
         {
             _namingStrategy = namingStrategy;
             _parameter = Expression.Parameter(typeof(T));
@@ -30,9 +30,9 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Expression<Func<T, bool>> VisitOr(QueryParser.OrContext context)
+        public override Expression<Func<T, bool>> VisitOr(RSqlQueryParser.OrContext context)
         {
-            return QueryExpressionHelper.GetOrExpression(this, context);
+            return RSqlQueryExpressionHelper.GetOrExpression(this, context);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Expression<Func<T, bool>> VisitAnd(QueryParser.AndContext context)
+        public override Expression<Func<T, bool>> VisitAnd(RSqlQueryParser.AndContext context)
         {
-            return QueryExpressionHelper.GetAndExpression(this, context);
+            return RSqlQueryExpressionHelper.GetAndExpression(this, context);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Expression<Func<T, bool>> VisitConstraint(QueryParser.ConstraintContext context)
+        public override Expression<Func<T, bool>> VisitConstraint(RSqlQueryParser.ConstraintContext context)
         {
             if (context.group() != null)
             {
@@ -65,7 +65,7 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Expression<Func<T, bool>> VisitGroup(QueryParser.GroupContext context)
+        public override Expression<Func<T, bool>> VisitGroup(RSqlQueryParser.GroupContext context)
         {
             return context.or()?.Accept(this);
         }
@@ -85,37 +85,37 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Expression<Func<T, bool>> VisitComparison(QueryParser.ComparisonContext context)
+        public override Expression<Func<T, bool>> VisitComparison(RSqlQueryParser.ComparisonContext context)
         {
             var comparator = context.comparator().GetText().ToLowerInvariant();
             switch (comparator)
             {
                 case "=is-null=":
                 case "=nil=":
-                    return QueryExpressionHelper.GetIsNullExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetIsNullExpression<T>(_parameter, context, _namingStrategy);
                 case "==":
                 case "=eq=":
-                    return QueryExpressionHelper.GetEqExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetEqExpression<T>(_parameter, context, _namingStrategy);
                 case "!=":
                 case "=neq=":
-                    return QueryExpressionHelper.GetNeqExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetNeqExpression<T>(_parameter, context, _namingStrategy);
                 case "<":
                 case "=lt=":
-                    return QueryExpressionHelper.GetLtExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetLtExpression<T>(_parameter, context, _namingStrategy);
                 case "<=":
                 case "=le=":
-                    return QueryExpressionHelper.GetLeExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetLeExpression<T>(_parameter, context, _namingStrategy);
                 case ">":
                 case "=gt=":
-                    return QueryExpressionHelper.GetGtExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetGtExpression<T>(_parameter, context, _namingStrategy);
                 case ">=":
                 case "=ge=":
-                    return QueryExpressionHelper.GetGeExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetGeExpression<T>(_parameter, context, _namingStrategy);
                 case "=in=":
-                    return QueryExpressionHelper.GetInExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetInExpression<T>(_parameter, context, _namingStrategy);
                 case "=out=":
                 case "=nin=":
-                    return QueryExpressionHelper.GetOutExpression<T>(_parameter, context, _namingStrategy);
+                    return RSqlQueryExpressionHelper.GetOutExpression<T>(_parameter, context, _namingStrategy);
                 default:
                     throw new QueryComparisonUnknownComparatorException(context);
             }

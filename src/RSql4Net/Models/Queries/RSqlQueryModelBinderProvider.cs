@@ -4,11 +4,11 @@ using RSql4Net.Configurations;
 
 namespace RSql4Net.Models.Queries
 {
-    public class QueryModelBinderProvider : IModelBinderProvider
+    public class RSqlQueryModelBinderProvider : IModelBinderProvider
     {
         private readonly Settings _settings;
 
-        public QueryModelBinderProvider(Settings settings)
+        public RSqlQueryModelBinderProvider(Settings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
@@ -16,14 +16,14 @@ namespace RSql4Net.Models.Queries
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
             if (!context.Metadata.ModelType.IsGenericType ||
-                (context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(IQuery<>) &&
-                 context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(Query<>)))
+                (context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(IRSqlQuery<>) &&
+                 context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(RSqlQuery<>)))
             {
                 return null;
             }
 
             var entityType = context.Metadata.ModelType.GetGenericArguments()[0];
-            var modelBinderType = typeof(QueryModelBinder<>).MakeGenericType(entityType);
+            var modelBinderType = typeof(RSqlQueryModelBinder<>).MakeGenericType(entityType);
             return (IModelBinder)Activator.CreateInstance(modelBinderType, _settings);
         }
     }

@@ -1,14 +1,13 @@
-grammar Query;
-
+grammar RSqlQuery;
 
 LETTER 	: 'a'..'z'|'A'..'Z';
-ANY : . ; 
-selector	: ~('('| ')'| ';'|','|'='|'<'|'>'|' '|'!'|'\''|'"')+;	
+ANY : . ;
+selector	: ~('('| ')'| ';'|','|'='|'<'|'>'|' '|'!'|'\''|'"')+;
 
-eval 	:	
+eval 	:
 	or EOF
 	;
-	
+
 or	:
 	and  (','and)*
 	;
@@ -16,9 +15,9 @@ or	:
 and 	:
 	constraint (';'constraint)*
 	;
-	
+
 constraint	:
- 	group 
+ 	group
  	| comparison
 ;
 
@@ -26,45 +25,45 @@ group	:
 	'('or')'
 	;
 
-comparison	
+comparison
 	:
 	selector comparator arguments;
-	
-comparator	
+
+comparator
 	:
-	comp_fiql 
+	comp_fiql
 	| comp_alt
 	;
 
-comp_fiql	
+comp_fiql
 	: ('!'|'=')(LETTER|'-')*'=';
 
-comp_alt	
+comp_alt
 	:
-	 ('>' | '<')'='? 
+	 ('>' | '<')'='?
 	;
-		 	
-reserved 	
-	: 
+
+reserved
+	:
 	'(' | ')' | ';' | ',' | '=' |  '<' | '>' | ' '| '!'
 	;
-	
+
 single_quote
 	:
 	 '\''('\\\'' | ~('\''))* '\''
 	;
-	
+
 double_quote
 	:
 	 '"'('\\"' | ~('"'))* '"'
 	;
-	
+
 arguments
 	:
-	'(' value ( ',' value)* ')' 
-	| value 
+	'(' value ( ',' value)* ')'
+	| value
 	;
-value	
+value
 	: ~('{'|'}'| '('| ')'| ';'|','|'='|'<'|'>'|' '|'!'|'\''|'"')+
 	| single_quote
 	| double_quote;

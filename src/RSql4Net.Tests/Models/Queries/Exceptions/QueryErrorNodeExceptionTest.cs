@@ -7,7 +7,7 @@ using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries.Exceptions
 {
-    public class QueryErrorNodeExceptionTest : QueryExceptionTest
+    public class CommonQueryErrorNodeExceptionTest : CommonQueryExceptionTest
     {
         [Fact]
         public void ShouldBeSerializable()

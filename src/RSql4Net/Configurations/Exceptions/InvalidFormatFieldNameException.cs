@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace RSql4Net.Configurations.Exceptions
 {
     [Serializable]
-    public class InvalidFormatFieldNameException : RSql4NetException
+    public class InvalidFormatFieldNameException : RSqlException
     {
         public InvalidFormatFieldNameException(string fieldName, string value) : base(
             $"Field identifier {value} : {fieldName} does not respect the expected format")

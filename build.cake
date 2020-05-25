@@ -74,18 +74,14 @@ Task("Tests")
         CoverletOutputName =  coverageFileName,
         CoverletOutputFormat = CoverletOutputFormat.opencover,
         ExcludeByFile = new List<string>( new string [] {
-            "**/*/QueryBaseListener.cs",
-            "**/*/QueryVisitor.cs.",
-            "**/*/QueryParser.cs",
-            "**/*/QueryLexer.cs",
+            "**/*/RSqlQueryBaseListener.cs",
+            "**/*/RSqlQueryVisitor.cs.",
+            "**/*/RSqlQueryParser.cs",
+            "**/*/RSqlQueryLexer.cs",
             "**/*/ApplicationBuilderExtensions.cs",
             "**/*/ServiceCollectionExtensions.cs",
-            "**/*/QueryBaseVisitor.cs",
-            "**/*/QueryValueInvalidConversionException.cs",
-            "**/*/QueryComparisonNotEnoughtArgumentException.cs",
-            "**/*/QueryValueInvalidConversionException.cs",
-            "**/*/QueryErrorNodeException.cs",
-            "**/*/QueryValueException.cs",
+            "**/*/RSqlQueryBaseVisitor.cs",
+            "**/*/RSqlQueryErrorNodeException.cs",
             "**/*/RSql4Net.Samples*"
         })
     };

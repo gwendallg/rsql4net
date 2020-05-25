@@ -10,24 +10,39 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RSql4Net.SwaggerGen
 {
-    public class OperationFilter : IOperationFilter
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RSqlOperationFilter : IOperationFilter
     {
         private readonly Settings _settings;
 
-        private bool IsQuery(Type type) => (type.IsGenericType &&
-                                            (type.GetGenericTypeDefinition() == typeof(IQuery<>) ||
-                                             type.GetGenericTypeDefinition() == typeof(Query<>)));
-
-        private bool IsPageable(Type type) => (type.IsGenericType &&
-                                               (type.GetGenericTypeDefinition() == typeof(IPageable<>) ||
-                                                type.GetGenericTypeDefinition() == typeof(Pageable<>)));
-
-        public OperationFilter(Settings settings)
+        /// <summary>
+        /// is query type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static bool IsQuery(Type type) => (type.IsGenericType &&
+                                                   (type.GetGenericTypeDefinition() == typeof(IRSqlQuery<>) ||
+                                                    type.GetGenericTypeDefinition() == typeof(RSqlQuery<>)));
+        /// <summary>
+        /// is pageable type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static bool IsPageable(Type type) => (type.IsGenericType &&
+                                                      (type.GetGenericTypeDefinition() == typeof(IRSqlPageable<>) ||
+                                                       type.GetGenericTypeDefinition() == typeof(RSqlPageable<>)));
+        
+        /// <summary>
+        /// create instance of
+        /// </summary>
+        /// <param name="settings"></param>
+        public RSqlOperationFilter(Settings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
-
-
+        
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             foreach (var parameterInfo in context.MethodInfo.GetParameters())

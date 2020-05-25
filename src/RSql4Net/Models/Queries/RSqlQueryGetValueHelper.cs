@@ -9,7 +9,7 @@ using RSql4Net.Models.Queries.Exceptions;
 
 namespace RSql4Net.Models.Queries
 {
-    public static class QueryGetValueHelper
+    public static class RSqlQueryGetValueHelper
     {
         private static bool IsBool(Type type) => type == typeof(bool) || type == typeof(bool?);
         private static bool IsShort(Type type) => type == typeof(short) || type == typeof(short?);
@@ -29,7 +29,7 @@ namespace RSql4Net.Models.Queries
         private static readonly char DecimalSeparator =
             Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
 
-        private static List<object> GetStrings(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetStrings(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -54,7 +54,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetShorts(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetShorts(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -65,7 +65,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetInts(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetInts(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -76,7 +76,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetLongs(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetLongs(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -87,7 +87,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetDoubles(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetDoubles(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -100,7 +100,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetFloats(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetFloats(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -111,7 +111,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetDecimals(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetDecimals(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -122,7 +122,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetDateTimes(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetDateTimes(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -134,7 +134,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetDateTimeOffsets(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetDateTimeOffsets(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -146,7 +146,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetBooleans(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetBooleans(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -157,7 +157,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetChars(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetChars(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -168,7 +168,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetBytes(QueryParser.ArgumentsContext argumentsContext)
+        private static List<object> GetBytes(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
             foreach (var valueContext in argumentsContext.value())
@@ -179,7 +179,7 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
-        private static List<object> GetEnums(QueryParser.ArgumentsContext argumentsContext, Type type)
+        private static List<object> GetEnums(RSqlQueryParser.ArgumentsContext argumentsContext, Type type)
         {
             var enumType = type.IsGenericType ? type.GetGenericArguments()[0] : type;
             return argumentsContext.value()
@@ -198,7 +198,7 @@ namespace RSql4Net.Models.Queries
                 .ToList();
         }
 
-        public static List<object> GetValues(Type type, QueryParser.ArgumentsContext argumentsContext)
+        public static List<object> GetValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             if (argumentsContext?.value() == null || argumentsContext.value().Length == 0)
             {
@@ -270,7 +270,7 @@ namespace RSql4Net.Models.Queries
 
 
         public static object GetValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
-            QueryParser.ComparisonContext context,
+            RSqlQueryParser.ComparisonContext context,
             NamingStrategy namingStrategy = null)
         {
             if (parameter == null)
@@ -364,7 +364,7 @@ namespace RSql4Net.Models.Queries
         /// <param name="enumType"></param>
         /// <returns></returns>
         /// <exception cref="QueryValueInvalidConversionException"></exception>
-        private static object GetEnum(QueryParser.ValueContext valueContext,
+        private static object GetEnum(RSqlQueryParser.ValueContext valueContext,
             Type enumType)
         {
             try
@@ -379,7 +379,7 @@ namespace RSql4Net.Models.Queries
         }
 
         private static object GetString<T>(ParameterExpression parameter,
-            QueryParser.ValueContext valueContext,
+            RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (valueContext.single_quote() != null || valueContext.double_quote() != null)
@@ -400,7 +400,7 @@ namespace RSql4Net.Models.Queries
         }
 
         private static object GetChar<T>(ParameterExpression parameter,
-            QueryParser.ValueContext valueContext,
+            RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (char.TryParse(valueContext.GetText(), out var result))
@@ -417,7 +417,7 @@ namespace RSql4Net.Models.Queries
         }
 
         private static object GetByte<T>(ParameterExpression parameter,
-            QueryParser.ValueContext valueContext,
+            RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (byte.TryParse(valueContext.GetText(), out var result))
@@ -434,7 +434,7 @@ namespace RSql4Net.Models.Queries
         }
 
         private static object GetShort<T>(ParameterExpression parameter,
-            QueryParser.ValueContext valueContext,
+            RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (short.TryParse(valueContext.GetText(), out var result))
@@ -450,7 +450,7 @@ namespace RSql4Net.Models.Queries
             throw new QueryValueInvalidConversionException(valueContext, typeof(short));
         }
 
-        private static object GetInt<T>(ParameterExpression parameter, QueryParser.ValueContext valueContext,
+        private static object GetInt<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (int.TryParse(valueContext.GetText(), out var result))
@@ -467,7 +467,7 @@ namespace RSql4Net.Models.Queries
         }
 
         private static object GetLong<T>(ParameterExpression parameter,
-            QueryParser.ValueContext valueContext,
+            RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (long.TryParse(valueContext.GetText(), out var result))
@@ -484,7 +484,7 @@ namespace RSql4Net.Models.Queries
         }
 
         private static object GetFloat<T>(ParameterExpression parameter,
-            QueryParser.ValueContext valueContext,
+            RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (float.TryParse(
@@ -502,7 +502,7 @@ namespace RSql4Net.Models.Queries
             throw new QueryValueInvalidConversionException(valueContext, typeof(float));
         }
 
-        private static object GetDouble<T>(ParameterExpression parameter, QueryParser.ValueContext valueContext,
+        private static object GetDouble<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (double.TryParse(
@@ -520,7 +520,7 @@ namespace RSql4Net.Models.Queries
             throw new QueryValueInvalidConversionException(valueContext, typeof(double));
         }
 
-        private static object GetDecimal<T>(ParameterExpression parameter, QueryParser.ValueContext valueContext,
+        private static object GetDecimal<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (decimal.TryParse(
@@ -538,7 +538,7 @@ namespace RSql4Net.Models.Queries
             throw new QueryValueInvalidConversionException(valueContext, typeof(decimal));
         }
 
-        private static object GetBoolean<T>(ParameterExpression parameter, QueryParser.ValueContext valueContext,
+        private static object GetBoolean<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             if (bool.TryParse(valueContext.GetText(), out var result))
@@ -554,7 +554,7 @@ namespace RSql4Net.Models.Queries
             throw new QueryValueInvalidConversionException(valueContext, typeof(bool));
         }
 
-        private static object GetDateTime<T>(ParameterExpression parameter, QueryParser.ValueContext valueContext,
+        private static object GetDateTime<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             try
@@ -573,7 +573,7 @@ namespace RSql4Net.Models.Queries
             }
         }
 
-        private static object GetDateTimeOffset<T>(ParameterExpression parameter, QueryParser.ValueContext valueContext,
+        private static object GetDateTimeOffset<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
             NamingStrategy namingStrategy = null)
         {
             try

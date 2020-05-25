@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace RSql4Net.Models.Paging.Exceptions
 {
     [Serializable]
-    public class OutOfRangePageNumberException : PageableException
+    public class OutOfRangePageNumberException : RSqlPageableException
     {
         public OutOfRangePageNumberException(object pageNumber,
             Exception innerException = null) : base(

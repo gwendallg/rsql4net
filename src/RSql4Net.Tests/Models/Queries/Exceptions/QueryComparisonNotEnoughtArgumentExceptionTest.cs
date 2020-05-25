@@ -3,7 +3,7 @@ using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries.Exceptions
 {
-    public class QueryComparisonNotEnoughArgumentExceptionTest : QueryExceptionTest
+    public class CommonQueryComparisonNotEnoughArgumentExceptionTest : CommonQueryExceptionTest
     {
         [Fact]
         public void ShouldBeSerializable()

@@ -7,14 +7,14 @@ namespace RSql4Net.Models.Paging
     /// <summary>
     ///     Sort expression.
     /// </summary>
-    public class Sort<T> where T : class
+    public class RSqlSort<T> where T : class
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Autumn.Mvc.Models.Paginations.Sort`1" /> class.
+        ///     Initializes a new instance of.
         /// </summary>
         /// <param name="orderBy">Order by.</param>
         /// <param name="orderDescendingBy">Order descending by.</param>
-        public Sort(IEnumerable<Expression<Func<T, object>>> orderBy = null,
+        public RSqlSort(IEnumerable<Expression<Func<T, object>>> orderBy = null,
             IEnumerable<Expression<Func<T, object>>> orderDescendingBy = null)
         {
             OrderBy = orderBy;

@@ -20,7 +20,7 @@ namespace RSql4Net.Tests.Models.Paging.Exceptions
                         new KeyValuePair<string, StringValues>("Sort", new StringValues("Name;asc;sd"))
                     }
                 ));
-            var expected = new PageableModelBinder<Customer>(new Settings());
+            var expected = new RSqlPageableModelBinder<Customer>(new Settings());
 
             expected
                 .Invoking(i => i.Build(queryCollection))

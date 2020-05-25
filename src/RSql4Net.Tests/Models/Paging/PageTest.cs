@@ -11,7 +11,7 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeWithEmptyPage()
         {
-            var expected = new Page<object>(null);
+            var expected = new RSqlPage<object>(null);
             expected
                 .HasContent.Should().BeFalse();
             expected
@@ -38,11 +38,11 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeWithHasContentAndHasPreviousAndHasNext()
         {
-            var mockPagebable = new Mock<IPageable<object>>();
+            var mockPagebable = new Mock<IRSqlPageable<object>>();
             mockPagebable.Setup(x => x.PageNumber()).Returns(50);
             mockPagebable.Setup(x => x.PageSize()).Returns(2);
 
-            var expected = new Page<object>(new List<object>(new object[] {"1", "2"}), mockPagebable.Object, 200);
+            var expected = new RSqlPage<object>(new List<object>(new object[] {"1", "2"}), mockPagebable.Object, 200);
 
             expected
                 .HasContent.Should().BeTrue();
@@ -63,10 +63,10 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeWithHasContentAndIsFirstPage()
         {
-            var mockPagebable = new Mock<IPageable<object>>();
+            var mockPagebable = new Mock<IRSqlPageable<object>>();
             mockPagebable.Setup(x => x.PageNumber()).Returns(0);
             mockPagebable.Setup(x => x.PageSize()).Returns(2);
-            var expected = new Page<object>(new List<object>(new object[] {"1", "2"}), mockPagebable.Object, 200);
+            var expected = new RSqlPage<object>(new List<object>(new object[] {"1", "2"}), mockPagebable.Object, 200);
 
             expected
                 .HasContent.Should().BeTrue();
@@ -87,10 +87,10 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeWithHasContentAndIsLastPage()
         {
-            var mockPagebable = new Mock<IPageable<object>>();
+            var mockPagebable = new Mock<IRSqlPageable<object>>();
             mockPagebable.Setup(x => x.PageNumber()).Returns(199);
             mockPagebable.Setup(x => x.PageSize()).Returns(2);
-            var expected = new Page<object>(new List<object>(new object[] {"1", "2"}), mockPagebable.Object, 200);
+            var expected = new RSqlPage<object>(new List<object>(new object[] {"1", "2"}), mockPagebable.Object, 200);
 
             expected
                 .HasContent.Should().BeTrue();

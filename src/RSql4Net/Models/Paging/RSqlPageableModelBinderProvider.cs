@@ -7,7 +7,7 @@ namespace RSql4Net.Models.Paging
     /// <summary>
     ///     Pageable model binder provider.
     /// </summary>
-    public class PageableModelBinderProvider : IModelBinderProvider
+    public class RSqlPageableModelBinderProvider : IModelBinderProvider
     {
         private readonly Settings _settings;
 
@@ -16,7 +16,7 @@ namespace RSql4Net.Models.Paging
         ///     <see cref="T:RSql4Net.Models.Paging.PageableModelBinderProvider" /> class.
         /// </summary>
         /// <param name="settings">Settings.</param>
-        public PageableModelBinderProvider(Settings settings)
+        public RSqlPageableModelBinderProvider(Settings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
@@ -29,14 +29,14 @@ namespace RSql4Net.Models.Paging
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
             if (!context.Metadata.ModelType.IsGenericType ||
-                (context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(IPageable<>) &&
-                 context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(Pageable<>)))
+                (context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(IRSqlPageable<>) &&
+                 context.Metadata.ModelType.GetGenericTypeDefinition() != typeof(RSqlPageable<>)))
             {
                 return null;
             }
 
             var entityType = context.Metadata.ModelType.GetGenericArguments()[0];
-            var modelBinderType = typeof(PageableModelBinder<>).MakeGenericType(entityType);
+            var modelBinderType = typeof(RSqlPageableModelBinder<>).MakeGenericType(entityType);
             return (IModelBinder)Activator.CreateInstance(modelBinderType, _settings);
         }
     }

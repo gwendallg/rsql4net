@@ -5,7 +5,7 @@ namespace RSql4Net.Models.Paging
     /// <summary>
     ///     interface of page
     /// </summary>
-    public interface IPage<T> where T : class
+    public interface IRSqlPage<T> where T : class
     {
         /// <summary>
         ///     Gets the content.

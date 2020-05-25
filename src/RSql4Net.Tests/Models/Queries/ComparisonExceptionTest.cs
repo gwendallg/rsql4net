@@ -3,7 +3,7 @@ using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public class ComparisonExceptionTest : QueryTest
+    public class ComparisonExceptionTest : CommonQueryTest
     {
         [Fact]
         public void ShoudBeThrowTooManyArgumentException()

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Query.g by ANTLR 4.6
+// Generated from RSqlQuery.g by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -26,16 +26,16 @@ using IToken = Antlr4.Runtime.IToken;
 using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
-/// This class provides an empty implementation of <see cref="IQueryVisitor{Result}"/>,
+/// This class provides an empty implementation of <see cref="IRSqlQueryVisitor{Result}"/>,
 /// which can be extended to create a visitor which only needs to handle a subset
 /// of the available methods.
 /// </summary>
 /// <typeparam name="Result">The return type of the visit operation.</typeparam>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.6")]
 [System.CLSCompliant(false)]
-public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, IQueryVisitor<Result> {
+public partial class RSqlQueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, IRSqlQueryVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.selector"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.selector"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -43,9 +43,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSelector([NotNull] QueryParser.SelectorContext context) { return VisitChildren(context); }
+	public virtual Result VisitSelector([NotNull] RSqlQueryParser.SelectorContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.eval"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.eval"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -53,9 +53,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEval([NotNull] QueryParser.EvalContext context) { return VisitChildren(context); }
+	public virtual Result VisitEval([NotNull] RSqlQueryParser.EvalContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.or"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.or"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -63,9 +63,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOr([NotNull] QueryParser.OrContext context) { return VisitChildren(context); }
+	public virtual Result VisitOr([NotNull] RSqlQueryParser.OrContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.and"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.and"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -73,9 +73,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAnd([NotNull] QueryParser.AndContext context) { return VisitChildren(context); }
+	public virtual Result VisitAnd([NotNull] RSqlQueryParser.AndContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.constraint"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.constraint"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -83,9 +83,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitConstraint([NotNull] QueryParser.ConstraintContext context) { return VisitChildren(context); }
+	public virtual Result VisitConstraint([NotNull] RSqlQueryParser.ConstraintContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.group"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.group"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -93,9 +93,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGroup([NotNull] QueryParser.GroupContext context) { return VisitChildren(context); }
+	public virtual Result VisitGroup([NotNull] RSqlQueryParser.GroupContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.comparison"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.comparison"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -103,9 +103,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitComparison([NotNull] QueryParser.ComparisonContext context) { return VisitChildren(context); }
+	public virtual Result VisitComparison([NotNull] RSqlQueryParser.ComparisonContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.comparator"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.comparator"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -113,9 +113,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitComparator([NotNull] QueryParser.ComparatorContext context) { return VisitChildren(context); }
+	public virtual Result VisitComparator([NotNull] RSqlQueryParser.ComparatorContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.comp_fiql"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.comp_fiql"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -123,9 +123,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitComp_fiql([NotNull] QueryParser.Comp_fiqlContext context) { return VisitChildren(context); }
+	public virtual Result VisitComp_fiql([NotNull] RSqlQueryParser.Comp_fiqlContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.comp_alt"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.comp_alt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -133,9 +133,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitComp_alt([NotNull] QueryParser.Comp_altContext context) { return VisitChildren(context); }
+	public virtual Result VisitComp_alt([NotNull] RSqlQueryParser.Comp_altContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.reserved"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.reserved"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -143,9 +143,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitReserved([NotNull] QueryParser.ReservedContext context) { return VisitChildren(context); }
+	public virtual Result VisitReserved([NotNull] RSqlQueryParser.ReservedContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.single_quote"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.single_quote"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -153,9 +153,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSingle_quote([NotNull] QueryParser.Single_quoteContext context) { return VisitChildren(context); }
+	public virtual Result VisitSingle_quote([NotNull] RSqlQueryParser.Single_quoteContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.double_quote"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.double_quote"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -163,9 +163,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDouble_quote([NotNull] QueryParser.Double_quoteContext context) { return VisitChildren(context); }
+	public virtual Result VisitDouble_quote([NotNull] RSqlQueryParser.Double_quoteContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.arguments"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.arguments"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -173,9 +173,9 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArguments([NotNull] QueryParser.ArgumentsContext context) { return VisitChildren(context); }
+	public virtual Result VisitArguments([NotNull] RSqlQueryParser.ArgumentsContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="QueryParser.value"/>.
+	/// Visit a parse tree produced by <see cref="RSqlQueryParser.value"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -183,6 +183,6 @@ public partial class QueryBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitValue([NotNull] QueryParser.ValueContext context) { return VisitChildren(context); }
+	public virtual Result VisitValue([NotNull] RSqlQueryParser.ValueContext context) { return VisitChildren(context); }
 }
 } // namespace RSql4Net.Models.Queries

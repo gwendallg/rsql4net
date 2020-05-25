@@ -81,7 +81,7 @@ namespace RSql4Net.Models
         }
 
         /// <summary>
-        ///     find Contains méthode
+        ///     find Contains method
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>

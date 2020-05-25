@@ -1,35 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using RSql4Net.Configurations;
+using System;
+using FluentAssertions;
 using RSql4Net.Models.Queries;
+using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public abstract class QueryTest
+    public class QueryTest
     {
-        protected QueryTest()
+        [Fact]
+        public void ShouldBeThrowArgumentNullExceptionTest()
         {
-            Settings = new Settings {QueryField = "q"};
-            QueryModelBinder = new QueryModelBinder<MockQuery>(Settings);
-        }
-
-        protected Settings Settings { get; }
-        protected QueryModelBinder<MockQuery> QueryModelBinder { get; }
-
-        protected Expression<Func<MockQuery, bool>> BuildExpression(string query)
-        {
-            var dic = new Dictionary<string, StringValues> {[Settings.QueryField] = query};
-            return QueryModelBinder
-                .Build(new QueryCollection(dic))
-                .Value();
-        }
-
-        protected Func<MockQuery, bool> BuildFunction(string query)
-        {
-            return BuildExpression(query).Compile();
+            // ArgumentNullException : obj
+            this.Invoking(f => { var query = new RSqlQuery<Customer>(null); })
+                .Should().Throw<ArgumentNullException>();
         }
     }
 }

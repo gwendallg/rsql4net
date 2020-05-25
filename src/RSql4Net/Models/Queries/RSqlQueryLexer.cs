@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Query.g by ANTLR 4.6
+// Generated from RSqlQuery.g by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -29,7 +29,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.6")]
 [System.CLSCompliant(false)]
-public partial class QueryLexer : Lexer {
+public partial class RSqlQueryLexer : Lexer {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
@@ -47,7 +47,7 @@ public partial class QueryLexer : Lexer {
 	};
 
 
-	public QueryLexer(ICharStream input)
+	public RSqlQueryLexer(ICharStream input)
 		: base(input)
 	{
 		Interpreter = new LexerATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
@@ -72,7 +72,7 @@ public partial class QueryLexer : Lexer {
 		}
 	}
 
-	public override string GrammarFileName { get { return "Query.g"; } }
+	public override string GrammarFileName { get { return "RSqlQuery.g"; } }
 
 	public override string[] RuleNames { get { return ruleNames; } }
 
@@ -80,7 +80,7 @@ public partial class QueryLexer : Lexer {
 
 	public override string SerializedAtn { get { return _serializedATN; } }
 
-	static QueryLexer() {
+	static RSqlQueryLexer() {
 		decisionToDFA = new DFA[_ATN.NumberOfDecisions];
 		for (int i = 0; i < _ATN.NumberOfDecisions; i++) {
 			decisionToDFA[i] = new DFA(_ATN.GetDecisionState(i), i);

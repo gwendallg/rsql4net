@@ -6,7 +6,7 @@ namespace RSql4Net.Models.Queries.Exceptions
     [Serializable]
     public class QueryComparisonTooManyArgumentException : QueryComparisonException
     {
-        public QueryComparisonTooManyArgumentException(QueryParser.ComparisonContext origin,
+        public QueryComparisonTooManyArgumentException(RSqlQueryParser.ComparisonContext origin,
             Exception innerException = null) : base(origin, $"Too many arguments : {origin?.selector()?.GetText()}",
             innerException)
         {

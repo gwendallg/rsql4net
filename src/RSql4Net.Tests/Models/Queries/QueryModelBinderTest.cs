@@ -32,10 +32,10 @@ namespace RSql4Net.Tests.Models.Queries
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
 
-            var queryModelBinder = new QueryModelBinder<Customer>(new Settings());
+            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings());
             await queryModelBinder.BindModelAsync(mock);
 
-            var expected = mock.Result.Model as IQuery<Customer>;
+            var expected = mock.Result.Model as IRSqlQuery<Customer>;
 
             expected
                 .Should().NotBeNull();
@@ -62,7 +62,7 @@ namespace RSql4Net.Tests.Models.Queries
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
 
-            var queryModelBinder = new QueryModelBinder<Customer>(new Settings());
+            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings());
             await queryModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result;
@@ -100,10 +100,10 @@ namespace RSql4Net.Tests.Models.Queries
                 OnCreateCacheEntry = (m) => { m.Size = 1024;}
             };
 
-            var queryModelBinder = new QueryModelBinder<Customer>(settings);
+            var queryModelBinder = new RSqlQueryModelBinder<Customer>(settings);
             await queryModelBinder.BindModelAsync(mock);
 
-            var expected = mock.Result.Model as IQuery<Customer>;
+            var expected = mock.Result.Model as IRSqlQuery<Customer>;
 
             expected
                 .Should().NotBeNull();

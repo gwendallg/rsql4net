@@ -51,7 +51,7 @@ namespace RSql4Net.Samples
             services.AddSingleton(GetSampleData());
             services.AddSwaggerGen(c =>
             {
-                c.OperationFilter<OperationFilter>();
+                c.OperationFilter<RSqlOperationFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
         }

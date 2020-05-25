@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace RSql4Net.Models.Paging.Exceptions
 {
     [Serializable]
-    public class InvalidSortDirectionException : PageableException
+    public class InvalidSortDirectionException : RSqlPageableException
     {
         public InvalidSortDirectionException(object sortDirection,
             Exception innerException = null) : base(

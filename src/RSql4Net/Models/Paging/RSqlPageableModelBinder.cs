@@ -13,7 +13,7 @@ namespace RSql4Net.Models.Paging
     /// <summary>
     ///     Pageable model binder.
     /// </summary>
-    public class PageableModelBinder<T> : IModelBinder where T : class
+    public class RSqlPageableModelBinder<T> : IModelBinder where T : class
     {
         private readonly Settings _settings;
 
@@ -21,7 +21,7 @@ namespace RSql4Net.Models.Paging
         ///     Initializes a new instance of the <see cref="T:RSql4Net.Models.Paging.PageableModelBinder`1" /> class.
         /// </summary>
         /// <param name="settings">Settings.</param>
-        public PageableModelBinder(Settings settings)
+        public RSqlPageableModelBinder(Settings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
@@ -51,7 +51,7 @@ namespace RSql4Net.Models.Paging
         /// </summary>
         /// <returns>The build.</returns>
         /// <param name="queryCollection">Query collection.</param>
-        public IPageable<T> Build(IQueryCollection queryCollection)
+        public IRSqlPageable<T> Build(IQueryCollection queryCollection)
         {
             if (queryCollection == null)
             {
@@ -61,7 +61,7 @@ namespace RSql4Net.Models.Paging
             var pageSize = GetPageSize(queryCollection);
             var pageNumber = GetPageNumber(queryCollection);
             var sort = GetSort(queryCollection);
-            return new Pageable<T>(pageNumber, pageSize, sort);
+            return new RSqlPageable<T>(pageNumber, pageSize, sort);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace RSql4Net.Models.Paging
         /// </summary>
         /// <returns>The sort.</returns>
         /// <param name="queryCollection">Query collection.</param>
-        public Sort<T> GetSort(IQueryCollection queryCollection)
+        public RSqlSort<T> GetSort(IQueryCollection queryCollection)
         {
             if (queryCollection.TryGetValue(_settings.SortField, out var sortStringValues))
             {
@@ -185,7 +185,7 @@ namespace RSql4Net.Models.Paging
                     }
                 }
 
-                return new Sort<T>(orderBy, orderDescendingBy);
+                return new RSqlSort<T>(orderBy, orderDescendingBy);
             }
 
             return null;
