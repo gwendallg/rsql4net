@@ -12,6 +12,8 @@ branches:
   - /^release\/.*$/
   - develop
 dotnet: 3.1
+jdk: openjdk11
+
 #mono: none
 os:
   - linux
@@ -20,10 +22,14 @@ before_install:
   - sudo apt-get install dotnet-sdk-2.2
 script:
   - set -e
+  - jdk_switcher use openjdk11
+  - export JAVA_HOME=$HOME/openjdk11
+  - $TRAVIS_BUILD_DIR/install-jdk.sh --install openjdk11 --target $JAVA_HOME
   - dotnet tool install --global Cake.Tool --version 0.37.0
   - dotnet tool install --global coverlet.console --version 1.7.1
   - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8
   - dotnet tool install --global coveralls.net --version 1.0.0
   - dotnet tool install --global GitVersion.Tool --version 5.3.4
+  - dotnet tool install --global dotnet-sonarscanner --version 4.8.0
   - export PATH="$PATH:$HOME/.dotnet/tools"
   - ./build.sh
