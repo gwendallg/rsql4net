@@ -9,7 +9,7 @@ using RSql4Net.Configurations;
 
 namespace RSql4Net.Models.Queries
 {
-    public class RSqlQueryModelBinder<T> : IModelBinder
+    public class RSqlQueryModelBinder<T> : IModelBinder where T: class
     {
         private readonly Settings _settings;
 

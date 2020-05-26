@@ -1,17 +1,19 @@
 #addin Cake.Git&version=0.21.0
 #addin Cake.Coverlet&version=2.4.2
 #addin Cake.Coveralls&version=0.10.0
+#addin Cake.Sonar&version=1.1.25
 
 #tool nuget:?package=ReportGenerator&version=4.5.8
 #tool nuget:?package=GitVersion.CommandLine&version=4.0.0
 #tool nuget:?package=Coveralls.net&version=1.0.0
+#tool nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0
 
 var target = Argument("target", "Report");
 var configuration = Argument("configuration", "debug");
 var lastCommit = GitLogTip("./");
-
-GitVersion version;
-
+var nugetApiKey = EnvironmentVariable("NUGET_API_KEY") ?? "";
+var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN") ?? "";
+var sonarCloudLogin = EnvironmentVariable("SONAR_CLOUD_LOGIN") ?? "";
 var testProjectsRelativePaths = new string[]
 {
     "RSql4Net.Tests/RSql4Net.Tests.csproj",
@@ -22,6 +24,8 @@ var artifactDirectory = Directory(@".\artifacts\");
 var coverageFileName = "coverage.xml";
 var reportTypes = "Html";
 var coverageFilePath = coverageDirectory + File(coverageFileName);
+
+GitVersion version;
 
 Task("Clean")
     .Does(() =>
@@ -50,9 +54,26 @@ Task("Restore")
       DotNetCoreRestore("./RSql4Net.sln");
 });
 
-Task("Build")
+Task("Sonar-begin")
     .IsDependentOn("Restore")
     .IsDependentOn("Version")
+    .Does(() => {
+        if(BuildSystem.TravisCI.IsRunningOnTravisCI)
+        {
+            SonarBegin(new SonarBeginSettings{
+                Language = "C#",
+                Organization = "gwendallg",
+                Key = "gwendallg_rsql4net",
+                Branch = version.BranchName,
+                OpenCoverReportsPath = "./coverage-results/coverage.xml",
+                Url = "https://sonarcloud.io",
+                Login = sonarCloudLogin
+            });
+        }
+});
+
+Task("Build")
+    .IsDependentOn("Sonar-begin")
     .Does(()=>{
       DotNetCoreBuild(
           "RSql4Net.sln",
@@ -102,13 +123,24 @@ Task("Upload-Coverage-Report")
             CommitAuthor = lastCommit.Author.Name,
             CommitMessage = lastCommit.MessageShort,
             CommitId = version.Sha,
-            RepoToken = "kmkiXfYpI5T1iVh3dcydya2bHRjShph55"
+            RepoToken = coverallsRepoToken
         });
      }
 });
 
+Task("Sonar-end")
+    .IsDependentOn("Tests")
+    .Does(() => {
+        if(BuildSystem.TravisCI.IsRunningOnTravisCI)
+        {
+            SonarEnd(new SonarEndSettings(){
+                Login = sonarCloudLogin
+            });
+        }
+});
+
 Task("Package")
-    .IsDependentOn("Upload-Coverage-Report")
+    .IsDependentOn("Sonar-end")
     .Does(() =>{
         NuGetPack("./src/RSql4Net/RSql4Net.csproj", new NuGetPackSettings{
             Version = version.SemVer,
@@ -137,6 +169,5 @@ Task("Report")
         ReportGenerator(coverageFilePath, coverageDirectory, reportSettings);
     }
 });
-
 
 RunTarget(target);

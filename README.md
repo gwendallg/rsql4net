@@ -9,25 +9,33 @@ RSql4Net is AspNet Core extension that will make it easier for you to write your
 
 ## Continuous integration
 
-| Branch                      |  Version      | Build        | Coverage       | Nuget       |
-|-----------------------------|---------------|----------------|--------------|--------------|
-| master                      |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=master)](https://coveralls.io/github/gwendallg/rsql4net?branch=master) |
-| develop                     |  | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop) |
-
+| Branch                      |  Build | Quality Gate | Coverage |
+|-----------------------------|--------|--------------|----------|
+| master                      | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master)| [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gwendallg_rsql4net&branch=master&metric=alert_status)](https://sonarcloud.io/dashboard?id=gwendallg_rsql4net&branch=master) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=master)](https://coveralls.io/github/gwendallg/rsql4net?branch=master) |
+| develop                     | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop) | | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop) |
 
 ## Table of Contents
+
 1. Installation
+
 2. Quick start
+
 3. Samples
 
 ## Installation
-```
+
+```shell
+
 dotnet add package RSql4Net
+
 ```
 
 ## Quick Start
+
 1. Add a reference to the NuGet RSql4Net package in your project.
+
 2. Modify Startup class in your project
+
 ```csharp
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -43,14 +51,21 @@ dotnet add package RSql4Net
 3. Add a new operation in your mvc controller
 
 ```csharp
-	// like Get operation
- 	[HttpGet]
-        public IActionResult Get(IRSqlQuery<[your model]> filter,
-            IRSqlPageable<[your model]> pageable)
-	{
-		// your code here
-	}
+
+    // like Get operation
+    [HttpGet]
+    public IActionResult Get(IRSqlQuery<[your model]> query, IRSqlPageable<[your model]> pageable)
+    {
+        if (ModelState.IsValid)
+        {
+            var filter = query.Value();
+            ...
+        }
+        // your code here
+    }
+
 ```
+
 4. Use for filter your data
 
 Examples of RSql expressions in both FIQL-like:
@@ -88,8 +103,10 @@ Examples of RSql expressions in both FIQL-like:
 Examples of Pagination criteria :
 
 * return second page and page size equals 50 items max
-    - with default naming strategy
-    **?PageNumber=2&PageSize=50**
+
+- with default naming strategy
+
+**?PageNumber=2&PageSize=50**
     - with camel case strategy
     **?pageNumber=2&pageSize=50**
     - with snake case stategy
@@ -104,6 +121,6 @@ Examples of Sort criteria
 
 ## And ...
 
-* See RSql4Net.Samples project for samples 
+* See RSql4Net.Samples project for samples
 * See https://github.com/jirutka/rsql-parser
 * See http://tools.ietf.org/html/draft-nottingham-atompub-fiql-00
