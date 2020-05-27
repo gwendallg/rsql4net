@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using System.Text.Json;
 using Antlr4.Runtime.Tree;
-using Newtonsoft.Json.Serialization;
 using RSql4Net.Models.Queries.Exceptions;
 
 namespace RSql4Net.Models.Queries
