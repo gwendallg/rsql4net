@@ -52,9 +52,9 @@ namespace RSql4Net.Tests.Models.Queries
         {
             var obj1 = Manifest1();
             var obj1ToString = Manifest1ToString();
-            var query = $"{obj1.GetType().Name}P==\"{obj1ToString}\"";
+            var query = $"{Helper.GetJsonPropertyName(obj1)}P==\"{obj1ToString}\"";
             // {type}P == value
-            var expected = BuildExpression(query);
+            var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj1);
             Assert.True(expected(actual));
         }
@@ -64,9 +64,9 @@ namespace RSql4Net.Tests.Models.Queries
         {
             var obj1 = Manifest1();
             var obj1ToString = Manifest1ToString();
-            var query = $"{obj1.GetType().Name}P=='{obj1ToString}'";
+            var query = $"{Helper.GetJsonPropertyName(obj1)}P=='{obj1ToString}'";
             // {type}P == value
-            var expected = BuildExpression(query);
+            var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj1);
             Assert.True(expected(actual));
         }
@@ -75,9 +75,9 @@ namespace RSql4Net.Tests.Models.Queries
         public void ShouldBeEqualsEmptySingleQuote()
         {
             var obj1 = Manifest1();
-            var query = $"{obj1.GetType().Name}P==''";
+            var query = $"{Helper.GetJsonPropertyName(obj1)}P==''";
             // {type}P == value
-            var expected = BuildExpression(query);
+            var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(string.Empty);
             Assert.True(expected(actual));
         } 
@@ -86,9 +86,9 @@ namespace RSql4Net.Tests.Models.Queries
         public void ShouldBeEqualsEmptyDoubleQuote()
         {
             var obj1 = Manifest1();
-            var query = $"{obj1.GetType().Name}P==\"\"'";
+            var query = $"{Helper.GetJsonPropertyName(obj1)}P==\"\"'";
             // {type}P == value
-            var expected = BuildExpression(query);
+            var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(string.Empty);
             Assert.True(expected(actual));
         }
@@ -105,17 +105,17 @@ namespace RSql4Net.Tests.Models.Queries
 
             var obj1 = Manifest1();
             var listManifest = ListManifestToStringWithQuote();
-            var query = $"{obj1.GetType().Name}P=in={listManifest}";
+            var query = $"{Helper.GetJsonPropertyName(obj1)}P=in={listManifest}";
             // {type}P == value
-            var expected = BuildExpression(query);
+            var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj1);
             Assert.True(expected(actual));
 
             obj1 = Manifest1();
             listManifest = ListManifestToStringWithDoubleQuote();
-            query = $"{obj1.GetType().Name}P=in={listManifest}";
+            query = $"{Helper.GetJsonPropertyName(obj1)}P=in={listManifest}";
             // {type}P == value
-            expected = BuildExpression(query);
+            expected = Helper.Function<MockQuery>(query);
             actual = Actual(obj1);
             Assert.True(expected(actual));
         }
@@ -131,51 +131,51 @@ namespace RSql4Net.Tests.Models.Queries
         {
             var obj2 = Manifest2();
             var listManifest = ListManifestToString();
-            var query = $"{obj2.GetType().Name}P=out={listManifest}";
+            var query = $"{Helper.GetJsonPropertyName(obj2)}P=out={listManifest}";
             // {type}P == value
-            var expected = BuildExpression(query);
+            var expected = Helper.Function<MockQuery>(query);
             var actual = Actual("AC");
             Assert.True(expected(actual));
 
 
             listManifest = ListManifestToStringWithQuote();
-            query = $"{obj2.GetType().Name}P=out={listManifest}";
+            query = $"{Helper.GetJsonPropertyName(obj2)}P=out={listManifest}";
             // {type}P == value
-            expected = BuildExpression(query);
+            expected = Helper.Function<MockQuery>(query);
             actual = Actual("AC");
             Assert.True(expected(actual));
 
 
             listManifest = ListManifestToStringWithDoubleQuote();
-            query = $"{obj2.GetType().Name}P=out={listManifest}";
+            query = $"{Helper.GetJsonPropertyName(obj2)}P=out={listManifest}";
             // {type}P == value
-            expected = BuildExpression(query);
+            expected = Helper.Function<MockQuery>(query);
             actual = Actual("AC");
             Assert.True(expected(actual));
         }
 
         [Fact]
-        public virtual void ShouldThrowExceptioneGreaterThanOrEquals()
+        public virtual void ShouldThrowExceptionGreaterThanOrEquals()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeGreaterThanOrEquals());
+            Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeGreaterThanOrEquals());
         }
 
         [Fact]
         public virtual void ShouldThrowExceptionGreaterThan()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeGreaterThan());
+            Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeGreaterThan());
         }
 
         [Fact]
         public virtual void ShouldThrowExceptionLowerThan()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThan());
+            Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThan());
         }
 
         [Fact]
         public virtual void ShouldThrowExceptionLowerThanOrEquals()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThanOrEquals());
+            Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThanOrEquals());
         }
     }
 }

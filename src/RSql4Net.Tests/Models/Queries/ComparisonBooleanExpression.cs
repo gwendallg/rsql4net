@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using FluentAssertions;
 using RSql4Net.Models.Queries.Exceptions;
 using Xunit;
 
@@ -36,37 +37,37 @@ namespace RSql4Net.Tests.Models.Queries
         }
 
         [Fact]
-        public virtual void ShouldBeEquals()
+        public void ShouldBeEquals()
         {
             OnShouldBeEquals();
         }
 
         [Fact]
-        public virtual void ShouldBeEqualsWithNullable()
+        public void ShouldBeEqualsWithNullable()
         {
             OnShouldBeEqualsWithNullable();
         }
 
         [Fact]
-        public virtual void ShouldBeIn()
+        public void ShouldBeIn()
         {
             OnShouldBeIn();
         }
 
         [Fact]
-        public virtual void ShouldBeInNullable()
+        public void ShouldBeInNullable()
         {
             OnShouldBeInNullable();
         }
 
         [Fact]
-        public virtual void ShouldBeNotEquals()
+        public void ShouldBeNotEquals()
         {
             OnShouldBeNotEquals();
         }
 
         [Fact]
-        public virtual void ShouldBeNotEqualsWithNullable()
+        public void ShouldBeNotEqualsWithNullable()
         {
             OnShouldBeNotEqualsWithNullable();
         }
@@ -84,27 +85,28 @@ namespace RSql4Net.Tests.Models.Queries
         }
 
         [Fact]
-        public virtual void ShouldThrowExceptioneGreaterThanOrEquals()
+        public virtual void ShouldThrowExceptionGreaterThanOrEquals()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeGreaterThanOrEquals());
+            this.Invoking(o => o.OnShouldBeGreaterThanOrEquals())
+                .Should().Throw<ComparisonInvalidComparatorSelectionException>();
         }
 
         [Fact]
         public virtual void ShouldThrowExceptionGreaterThan()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeGreaterThan());
+            Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeGreaterThan());
         }
 
         [Fact]
         public virtual void ShouldThrowExceptionLowerThan()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThan());
+            Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThan());
         }
 
         [Fact]
         public virtual void ShouldThrowExceptionLowerThanOrEquals()
         {
-            Assert.Throws<QueryComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThanOrEquals());
+            Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThanOrEquals());
         }
     }
 }

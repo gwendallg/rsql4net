@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using RSql4Net.Configurations;
 using RSql4Net.Models.Paging.Exceptions;
@@ -16,13 +18,16 @@ namespace RSql4Net.Models.Paging
     public class RSqlPageableModelBinder<T> : IModelBinder where T : class
     {
         private readonly Settings _settings;
+        private readonly IOptions<JsonOptions> _options;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:RSql4Net.Models.Paging.PageableModelBinder`1" /> class.
         /// </summary>
         /// <param name="settings">Settings.</param>
-        public RSqlPageableModelBinder(Settings settings)
+        /// <param name="options">Options.</param>
+        public RSqlPageableModelBinder(Settings settings, IOptions<JsonOptions> options)
         {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
@@ -71,7 +76,7 @@ namespace RSql4Net.Models.Paging
         /// <param name="queryCollection">Query collection.</param>
         public int GetPageSize(IQueryCollection queryCollection)
         {
-            if (queryCollection.TryGetValue(_settings.PageSizeField, out var pageSizeString))
+            if (queryCollection.TryGetValue(_options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.PageSizeField), out var pageSizeString))
             {
                 if (int.TryParse(pageSizeString[0], out var pageSize))
                 {
@@ -98,7 +103,7 @@ namespace RSql4Net.Models.Paging
         /// <param name="queryCollection">Query collection.</param>
         public int GetPageNumber(IQueryCollection queryCollection)
         {
-            if (queryCollection.TryGetValue(_settings.PageNumberField, out var pageNumberString))
+            if (queryCollection.TryGetValue(_options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.PageNumberField), out var pageNumberString))
             {
                 if (int.TryParse(pageNumberString[0], out var pageNumber))
                 {
@@ -159,7 +164,7 @@ namespace RSql4Net.Models.Paging
         /// <param name="queryCollection">Query collection.</param>
         public RSqlSort<T> GetSort(IQueryCollection queryCollection)
         {
-            if (queryCollection.TryGetValue(_settings.SortField, out var sortStringValues))
+            if (queryCollection.TryGetValue(_options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.SortField), out var sortStringValues))
             {
                 var parameter = Expression.Parameter(typeof(T));
                 var orderBy = new List<Expression<Func<T, object>>>();
@@ -167,7 +172,7 @@ namespace RSql4Net.Models.Paging
 
                 foreach (var (key, value) in ExtractSortFromQueryCollection(sortStringValues))
                 {
-                    if (!ExpressionValue.TryParse<T>(parameter, key, _settings.NamingStrategy,
+                    if (!ExpressionValue.TryParse<T>(parameter, key, _options.Value.JsonSerializerOptions.PropertyNamingPolicy,
                         out var exp))
                     {
                         throw new UnknownSortException(key);

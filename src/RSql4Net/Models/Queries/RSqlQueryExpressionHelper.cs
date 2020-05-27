@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json;
 using Newtonsoft.Json.Serialization;
 using RSql4Net.Models.Queries.Exceptions;
 
@@ -155,30 +156,30 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="context"></param>
-        /// <param name="namingStrategy"></param>
+        /// <param name="jsonNamingPolicy"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetIsNullExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
             if (expressionValue.Property.PropertyType.IsValueType &&
                 !(expressionValue.Property.PropertyType.IsGenericType &&
                   expressionValue.Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
             {
-                throw new QueryComparisonInvalidComparatorSelectionException(context);
+                throw new ComparisonInvalidComparatorSelectionException(context);
             }
 
             var values = RSqlQueryGetValueHelper.GetValues(typeof(bool), context.arguments());
             if (!values.Any())
             {
-                throw new QueryComparisonNotEnoughArgumentException(context);
+                throw new ComparisonNotEnoughArgumentException(context);
             }
 
             if (values.Count > 1)
             {
-                throw new QueryComparisonTooManyArgumentException(context);
+                throw new ComparisonTooManyArgumentException(context);
             }
 
             var result = Expression.Lambda<Func<T, bool>>(Expression.Equal(
@@ -196,29 +197,29 @@ namespace RSql4Net.Models.Queries
 
         private static object GetUniqueValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             var value = context.arguments().value();
             if (value.Length == 0)
             {
-                throw new QueryComparisonNotEnoughArgumentException(context);
+                throw new ComparisonNotEnoughArgumentException(context);
             }
 
             if (value.Length > 1)
             {
-                throw new QueryComparisonTooManyArgumentException(context);
+                throw new ComparisonTooManyArgumentException(context);
             }
 
-            return RSqlQueryGetValueHelper.GetValue<T>(parameter, expressionValue, context, namingStrategy);
+            return RSqlQueryGetValueHelper.GetValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
         }
 
-        private static List<object> GetMultipleValue(ParameterExpression parameter, ExpressionValue expressionValue,
+        private static List<object> GetMultipleValue(ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context)
         {
             var value = context.arguments().value();
             if (value.Length == 0)
             {
-                throw new QueryComparisonNotEnoughArgumentException(context);
+                throw new ComparisonNotEnoughArgumentException(context);
             }
 
             return RSqlQueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
@@ -229,31 +230,31 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="context"></param>
-        /// <param name="namingStrategy"></param>
+        /// <param name="jsonNamingPolicy"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetEqExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
             if (!EqOrNeqOrInOrOutAuthorizedType.Contains(expressionValue.Property.PropertyType) &&
                 (!expressionValue.Property.PropertyType.IsEnum &&
                  !(expressionValue.Property.PropertyType.IsGenericType &&
                    expressionValue.Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
                    expressionValue.Property.PropertyType.GetGenericArguments()[0].IsEnum)))
             {
-                throw new QueryComparisonInvalidComparatorSelectionException(context);
+                throw new ComparisonInvalidComparatorSelectionException(context);
             }
 
-            var value = GetUniqueValue<T>(parameter, expressionValue, context, namingStrategy);
+            var value = GetUniqueValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
             var expression = value is ExpressionValue valueExp1
                 ? valueExp1.Expression
                 : Expression.Constant(value, expressionValue.Property.PropertyType);
             if (value is ExpressionValue valueExp2 &&
                 valueExp2.Property.PropertyType != expressionValue.Property.PropertyType)
             {
-                throw new QueryComparisonInvalidMatchTypeException(context);
+                throw new ComparisonInvalidMatchTypeException(context);
             }
 
             if (expressionValue.Property.PropertyType != typeof(string) || value is ExpressionValue)
@@ -266,7 +267,7 @@ namespace RSql4Net.Models.Queries
             var v = ((string)value).Replace(@"\*", MaskLk);
             if (v.IndexOf('*') != -1)
             {
-                return GetLkExpression<T>(parameter, context, namingStrategy);
+                return GetLkExpression<T>(parameter, context, jsonNamingPolicy);
             }
 
             value = v.Replace(MaskLk, "*");
@@ -281,12 +282,12 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="context"></param>
-        /// <param name="namingStrategy"></param>
+        /// <param name="jsonNamingPolicy"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetNeqExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (parameter == null)
             {
@@ -298,7 +299,7 @@ namespace RSql4Net.Models.Queries
                 throw new ArgumentException(nameof(context));
             }
 
-            var expression = GetEqExpression<T>(parameter, context, namingStrategy);
+            var expression = GetEqExpression<T>(parameter, context, jsonNamingPolicy);
             var body = Expression.Not(expression.Body);
             return Expression.Lambda<Func<T, bool>>(body, parameter);
         }
@@ -308,27 +309,27 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="context"></param>
-        /// <param name="namingStrategy"></param>
+        /// <param name="jsonNamingPolicy"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetLtExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
             if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
-                throw new QueryComparisonInvalidComparatorSelectionException(context);
+                throw new ComparisonInvalidComparatorSelectionException(context);
             }
 
-            var value = GetUniqueValue<T>(parameter, expressionValue, context, namingStrategy);
+            var value = GetUniqueValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
             var expression = value is ExpressionValue valueExp1
                 ? valueExp1.Expression
                 : Expression.Constant(value, expressionValue.Property.PropertyType);
             if (value is ExpressionValue valueExp2 &&
                 valueExp2.Property.PropertyType != expressionValue.Property.PropertyType)
             {
-                throw new QueryComparisonInvalidMatchTypeException(context);
+                throw new ComparisonInvalidMatchTypeException(context);
             }
 
             return Expression.Lambda<Func<T, bool>>(Expression.LessThan(
@@ -341,27 +342,27 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="context"></param>
-        /// <param name="namingStrategy"></param>
+        /// <param name="jsonNamingPolicy"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetLeExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
             if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
-                throw new QueryComparisonInvalidComparatorSelectionException(context);
+                throw new ComparisonInvalidComparatorSelectionException(context);
             }
 
-            var value = GetUniqueValue<T>(parameter, expressionValue, context, namingStrategy);
+            var value = GetUniqueValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
             var expression = value is ExpressionValue valueExp1
                 ? valueExp1.Expression
                 : Expression.Constant(value, expressionValue.Property.PropertyType);
             if (value is ExpressionValue valueExp2 &&
                 valueExp2.Property.PropertyType != expressionValue.Property.PropertyType)
             {
-                throw new QueryComparisonInvalidMatchTypeException(context);
+                throw new ComparisonInvalidMatchTypeException(context);
             }
 
             return Expression.Lambda<Func<T, bool>>(Expression.LessThanOrEqual(
@@ -374,27 +375,27 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="context"></param>
-        /// <param name="namingStrategy"></param>
+        /// <param name="jsonNamingPolicy"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetGtExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
             if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
-                throw new QueryComparisonInvalidComparatorSelectionException(context);
+                throw new ComparisonInvalidComparatorSelectionException(context);
             }
 
-            var value = GetUniqueValue<T>(parameter, expressionValue, context, namingStrategy);
+            var value = GetUniqueValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
             var expression = value is ExpressionValue valueExp1
                 ? valueExp1.Expression
                 : Expression.Constant(value, expressionValue.Property.PropertyType);
             if (value is ExpressionValue valueExp2 &&
                 valueExp2.Property.PropertyType != expressionValue.Property.PropertyType)
             {
-                throw new QueryComparisonInvalidMatchTypeException(context);
+                throw new ComparisonInvalidMatchTypeException(context);
             }
 
             return Expression.Lambda<Func<T, bool>>(Expression.GreaterThan(
@@ -404,7 +405,7 @@ namespace RSql4Net.Models.Queries
 
         private static ExpressionValue GetSelector<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy)
+            JsonNamingPolicy jsonNamingPolicy)
         {
             if (parameter == null)
             {
@@ -416,10 +417,10 @@ namespace RSql4Net.Models.Queries
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (!ExpressionValue.TryParse<T>(parameter, context.selector().GetText(), namingStrategy,
+            if (!ExpressionValue.TryParse<T>(parameter, context.selector().GetText(), jsonNamingPolicy,
                 out var expressionValue))
             {
-                throw new QueryComparisonUnknownSelectorException(context);
+                throw new ComparisonUnknownSelectorException(context);
             }
 
             return expressionValue;
@@ -430,20 +431,20 @@ namespace RSql4Net.Models.Queries
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="context"></param>
-        /// <param name="namingStrategy"></param>
+        /// <param name="jsonNamingPolicy"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetGeExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
             if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
             {
-                throw new QueryComparisonInvalidComparatorSelectionException(context);
+                throw new ComparisonInvalidComparatorSelectionException(context);
             }
 
-            var value = GetUniqueValue<T>(parameter, expressionValue, context, namingStrategy);
+            var value = GetUniqueValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
 
             var expression = value is ExpressionValue valueExp1
                 ? valueExp1.Expression
@@ -451,7 +452,7 @@ namespace RSql4Net.Models.Queries
             if (value is ExpressionValue valueExp2 &&
                 valueExp2.Property.PropertyType != expressionValue.Property.PropertyType)
             {
-                throw new QueryComparisonInvalidMatchTypeException(context);
+                throw new ComparisonInvalidMatchTypeException(context);
             }
 
             return Expression.Lambda<Func<T, bool>>(Expression.GreaterThanOrEqual(
@@ -465,23 +466,23 @@ namespace RSql4Net.Models.Queries
         /// <returns></returns>
         private static Expression<Func<T, bool>> GetLkExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
             if (expressionValue.Property.PropertyType != typeof(string))
             {
-                throw new QueryComparisonInvalidComparatorSelectionException(context);
+                throw new ComparisonInvalidComparatorSelectionException(context);
             }
 
             var values = RSqlQueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
             if (!values.Any())
             {
-                throw new QueryComparisonNotEnoughArgumentException(context);
+                throw new ComparisonNotEnoughArgumentException(context);
             }
 
             if (values.Count > 1)
             {
-                throw new QueryComparisonTooManyArgumentException(context);
+                throw new ComparisonTooManyArgumentException(context);
             }
 
             var criteria = Convert.ToString(values[0]);
@@ -518,10 +519,10 @@ namespace RSql4Net.Models.Queries
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetInExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var expressionValue = GetSelector<T>(parameter, context, namingStrategy);
-            var values = GetMultipleValue(parameter, expressionValue, context);
+            var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
+            var values = GetMultipleValue(expressionValue, context);
             var methodContainsInfo =
                 QueryReflectionHelper.GetOrRegistryContainsMethodInfo(expressionValue.Property.PropertyType);
 
@@ -538,7 +539,7 @@ namespace RSql4Net.Models.Queries
         /// <returns></returns>
         public static Expression<Func<T, bool>> GetOutExpression<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy namingStrategy = null)
         {
             if (parameter == null)
             {

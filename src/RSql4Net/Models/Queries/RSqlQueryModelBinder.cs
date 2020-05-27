@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using RSql4Net.Configurations;
 
 namespace RSql4Net.Models.Queries
@@ -12,9 +14,11 @@ namespace RSql4Net.Models.Queries
     public class RSqlQueryModelBinder<T> : IModelBinder where T: class
     {
         private readonly Settings _settings;
+        private readonly IOptions<JsonOptions> _options;
 
-        public RSqlQueryModelBinder(Settings settings)
+        public RSqlQueryModelBinder(Settings settings,IOptions<JsonOptions> options)
         {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
@@ -41,7 +45,7 @@ namespace RSql4Net.Models.Queries
         public IRSqlQuery<T> Build(IQueryCollection queryCollection)
         {
             if (
-                !queryCollection.TryGetValue(_settings.QueryField, out var query) ||
+                !queryCollection.TryGetValue(_options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.QueryField), out var query) ||
                 string.IsNullOrWhiteSpace(query.FirstOrDefault()))
             {
                 return  new RSqlQuery<T>(RSqlQueryExpressionHelper.True<T>());
@@ -63,7 +67,7 @@ namespace RSql4Net.Models.Queries
             var commonTokenStream = new CommonTokenStream(lexer);
             var parser = new RSqlQueryParser(commonTokenStream);
             var or = parser.or();
-            var visitor = new RSqlDefaultQueryVisitor<T>(_settings.NamingStrategy);
+            var visitor = new RSqlDefaultQueryVisitor<T>(_options.Value.JsonSerializerOptions.PropertyNamingPolicy);
             var value = visitor.Visit(or);
             var result = new RSqlQuery<T>(value);
             if (_settings.QueryCache == null)

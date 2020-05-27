@@ -1,6 +1,5 @@
-﻿using System;
-using FluentAssertions;
-using RSql4Net.Configurations;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using RSql4Net.Models.Paging;
 using Xunit;
 
@@ -10,18 +9,10 @@ namespace RSql4Net.Tests.Models.Paging
     public class PageableModelBinderProviderTest
     {
         [Fact]
-        public void ShouldBeThrowArgumentNullException()
-        {
-            this.Invoking((a) => new RSqlPageableModelBinderProvider(null))
-                .Should()
-                .Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void ShouldBetNotPageableModelBinder()
         {
             var modelBinderProviderContextMock = new MockModelBinderProviderContext(typeof(string));
-            var pageableModelBinderProvider = new RSqlPageableModelBinderProvider(new Settings());
+            var pageableModelBinderProvider = new RSqlPageableModelBinderProvider();
             var expected = pageableModelBinderProvider.GetBinder(modelBinderProviderContextMock);
             expected
                 .Should()
@@ -32,22 +23,22 @@ namespace RSql4Net.Tests.Models.Paging
         public void ShouldBeWithClassPageableModelBinder()
         {
             var modelBinderProviderContextMock = new MockModelBinderProviderContext(typeof(RSqlPageable<string>));
-            var pageableModelBinderProvider = new RSqlPageableModelBinderProvider(new Settings());
+            var pageableModelBinderProvider = new RSqlPageableModelBinderProvider();
             var expected = pageableModelBinderProvider.GetBinder(modelBinderProviderContextMock);
             expected
                 .Should()
-                .BeOfType<RSqlPageableModelBinder<string>>();
+                .BeOfType<BinderTypeModelBinder>();
         }
 
         [Fact]
-        public void ShouldBeWithIntefacePageableModelBinder()
+        public void ShouldBeWithInterfacePageableModelBinder()
         {
             var modelBinderProviderContextMock = new MockModelBinderProviderContext(typeof(IRSqlPageable<string>));
-            var pageableModelBinderProvider = new RSqlPageableModelBinderProvider(new Settings());
+            var pageableModelBinderProvider = new RSqlPageableModelBinderProvider();
             var expected = pageableModelBinderProvider.GetBinder(modelBinderProviderContextMock);
             expected
                 .Should()
-                .BeOfType<RSqlPageableModelBinder<string>>();
+                .BeOfType<BinderTypeModelBinder>();
         }
     }
 }

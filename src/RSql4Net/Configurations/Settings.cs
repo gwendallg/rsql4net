@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json.Serialization;
 
 namespace RSql4Net.Configurations
 {
@@ -36,21 +35,13 @@ namespace RSql4Net.Configurations
 
         /// <summary>
         /// </summary>
-        public Settings() : this(new DefaultNamingStrategy())
-        {
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="namingStrategy"></param>
-        public Settings(NamingStrategy namingStrategy)
+        public Settings()
         {
             PageSizeField = CDefaultPageSizeFieldName;
             PageNumberField = CDefaultPageNumberFieldName;
             PageSize = CDefaultPageSize;
             SortField = CDefaultSortFieldName;
             QueryField = CDefaultQueryFieldName;
-            NamingStrategy = namingStrategy ?? throw new ArgumentNullException(nameof(namingStrategy));
         }
 
         /// <summary>
@@ -83,12 +74,6 @@ namespace RSql4Net.Configurations
         /// <value>The size of the page.</value>
         public int PageSize { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the naming strategy.
-        /// </summary>
-        /// <value>The naming strategy.</value>
-        public NamingStrategy NamingStrategy { get; }
-        
         /// <summary>
         ///     Gets or sets the query cache.
         /// </summary>

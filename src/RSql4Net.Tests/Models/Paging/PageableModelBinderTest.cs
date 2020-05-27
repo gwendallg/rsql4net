@@ -5,8 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Primitives;
-using RSql4Net.Configurations;
 using RSql4Net.Models.Paging;
 using Xunit;
 
@@ -17,7 +15,11 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeThrowArgumentNullException()
         {
-            this.Invoking((a) => new RSqlPageableModelBinder<Customer>(null))
+            this.Invoking((a) => new RSqlPageableModelBinder<Customer>(null, Helper.JsonOptions()))
+                .Should()
+                .Throw<ArgumentNullException>();
+            
+            this.Invoking((a) => new RSqlPageableModelBinder<Customer>(Helper.Settings(), null))
                 .Should()
                 .Throw<ArgumentNullException>();
         }
@@ -25,14 +27,12 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public async void ShouldBeBindModelAsyncTest()
         {
-            var queryCollection = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("PageSize", new StringValues("1")),
-                        new KeyValuePair<string, StringValues>("PageNumber", new StringValues("2")),
-                        new KeyValuePair<string, StringValues>("Sort", new StringValues("Name;desc,BirthDate"))
-                    }
-                ));
+            var queryCollection = Helper.QueryCollection
+            (
+                "pageSize", "1",
+                "pageNumber", "2",
+                "sort", "name;desc,birthDate"
+            );
 
             var context = new DefaultHttpContext();
             context.Request.Query = queryCollection;
@@ -41,22 +41,23 @@ namespace RSql4Net.Tests.Models.Paging
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
+           
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
             await pageableModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result.Model as IRSqlPageable<Customer>;
 
             expected.Should().NotBeNull();
 
-            expected
-                .PageNumber().Should().Be(2);
+            expected.PageNumber()
+                .Should().Be(2);
 
             expected
                 .PageSize().Should().Be(1);
 
             expected
                 .Sort().Should().NotBeNull();
-
+           
             mock.ModelState
                 .IsValid.Should().BeTrue();
         }
@@ -64,14 +65,12 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public async void ShouldBeBindModelAsyncWithModelErrorTest()
         {
-            var queryCollection = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("PageSize", new StringValues("a")),
-                        new KeyValuePair<string, StringValues>("PageNumber", new StringValues("2")),
-                        new KeyValuePair<string, StringValues>("Sort", new StringValues("Name;desc,BirthDate"))
-                    }
-                ));
+            var queryCollection = Helper.QueryCollection
+            (
+                "pageSize", "a",
+                "pageNumber", "2",
+                "sort", "name;desc,birthDate"
+            );
 
             var context = new DefaultHttpContext();
             context.Request.Query = queryCollection;
@@ -80,7 +79,7 @@ namespace RSql4Net.Tests.Models.Paging
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
             await pageableModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result;
@@ -95,15 +94,15 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeIsValid()
         {
-            var queryCollection = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("PageSize", new StringValues("1")),
-                        new KeyValuePair<string, StringValues>("PageNumber", new StringValues("2")),
-                        new KeyValuePair<string, StringValues>("Sort", new StringValues("Name;desc,BirthDate"))
-                    }
-                ));
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
+
+            var queryCollection = Helper.QueryCollection
+            (
+                "pageSize", "1",
+                "pageNumber", "2",
+                "sort", "name;desc,birthDate"
+            );
+            
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
             var expected = pageableModelBinder.Build(queryCollection);
 
             // exp
@@ -112,32 +111,29 @@ namespace RSql4Net.Tests.Models.Paging
             expected
                 .PageSize().Should().Be(1);
 
-            // expected on sort orderby
+            // expected on sort order by
             var order = new List<Expression<Func<Customer, object>>>(expected.Sort().OrderBy);
 
-            Assert.True(order.Count == 1);
-            Assert.True(((MemberExpression)((UnaryExpression)order[0].Body).Operand).Member.Name == "BirthDate");
+            order.Count
+                .Should().Be(1);
+
+            ((MemberExpression)((UnaryExpression)order[0].Body).Operand).Member.Name
+                .Should().Be("BirthDate");
 
             order = new List<Expression<Func<Customer, object>>>(expected.Sort().OrderDescendingBy);
-            Assert.True(((MemberExpression)((UnaryExpression)order[0].Body).Operand).Member.Name == "Name");
-            Assert.True(order.Count == 1);
+            order.Count
+                .Should().Be(1);
+            ((MemberExpression)((UnaryExpression)order[0].Body).Operand).Member.Name
+                .Should().Be("Name");
         }
 
         [Fact]
         public void ShouldBeValidPageNumber()
         {
-            var pageNumber = 10;
-
-            var queryColletion = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("PageNumber",
-                            new StringValues(Convert.ToString(pageNumber)))
-                    }
-                ));
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
-            var expected = pageableModelBinder.Build(queryColletion);
-
+            const int pageNumber = 10;
+            var queryCollection = Helper.QueryCollection("pageNumber", Convert.ToString(pageNumber));
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var expected = pageableModelBinder.Build(queryCollection);
             expected.PageNumber()
                 .Should().Be(pageNumber);
         }
@@ -145,16 +141,10 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeValidPageSize()
         {
-            var pageSize = 10;
-
-            var queryColletion = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("PageSize", new StringValues(Convert.ToString(pageSize)))
-                    }
-                ));
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(new Settings());
-            var expected = pageableModelBinder.Build(queryColletion);
+            const int pageSize = 10;
+            var queryCollection = Helper.QueryCollection("pageSize", Convert.ToString(pageSize));
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var expected = pageableModelBinder.Build(queryCollection);
 
             expected.PageSize()
                 .Should().Be(pageSize);

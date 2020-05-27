@@ -1,13 +1,11 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Moq;
-using RSql4Net.Configurations;
 using RSql4Net.Models.Paging;
 using RSql4Net.Models.Queries;
 using RSql4Net.SwaggerGen;
@@ -22,7 +20,7 @@ namespace RSql4Net.Tests.SwaggerGen
         [Fact]
         public void ShouldBeThrowArgumentNullException()
         {
-            this.Invoking(a => new RSqlOperationFilter(null))
+            this.Invoking(a => new RSqlOperationFilter(null, Helper.JsonOptions()))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -43,10 +41,11 @@ namespace RSql4Net.Tests.SwaggerGen
 
             var openApiOperation = new OpenApiOperation();
             openApiOperation.Parameters.Add(new OpenApiParameter() {Name = "query"});
+
+            var settings = Helper.Settings();
+            var option = Helper.JsonOptions();
             
-            var settings=new Settings();
-            
-            var operationFilter = new RSqlOperationFilter(settings);
+            var operationFilter = new RSqlOperationFilter(settings, Helper.JsonOptions());
             operationFilter.Apply(openApiOperation, operationFilterContext);
 
             // one parameter
@@ -61,12 +60,12 @@ namespace RSql4Net.Tests.SwaggerGen
             
             // Name = settings.QueryField
             expected.Name
-                .Should().Be(settings.QueryField);
+                .Should().Be(option.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(settings.QueryField));
             // schema = string
             expected.Schema.Type
                 .Should().Be("string");
         }
-        
+
         [Fact]
         public void ShouldBeWithPageableParameter()
         {
@@ -81,10 +80,11 @@ namespace RSql4Net.Tests.SwaggerGen
 
             var openApiOperation = new OpenApiOperation();
             openApiOperation.Parameters.Add(new OpenApiParameter() {Name = "pageable"});
+
+            var settings = Helper.Settings();
+            var option = Helper.JsonOptions();
             
-            var settings=new Settings();
-            
-            var operationFilter = new RSqlOperationFilter(settings);
+            var operationFilter = new RSqlOperationFilter(settings,option);
             operationFilter.Apply(openApiOperation, operationFilterContext);
 
             // one parameter
@@ -92,7 +92,7 @@ namespace RSql4Net.Tests.SwaggerGen
                 .Should().Be(3);
 
             // pageSize
-            var expected = openApiOperation.Parameters.SingleOrDefault(p => p.Name == settings.PageSizeField);
+            var expected = openApiOperation.Parameters.SingleOrDefault(p => p.Name == option.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(settings.PageSizeField));
             expected.In
                 .Should().Be(ParameterLocation.Query);
             // schema = number
@@ -103,7 +103,7 @@ namespace RSql4Net.Tests.SwaggerGen
                 .Should().Be(settings.PageSize);
             
             // pageNumber
-            expected = openApiOperation.Parameters.SingleOrDefault(p => p.Name == settings.PageNumberField);
+            expected = openApiOperation.Parameters.SingleOrDefault(p => p.Name == option.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(settings.PageNumberField));
             expected.In
                 .Should().Be(ParameterLocation.Query);
             // schema = number
@@ -114,7 +114,7 @@ namespace RSql4Net.Tests.SwaggerGen
                 .Should().Be(0);
             
             // sort
-            expected = openApiOperation.Parameters.SingleOrDefault(p => p.Name == settings.SortField);
+            expected = openApiOperation.Parameters.SingleOrDefault(p => p.Name == option.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(settings.SortField));
             expected.In
                 .Should().Be(ParameterLocation.Query);
             // schema = number

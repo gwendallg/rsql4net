@@ -20,7 +20,9 @@ RSql4Net is AspNet Core extension that will make it easier for you to write your
 
 2. Quick start
 
-3. Samples
+3. Documentation
+
+4. Samples
 
 ## Installation
 
@@ -32,20 +34,21 @@ dotnet add package RSql4Net
 
 ## Quick Start
 
-1. Add a reference to the NuGet RSql4Net package in your project.
+1. Add the RSql4Ndt nuget packahe in your project.
 
-2. Modify Startup class in your project
+2. Modify Startup.cs class in your project to add the RSql Extension
 
 ```csharp
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            ...
-            services
-                .AddRSql();
-            ...
-        }
+    public void ConfigureServices(IServiceCollection services)
+    {
+        ...
+        services
+            .AddControllers()
+            .AddRSql();
+        ...
+    }
+
 ```
 
 3. Add a new operation in your mvc controller
@@ -66,7 +69,70 @@ dotnet add package RSql4Net
 
 ```
 
-4. Use for filter your data
+## Documentation
+
+### Customize query string parameter names
+
+To change query string parameter names, you would modify the RSql configuration.
+
+```csharp
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        ...
+        services
+            .AddControllers()
+            .AddRSql(
+                options =>
+                    options
+                        // change the query string parameter name for RSql query field
+                        .QueryField("q")
+                        // change the query string parameter name for page size field
+                        .PageSizeField("si")
+                        // change the query string parameter name for page number field
+                        .PageNumberField("of")
+                        // change the query string parameter name for default page size
+                        .PageSize(50)
+            );
+        ...
+    }
+```
+
+### Add Memory cache for RSql queries
+
+To add a cache Memory for RSqk quries, you would modify the RSql configuration.
+
+```csharp
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        ...
+
+        // create the memory cache
+        var memoryCache = new MemoryCache(
+            new MemoryCacheOptions()
+            {
+                SizeLimit = 1024
+            }
+        );
+
+        services
+            .AddRSql(
+                options =>
+                    // define the memory cache used for RSql queries
+                    .QueryCache(memoryCache)
+                    // invoked when register a new Rsql query in memory cache
+                    .OnCreateCacheEntry((o) =>
+                    {
+                        o.Size = 1024;
+                        o.SlidingExpiration = TimeSpan.FromSeconds(25);
+                        o.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                    })
+            );
+        ...
+```
+
+1. Use for filter your data
 
 Examples of RSql expressions in both FIQL-like:
 

@@ -2,13 +2,13 @@
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public class LogicalOperatorTest : CommonQueryTest
+    public class LogicalOperatorTest
     {
         [Fact]
         public void AndSimpleTest()
         {
-            var query = "Int32P<0;StringP==a";
-            var expected = BuildFunction(query);
+            const string query = "int32P<0;stringP==a";
+            var expected = Helper.Function<MockQuery>(query);
 
             var mock = new MockQuery {Int32P = -1, StringP = "b"};
             Assert.True(!expected(mock));
@@ -26,8 +26,8 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void OrShouldBeIsAndExpressionWithGroupTest()
         {
-            var query = "(Int32P<0,StringP==a);(Int16NullP=is-null=true)";
-            var expected = BuildFunction(query);
+            const string query = "(int32P<0,stringP==a);(int16NullP=is-null=true)";
+            var expected = Helper.Function<MockQuery>(query);
 
             var mock = new MockQuery {Int32P = -1, StringP = "a"};
             Assert.True(expected(mock));
@@ -45,8 +45,8 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void OrShouldBeOrExpressionWithGroupTest()
         {
-            var query = "(Int32P<0,StringP==a),(Int16NullP=is-null=true)";
-            var expected = BuildFunction(query);
+            const string query = "(int32P<0,stringP==a),(int16NullP=is-null=true)";
+            var expected = Helper.Function<MockQuery>(query);
 
             var mock = new MockQuery {Int32P = -1, StringP = "a"};
             Assert.True(expected(mock));
@@ -67,8 +67,8 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void ShouldBeOrExpression()
         {
-            var query = "Int32P<0,StringP==a";
-            var expected = BuildFunction(query);
+            var query = "int32P<0,stringP==a";
+            var expected = Helper.Function<MockQuery>(query);
 
             var mock = new MockQuery {Int32P = -1, StringP = "b"};
             Assert.True(expected(mock));

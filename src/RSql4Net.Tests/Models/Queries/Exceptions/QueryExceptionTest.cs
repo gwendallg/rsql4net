@@ -7,7 +7,7 @@ using RSql4Net.Models.Queries;
 
 namespace RSql4Net.Tests.Models.Queries.Exceptions
 {
-    public abstract class CommonQueryExceptionTest : CommonQueryTest
+    public abstract class QueryExceptionTest 
     {
         protected void OnShouldBeSerializable<T>() where T : Exception
         {

@@ -1,8 +1,6 @@
 using System;
-using System.Linq.Expressions;
+using System.Text.Json;
 using FluentAssertions;
-using Newtonsoft.Json.Serialization;
-using RSql4Net.Models;
 using RSql4Net.Models.Queries;
 using Xunit;
 
@@ -18,7 +16,7 @@ namespace RSql4Net.Tests.Models.Queries
             this.Invoking(a => RSqlQueryExpressionHelper.GetAndExpression<Customer>(null, context))
                 .Should().Throw<ArgumentNullException>();
             
-            var visitor = new RSqlDefaultQueryVisitor<Customer>(new CamelCaseNamingStrategy());
+            var visitor = new RSqlDefaultQueryVisitor<Customer>(JsonNamingPolicy.CamelCase);
             // context = null
             this.Invoking(a => RSqlQueryExpressionHelper.GetAndExpression<Customer>(visitor, null))
                 .Should().Throw<ArgumentNullException>();
@@ -32,7 +30,7 @@ namespace RSql4Net.Tests.Models.Queries
             this.Invoking(a => RSqlQueryExpressionHelper.GetOrExpression<Customer>(null, context))
                 .Should().Throw<ArgumentNullException>();
             
-            var visitor = new RSqlDefaultQueryVisitor<Customer>(new CamelCaseNamingStrategy());
+            var visitor = new RSqlDefaultQueryVisitor<Customer>(JsonNamingPolicy.CamelCase);
             // context = null
             this.Invoking(a => RSqlQueryExpressionHelper.GetOrExpression<Customer>(visitor, null))
                 .Should().Throw<ArgumentNullException>();

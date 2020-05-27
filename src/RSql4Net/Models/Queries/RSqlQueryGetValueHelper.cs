@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.Json;
 using System.Threading;
-using Newtonsoft.Json.Serialization;
 using RSql4Net.Models.Queries.Exceptions;
 
 namespace RSql4Net.Models.Queries
@@ -191,7 +191,7 @@ namespace RSql4Net.Models.Queries
                         }
                         catch (Exception e)
                         {
-                            throw new QueryValueInvalidConversionException(valueContext, enumType, e);
+                            throw new InvalidConversionException(valueContext, enumType, e);
                         }
                     }
                 )
@@ -271,7 +271,7 @@ namespace RSql4Net.Models.Queries
 
         public static object GetValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (parameter == null)
             {
@@ -290,62 +290,62 @@ namespace RSql4Net.Models.Queries
 
             if (expressionValue.Property.PropertyType == typeof(string))
             {
-                return GetString<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetString<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsShort(expressionValue.Property.PropertyType))
             {
-                return GetShort<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetShort<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsInt(expressionValue.Property.PropertyType))
             {
-                return GetInt<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetInt<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsLong(expressionValue.Property.PropertyType))
             {
-                return GetLong<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetLong<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsFloat(expressionValue.Property.PropertyType))
             {
-                return GetFloat<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetFloat<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsDouble(expressionValue.Property.PropertyType))
             {
-                return GetDouble<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetDouble<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsDecimal(expressionValue.Property.PropertyType))
             {
-                return GetDecimal<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetDecimal<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsBool(expressionValue.Property.PropertyType))
             {
-                return GetBoolean<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetBoolean<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsDateTime(expressionValue.Property.PropertyType))
             {
-                return GetDateTime<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetDateTime<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsDateTimeOffset(expressionValue.Property.PropertyType))
             {
-                return GetDateTimeOffset<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetDateTimeOffset<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsByte(expressionValue.Property.PropertyType))
             {
-                return GetByte<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetByte<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsChar(expressionValue.Property.PropertyType))
             {
-                return GetChar<T>(parameter, context.arguments().value()[0], namingStrategy);
+                return GetChar<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsEnum(expressionValue.Property.PropertyType))
@@ -363,7 +363,7 @@ namespace RSql4Net.Models.Queries
         /// <param name="valueContext"></param>
         /// <param name="enumType"></param>
         /// <returns></returns>
-        /// <exception cref="QueryValueInvalidConversionException"></exception>
+        /// <exception cref="InvalidConversionException"></exception>
         private static object GetEnum(RSqlQueryParser.ValueContext valueContext,
             Type enumType)
         {
@@ -374,13 +374,13 @@ namespace RSql4Net.Models.Queries
             }
             catch
             {
-                throw new QueryValueInvalidConversionException(valueContext, enumType);
+                throw new InvalidConversionException(valueContext, enumType);
             }
         }
 
         private static object GetString<T>(ParameterExpression parameter,
             RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (valueContext.single_quote() != null || valueContext.double_quote() != null)
             {
@@ -391,7 +391,7 @@ namespace RSql4Net.Models.Queries
                     : value.Substring(1, value.Length - 2).Replace("\\" + replace, replace);
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var expression))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
             {
                 return expression;
             }
@@ -401,91 +401,91 @@ namespace RSql4Net.Models.Queries
 
         private static object GetChar<T>(ParameterExpression parameter,
             RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (char.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var expression))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
             {
                 return expression;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(char));
+            throw new InvalidConversionException(valueContext, typeof(char));
         }
 
         private static object GetByte<T>(ParameterExpression parameter,
             RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (byte.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var expression))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
             {
                 return expression;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(byte));
+            throw new InvalidConversionException(valueContext, typeof(byte));
         }
 
         private static object GetShort<T>(ParameterExpression parameter,
             RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (short.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var expression))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
             {
                 return expression;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(short));
+            throw new InvalidConversionException(valueContext, typeof(short));
         }
 
         private static object GetInt<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (int.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
             {
                 return value;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(int));
+            throw new InvalidConversionException(valueContext, typeof(int));
         }
 
         private static object GetLong<T>(ParameterExpression parameter,
             RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (long.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
             {
                 return value;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(long));
+            throw new InvalidConversionException(valueContext, typeof(long));
         }
 
         private static object GetFloat<T>(ParameterExpression parameter,
             RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (float.TryParse(
                 valueContext.GetText().Replace(".",
@@ -494,16 +494,16 @@ namespace RSql4Net.Models.Queries
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
             {
                 return value;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(float));
+            throw new InvalidConversionException(valueContext, typeof(float));
         }
 
         private static object GetDouble<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (double.TryParse(
                 valueContext.GetText().Replace(".",
@@ -512,16 +512,16 @@ namespace RSql4Net.Models.Queries
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
             {
                 return value;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(double));
+            throw new InvalidConversionException(valueContext, typeof(double));
         }
 
         private static object GetDecimal<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (decimal.TryParse(
                 valueContext.GetText().Replace(".",
@@ -530,32 +530,32 @@ namespace RSql4Net.Models.Queries
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
             {
                 return value;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(decimal));
+            throw new InvalidConversionException(valueContext, typeof(decimal));
         }
 
         private static object GetBoolean<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             if (bool.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
             {
                 return value;
             }
 
-            throw new QueryValueInvalidConversionException(valueContext, typeof(bool));
+            throw new InvalidConversionException(valueContext, typeof(bool));
         }
 
         private static object GetDateTime<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             try
             {
@@ -564,17 +564,17 @@ namespace RSql4Net.Models.Queries
             }
             catch
             {
-                if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+                if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
                 {
                     return value;
                 }
 
-                throw new QueryValueInvalidConversionException(valueContext, typeof(DateTime));
+                throw new InvalidConversionException(valueContext, typeof(DateTime));
             }
         }
 
         private static object GetDateTimeOffset<T>(ParameterExpression parameter, RSqlQueryParser.ValueContext valueContext,
-            NamingStrategy namingStrategy = null)
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
             try
             {
@@ -583,12 +583,12 @@ namespace RSql4Net.Models.Queries
             }
             catch
             {
-                if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), namingStrategy, out var value))
+                if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var value))
                 {
                     return value;
                 }
 
-                throw new QueryValueInvalidConversionException(valueContext, typeof(DateTimeOffset));
+                throw new InvalidConversionException(valueContext, typeof(DateTimeOffset));
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json.Serialization;
 using RSql4Net.Configurations;
 using RSql4Net.Configurations.Exceptions;
 using RSql4Net.Models.Paging.Exceptions;
@@ -33,13 +32,10 @@ namespace RSql4Net.Tests.Configuration
                 .PageSize(2)
                 .PageSizeFieldName("b")
                 .QueryFieldName("c")
-                .SortFieldName("d")
-                .NamingStrategy(new SnakeCaseNamingStrategy());
+                .SortFieldName("d");
 
             var expected = builder.Build();
 
-            expected
-                .NamingStrategy.Should().BeOfType<SnakeCaseNamingStrategy>();
             expected
                 .PageNumberField.Should().Be("a");
             expected
@@ -57,8 +53,6 @@ namespace RSql4Net.Tests.Configuration
         {
             var expected = new SettingsBuilder().Build();
 
-            expected
-                .NamingStrategy.Should().BeOfType<DefaultNamingStrategy>();
             expected
                 .PageNumberField.Should().Be(Settings.CDefaultPageNumberFieldName);
             expected

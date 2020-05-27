@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using RSql4Net.Configurations;
@@ -16,6 +18,7 @@ namespace RSql4Net.SwaggerGen
     public class RSqlOperationFilter : IOperationFilter
     {
         private readonly Settings _settings;
+        private readonly IOptions<JsonOptions> _options;
 
         /// <summary>
         /// is query type
@@ -38,8 +41,10 @@ namespace RSql4Net.SwaggerGen
         /// create instance of
         /// </summary>
         /// <param name="settings"></param>
-        public RSqlOperationFilter(Settings settings)
+        /// <param name="options"></param>
+        public RSqlOperationFilter(Settings settings, IOptions<JsonOptions> options)
         {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
         
@@ -66,7 +71,7 @@ namespace RSql4Net.SwaggerGen
             parameter = new OpenApiParameter
             {
                 In = ParameterLocation.Query,
-                Name = _settings.QueryField,
+                Name = _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.QueryField),
                 Schema = new OpenApiSchema() {Type = "string"}
             };
             operation.Parameters.Add(parameter);
@@ -80,7 +85,7 @@ namespace RSql4Net.SwaggerGen
             parameter = new OpenApiParameter
             {
                 In = ParameterLocation.Query,
-                Name = _settings.PageNumberField,
+                Name = _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.PageNumberField),
                 Schema = new OpenApiSchema()
                 {
                     Type = "number", Default = new OpenApiInteger(0), Description = "Page number"
@@ -91,7 +96,7 @@ namespace RSql4Net.SwaggerGen
             parameter = new OpenApiParameter
             {
                 In = ParameterLocation.Query,
-                Name = _settings.PageSizeField,
+                Name = _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.PageSizeField),
                 Schema = new OpenApiSchema()
                 {
                     Type = "number", Default = new OpenApiInteger(_settings.PageSize), Description = "Page size"
@@ -102,7 +107,7 @@ namespace RSql4Net.SwaggerGen
             parameter = new OpenApiParameter
             {
                 In = ParameterLocation.Query,
-                Name = _settings.SortField,
+                Name = _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.SortField),
                 Schema = new OpenApiSchema()
                 {
                     Type = "array", Items = new OpenApiSchema() {Type = "string", Description = "Sort"}

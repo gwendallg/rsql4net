@@ -4,15 +4,15 @@ using System.Runtime.Serialization;
 namespace RSql4Net.Models.Queries.Exceptions
 {
     [Serializable]
-    public class QueryComparisonUnknownComparatorException : QueryComparisonException
+    public class ComparisonUnknownComparatorException : ComparisonException
     {
-        public QueryComparisonUnknownComparatorException(RSqlQueryParser.ComparisonContext origin,
+        public ComparisonUnknownComparatorException(RSqlQueryParser.ComparisonContext origin,
             Exception innerException = null) : base(origin,
             $"Unknown comparator : {origin?.comparator()?.GetText()}", innerException)
         {
         }
 
-        protected QueryComparisonUnknownComparatorException(SerializationInfo info, StreamingContext context) : base(
+        protected ComparisonUnknownComparatorException(SerializationInfo info, StreamingContext context) : base(
             info, context)
         {
         }

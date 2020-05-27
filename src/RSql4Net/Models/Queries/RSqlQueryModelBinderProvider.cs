@@ -1,18 +1,11 @@
-﻿using System;
+﻿
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using RSql4Net.Configurations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace RSql4Net.Models.Queries
 {
     public class RSqlQueryModelBinderProvider : IModelBinderProvider
     {
-        private readonly Settings _settings;
-
-        public RSqlQueryModelBinderProvider(Settings settings)
-        {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-        }
-
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
             if (!context.Metadata.ModelType.IsGenericType ||
@@ -24,7 +17,7 @@ namespace RSql4Net.Models.Queries
 
             var entityType = context.Metadata.ModelType.GetGenericArguments()[0];
             var modelBinderType = typeof(RSqlQueryModelBinder<>).MakeGenericType(entityType);
-            return (IModelBinder)Activator.CreateInstance(modelBinderType, _settings);
+            return new BinderTypeModelBinder(modelBinderType);
         }
     }
 }

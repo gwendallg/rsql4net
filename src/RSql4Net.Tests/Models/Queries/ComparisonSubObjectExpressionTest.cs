@@ -1,24 +1,24 @@
-﻿using Xunit;
+﻿using FluentAssertions;
+using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public class ComparisonSubObjectExpressionTest : CommonQueryTest
+    public class ComparisonSubObjectExpressionTest
     {
         [Fact]
         public void ShouldBeEquals()
         {
-            // ==
-            var actual = "Param_0 => (Param_0.ChildP.StringP == \"a\")";
-            var query = "ChildP.StringP==a";
-
-            var expected = BuildExpression(query).ToString();
-            Assert.True(actual == expected);
-
+            const string actual = "Param_0 => (Param_0.ChildP.StringP == \"a\")";
+            var query = "childP.stringP==a";
+            var expected = Helper.Expression<MockQuery>(query).ToString();
+            expected
+                .Should().Be(actual);
+          
             // =eq=
-            query = "ChildP.StringP=eq=a";
-
-            expected = BuildExpression(query).ToString();
-            Assert.True(actual == expected);
+            query = "childP.stringP=eq=a";
+            expected = Helper.Expression<MockQuery>(query).ToString();
+            expected
+                .Should().Be(actual);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 
 namespace RSql4Net.Models
 {
@@ -11,13 +11,13 @@ namespace RSql4Net.Models
         public Expression Expression { get; private set; }
 
         public static bool TryParse<T>(ParameterExpression parameter,
-            string selector, NamingStrategy namingStrategy, out ExpressionValue result
+            string selector, JsonNamingPolicy jsonNamingPolicy, out ExpressionValue result
         )
         {
             result = null;
             try
             {
-                result = Parse<T>(parameter, selector, namingStrategy);
+                result = Parse<T>(parameter, selector, jsonNamingPolicy);
                 return result != null;
             }
             catch
@@ -28,7 +28,7 @@ namespace RSql4Net.Models
 
         public static ExpressionValue Parse<T>(ParameterExpression parameter,
             string selector,
-            NamingStrategy namingStrategy)
+            JsonNamingPolicy jsonNamingPolicy)
         {
             if (parameter == null)
             {
@@ -47,7 +47,7 @@ namespace RSql4Net.Models
             {
                 foreach (var item in selector.Split('.'))
                 {
-                    property = QueryReflectionHelper.GetOrRegistryProperty(type, item, namingStrategy);
+                    property = QueryReflectionHelper.GetOrRegistryProperty(type, item, jsonNamingPolicy);
                     if (property == null)
                     {
                         return null;
@@ -59,7 +59,7 @@ namespace RSql4Net.Models
             }
             else
             {
-                property = QueryReflectionHelper.GetOrRegistryProperty(type, selector, namingStrategy);
+                property = QueryReflectionHelper.GetOrRegistryProperty(type, selector, jsonNamingPolicy);
                 if (property == null)
                 {
                     return null;

@@ -1,6 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using RSql4Net.Configurations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace RSql4Net.Models.Paging
 {
@@ -9,18 +8,6 @@ namespace RSql4Net.Models.Paging
     /// </summary>
     public class RSqlPageableModelBinderProvider : IModelBinderProvider
     {
-        private readonly Settings _settings;
-
-        /// <summary>
-        ///     Initializes a new instance of the
-        ///     <see cref="T:RSql4Net.Models.Paging.PageableModelBinderProvider" /> class.
-        /// </summary>
-        /// <param name="settings">Settings.</param>
-        public RSqlPageableModelBinderProvider(Settings settings)
-        {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-        }
-
         /// <summary>
         ///     Gets the binder.
         /// </summary>
@@ -34,10 +21,9 @@ namespace RSql4Net.Models.Paging
             {
                 return null;
             }
-
             var entityType = context.Metadata.ModelType.GetGenericArguments()[0];
             var modelBinderType = typeof(RSqlPageableModelBinder<>).MakeGenericType(entityType);
-            return (IModelBinder)Activator.CreateInstance(modelBinderType, _settings);
+            return new BinderTypeModelBinder(modelBinderType);
         }
     }
 }

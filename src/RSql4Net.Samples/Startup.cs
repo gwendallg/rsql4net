@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using Bogus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,12 +12,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 #endif
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Serialization;
 using RSql4Net.Samples.Models;
 using RSql4Net.SwaggerGen;
 
 namespace RSql4Net.Samples
 {
+    public static class StringUtils
+    {
+        public static string ToSnakeCase(this string str)
+        {
+            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+        }
+    }
+    
+    public class SnakeCaseNamingPolicy : JsonNamingPolicy
+    {
+        public static SnakeCaseNamingPolicy Instance { get; } = new SnakeCaseNamingPolicy();
+
+        public override string ConvertName(string name)
+        {
+            // Conversion to other naming convention goes here. Like SnakeCase, KebabCase etc.
+            return name.ToSnakeCase();
+        }
+    }
+    
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -28,8 +48,6 @@ namespace RSql4Net.Samples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var namingStrategy = new CamelCaseNamingStrategy();
-
             var memoryCache = new MemoryCache(new MemoryCacheOptions()
             {
                 SizeLimit = 1024
@@ -37,9 +55,16 @@ namespace RSql4Net.Samples
             
             services
                 .AddControllers()
+                .AddJsonOptions(options =>
+                    {
+                        options
+                            .JsonSerializerOptions.IgnoreNullValues = true;
+                        options
+                            .JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;
+                    }
+                )
                 .AddRSql(options =>
                     options
-                        .NamingStrategy(namingStrategy)
                         .QueryCache(memoryCache)
                         .OnCreateCacheEntry((o) =>
                         {

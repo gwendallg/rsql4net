@@ -1,29 +1,33 @@
-﻿using RSql4Net.Models.Queries.Exceptions;
+﻿using FluentAssertions;
+using RSql4Net.Models.Queries.Exceptions;
 using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public class ComparisonExceptionTest : CommonQueryTest
+    public class ComparisonExceptionTest 
     {
         [Fact]
-        public void ShoudBeThrowTooManyArgumentException()
+        public void ShouldBeThrowQueryComparisonTooManyArgumentException()
         {
-            var query = "Int32P==(1,3)";
-            Assert.Throws<QueryComparisonTooManyArgumentException>(() => { BuildExpression(query); });
+            const string query = "int32P==(1,3)";
+            this.Invoking(o => Helper.Function<MockQuery>(query))
+                .Should().Throw<ComparisonTooManyArgumentException>();
         }
 
         [Fact]
-        public void ShoudBeThrowUnknownSelectorException()
+        public void ShouldBeThrowQueryComparisonUnknownSelectorException()
         {
-            var query = "Int32==1";
-            Assert.Throws<QueryComparisonUnknownSelectorException>(() => { BuildExpression(query); });
+            const string query = "int32==1";
+            this.Invoking(o => Helper.Function<MockQuery>(query))
+                .Should().Throw<ComparisonUnknownSelectorException>();
         }
 
         [Fact]
-        public void ShouldThrowUnknownComparatorException()
+        public void ShouldThrowQueryComparisonUnknownComparatorException ()
         {
-            var query = "StringP=t=2";
-            Assert.Throws<QueryComparisonUnknownComparatorException>(() => { BuildExpression(query); });
+            const string query = "stringP=t=2";
+            this.Invoking(o => Helper.Function<MockQuery>(query))
+                .Should().Throw<ComparisonUnknownComparatorException >();
         }
     }
 }

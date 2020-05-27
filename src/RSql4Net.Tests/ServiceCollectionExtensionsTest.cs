@@ -26,7 +26,6 @@ namespace RSql4Net.Tests
             expected1.Lifetime
                 .Should().Be(ServiceLifetime.Singleton);
 
-          
         }
     }
 }

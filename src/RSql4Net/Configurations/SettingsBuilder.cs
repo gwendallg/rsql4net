@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json.Serialization;
 using RSql4Net.Configurations.Exceptions;
 using RSql4Net.Models.Paging.Exceptions;
 
@@ -14,7 +13,6 @@ namespace RSql4Net.Configurations
     public class SettingsBuilder
     {
         private readonly Dictionary<string, string> _fieldNames = new Dictionary<string, string>();
-        private NamingStrategy _namingStrategy = new DefaultNamingStrategy();
         private string _pageNumberFieldName = Settings.CDefaultPageNumberFieldName;
         private int _pageSize = Settings.CDefaultPageSize;
         private string _pageSizeFieldName = Settings.CDefaultPageSizeFieldName;
@@ -28,28 +26,17 @@ namespace RSql4Net.Configurations
         /// </summary>
         /// <param name="value">Value.</param>
         /// <param name="fieldName">Field name.</param>
-        /// <param name="namingStrategy">Naming Strategy</param>
-        private string CheckAndRegisterFieldName(string value, string fieldName, NamingStrategy namingStrategy)
+        private string CheckAndRegisterFieldName(string value, string fieldName)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
             if (Regex.Match(value, @"(_)?([A-Za-z0-9]((_)?[A-Za-z0-9])*(_)?)").Value != value)
             {
                 throw new InvalidFormatFieldNameException(fieldName, value);
             }
 
-            var check = namingStrategy.GetPropertyName(value.Trim(), false);
+            var check = value.Trim();
             foreach (var item in _fieldNames.Keys)
             {
-                if (item == fieldName)
-                {
-                    continue;
-                }
-
-                if (_fieldNames[item] == check)
+                if (item != fieldName && _fieldNames[item] == check)
                 {
                     throw new AlreadyFieldNameUsedException(item, value);
                 }
@@ -65,34 +52,23 @@ namespace RSql4Net.Configurations
         /// <returns>The build.</returns>
         public Settings Build()
         {
-            var _settings = new Settings(_namingStrategy);
+            var settings = new Settings();
             _fieldNames.Clear();
-            _settings.PageNumberField =
-                CheckAndRegisterFieldName(_pageNumberFieldName, "PageNumberFieldName", _namingStrategy);
-            _settings.PageSizeField =
-                CheckAndRegisterFieldName(_pageSizeFieldName, "PageSizeFieldName", _namingStrategy);
-            _settings.SortField = CheckAndRegisterFieldName(_sortFieldName, "SortFieldName", _namingStrategy);
-            _settings.QueryField = CheckAndRegisterFieldName(_queryFieldName, "QueryFieldName", _namingStrategy);
+            settings.PageNumberField =
+                CheckAndRegisterFieldName(_pageNumberFieldName, "PageNumberFieldName");
+            settings.PageSizeField =
+                CheckAndRegisterFieldName(_pageSizeFieldName, "PageSizeFieldName");
+            settings.SortField = CheckAndRegisterFieldName(_sortFieldName, "SortFieldName");
+            settings.QueryField = CheckAndRegisterFieldName(_queryFieldName, "QueryFieldName");
             if (_pageSize < 1)
             {
                 throw new OutOfRangePageSizeException(_pageSize);
             }
 
-            _settings.PageSize = _pageSize;
-            _settings.QueryCache = _queryCache;
-            _settings.OnCreateCacheEntry = _onCreateCache;
-            return _settings;
-        }
-
-        /// <summary>
-        ///     configuration of namingstrategy
-        /// </summary>
-        /// <param name="namingStrategy">strategy name</param>
-        /// <returns></returns>
-        public SettingsBuilder NamingStrategy(NamingStrategy namingStrategy)
-        {
-            _namingStrategy = namingStrategy ?? throw new ArgumentNullException(nameof(namingStrategy));
-            return this;
+            settings.PageSize = _pageSize;
+            settings.QueryCache = _queryCache;
+            settings.OnCreateCacheEntry = _onCreateCache;
+            return settings;
         }
 
         /// <summary>
@@ -151,7 +127,7 @@ namespace RSql4Net.Configurations
         }
 
         /// <summary>
-        ///     configuraion of sort field
+        ///     configuration of sort field
         /// </summary>
         /// <param name="sortFieldName"></param>
         /// <returns></returns>

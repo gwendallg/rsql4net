@@ -32,9 +32,9 @@ namespace RSql4Net
             mvcBuilder.AddMvcOptions(c =>
             {
                 c.ModelBinderProviders.Insert(0,
-                    new RSqlPageableModelBinderProvider(settings));
+                    new RSqlPageableModelBinderProvider());
                 c.ModelBinderProviders.Insert(1,
-                    new RSqlQueryModelBinderProvider(settings));
+                    new RSqlQueryModelBinderProvider());
             });
             return mvcBuilder;
         }
