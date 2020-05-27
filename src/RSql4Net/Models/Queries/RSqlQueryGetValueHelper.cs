@@ -197,6 +197,8 @@ namespace RSql4Net.Models.Queries
                 )
                 .ToList();
         }
+        
+        
 
         public static List<object> GetValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
         {
@@ -268,10 +270,7 @@ namespace RSql4Net.Models.Queries
             return IsEnum(type) ? GetEnums(argumentsContext, type) : new List<object>();
         }
 
-
-        public static object GetValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
-            RSqlQueryParser.ComparisonContext context,
-            JsonNamingPolicy jsonNamingPolicy = null)
+        private static void CheckParameters(ParameterExpression parameter, ExpressionValue expressionValue, RSqlQueryParser.ComparisonContext context)
         {
             if (parameter == null)
             {
@@ -287,6 +286,13 @@ namespace RSql4Net.Models.Queries
             {
                 throw new ArgumentNullException(nameof(context));
             }
+        }
+
+        public static object GetValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+            RSqlQueryParser.ComparisonContext context,
+            JsonNamingPolicy jsonNamingPolicy = null)
+        {
+            CheckParameters(parameter, expressionValue, context);
 
             if (expressionValue.Property.PropertyType == typeof(string))
             {

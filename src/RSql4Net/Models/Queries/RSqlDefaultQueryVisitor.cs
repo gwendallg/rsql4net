@@ -114,7 +114,6 @@ namespace RSql4Net.Models.Queries
                 case "=in=":
                     return RSqlQueryExpressionHelper.GetInExpression<T>(_parameter, context, _jsonNamingPolicy);
                 case "=out=":
-                case "=nin=":
                     return RSqlQueryExpressionHelper.GetOutExpression<T>(_parameter, context, _jsonNamingPolicy);
                 default:
                     throw new ComparisonUnknownComparatorException(context);
