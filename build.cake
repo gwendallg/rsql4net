@@ -9,7 +9,7 @@
 #tool nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0
 
 var target = Argument("target", "Report");
-var configuration = Argument("configuration", "debug");
+var configuration = Argument("configuration", "release");
 var lastCommit = GitLogTip("./");
 var nugetApiKey = EnvironmentVariable("NUGET_API_KEY") ?? "";
 var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN") ?? "";

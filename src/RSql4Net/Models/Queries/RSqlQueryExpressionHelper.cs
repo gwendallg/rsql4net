@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
-using Newtonsoft.Json.Serialization;
 using RSql4Net.Models.Queries.Exceptions;
 
 namespace RSql4Net.Models.Queries
