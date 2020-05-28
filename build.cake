@@ -23,8 +23,8 @@ var nugetApiKey = EnvironmentVariable("NUGET_API_KEY") ?? "";
 var nugetSource= "https://api.nuget.org/v3/index.json";
 
 // coverage configuration
-var coverageDirectory = Directory(@".\coverage-results\");
-var artifactDirectory = Directory(@".\artifacts\");
+var coverageDirectory = Directory(@"./coverage-results/");
+var artifactDirectory = Directory(@"./artifacts/");
 var coverageFileName = "coverage.xml";
 
 // coverage report configuration
@@ -173,7 +173,7 @@ Task("Publish-package")
                 ApiKey = nugetApiKey
             };
 
-            var pkgs = GetFiles(artifactDirectory + "*.nupkg");
+            var pkgs = GetFiles("./artifacts/*.nupkg");
             foreach(var pkg in pkgs)
             {
                 Information($"Publishing \"{pkg}\".");
