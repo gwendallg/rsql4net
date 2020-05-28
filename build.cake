@@ -173,7 +173,7 @@ Task("Publish-package")
                 ApiKey = nugetApiKey
             };
 
-            var pkgs = GetFiles(artifactsDir + "*.nupkg");
+            var pkgs = GetFiles(artifactDirectory + "*.nupkg");
             foreach(var pkg in pkgs)
             {
                 if(!IsNuGetPublished(pkg))
@@ -185,7 +185,8 @@ Task("Publish-package")
                     Information($"Bypassing publishing \"{pkg}\" as it is already published.");
                 }
             }
-        });
+        }
+    });
 
 Task("Report")
     .IsDependentOn("Package")
