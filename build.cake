@@ -20,7 +20,7 @@ var sonarCloudLogin = EnvironmentVariable("SONAR_CLOUD_LOGIN") ?? "";
 
 // nuget publish configuration
 var nugetApiKey = EnvironmentVariable("NUGET_API_KEY") ?? "";
-var nugetSource= "https://api.nuget.org/v3/index.json"
+var nugetSource= "https://api.nuget.org/v3/index.json";
 
 // coverage configuration
 var coverageDirectory = Directory(@".\coverage-results\");
