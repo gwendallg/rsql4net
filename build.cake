@@ -176,14 +176,8 @@ Task("Publish-package")
             var pkgs = GetFiles(artifactDirectory + "*.nupkg");
             foreach(var pkg in pkgs)
             {
-                if(!IsNuGetPublished(pkg))
-                {
-                    Information($"Publishing \"{pkg}\".");
-                    DotNetCoreNuGetPush(pkg.FullPath, pushSettings);
-                }
-                else {
-                    Information($"Bypassing publishing \"{pkg}\" as it is already published.");
-                }
+                Information($"Publishing \"{pkg}\".");
+                DotNetCoreNuGetPush(pkg.FullPath, pushSettings);
             }
         }
     });
