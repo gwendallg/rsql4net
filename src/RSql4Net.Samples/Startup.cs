@@ -35,7 +35,7 @@ namespace RSql4Net.Samples
             return name.ToSnakeCase();
         }
     }
-    
+
     public class Startup
     {
         public Startup(IConfiguration configuration)

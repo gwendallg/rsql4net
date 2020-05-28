@@ -11,17 +11,23 @@
 var target = Argument("target", "Report");
 var configuration = Argument("configuration", "debug");
 var lastCommit = GitLogTip("./");
-var nugetApiKey = EnvironmentVariable("NUGET_API_KEY") ?? "";
-var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN") ?? "";
-var sonarCloudLogin = EnvironmentVariable("SONAR_CLOUD_LOGIN") ?? "";
-var testProjectsRelativePaths = new string[]
-{
-    "RSql4Net.Tests/RSql4Net.Tests.csproj",
-};
 
+// coverallio configuration
+var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN") ?? "";
+
+// sonarcloud configuration
+var sonarCloudLogin = EnvironmentVariable("SONAR_CLOUD_LOGIN") ?? "";
+
+// nuget publish configuration
+var nugetApiKey = EnvironmentVariable("NUGET_API_KEY") ?? "";
+var nugetSource= "https://api.nuget.org/v3/index.json"
+
+// coverage configuration
 var coverageDirectory = Directory(@".\coverage-results\");
 var artifactDirectory = Directory(@".\artifacts\");
 var coverageFileName = "coverage.xml";
+
+// coverage report configuration
 var reportTypes = "Html";
 var coverageFilePath = coverageDirectory + File(coverageFileName);
 
@@ -111,7 +117,7 @@ Task("Tests")
         coverletSettings);
 });
 
-Task("Upload-Coverage-Report")
+Task("Publish-Coverage-Report")
     .IsDependentOn("Tests")
     .Does(() =>
 {
@@ -155,6 +161,31 @@ Task("Package")
         }
     );
 });
+
+Task("Publish-package")
+    .IsDependentOn("Package")
+    .Does(() => {
+        if(BuildSystem.TravisCI.IsRunningOnTravisCI)
+        {
+            var pushSettings = new DotNetCoreNuGetPushSettings
+            {
+                Source = nugetSource,
+                ApiKey = nugetApiKey
+            };
+
+            var pkgs = GetFiles(artifactsDir + "*.nupkg");
+            foreach(var pkg in pkgs)
+            {
+                if(!IsNuGetPublished(pkg))
+                {
+                    Information($"Publishing \"{pkg}\".");
+                    DotNetCoreNuGetPush(pkg.FullPath, pushSettings);
+                }
+                else {
+                    Information($"Bypassing publishing \"{pkg}\" as it is already published.");
+                }
+            }
+        });
 
 Task("Report")
     .IsDependentOn("Package")
