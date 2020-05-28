@@ -183,7 +183,7 @@ Task("Publish-package")
     });
 
 Task("Report")
-    .IsDependentOn("Package")
+    .IsDependentOn("Publish-package")
     .Does(() =>
 {
     if(!BuildSystem.TravisCI.IsRunningOnTravisCI)
