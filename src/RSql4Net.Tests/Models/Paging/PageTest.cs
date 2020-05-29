@@ -11,7 +11,7 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeWithEmptyPage()
         {
-            var expected = new RSqlPage<object>(null);
+            var expected = new RSqlPage<object>();
             expected
                 .HasContent.Should().BeFalse();
             expected

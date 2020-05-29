@@ -1,4 +1,6 @@
-﻿namespace RSql4Net.Models.Paging
+﻿using RSql4Net.Models.Paging.Exceptions;
+
+namespace RSql4Net.Models.Paging
 {
     /// <summary>
     ///     Default implement of Pageable.
@@ -18,8 +20,17 @@
         public RSqlPageable(int pageNumber, int pageSize, RSqlSort<T> rSqlSort = null)
         {
             _pageNumber = pageNumber;
+            if (_pageNumber < 0)
+            {
+                throw new InvalidPageNumberValueException(_pageNumber);
+            }
             _pageSize = pageSize;
-            _rSqlSort = rSqlSort;
+            if (_pageSize <= 0)
+            {
+                throw new InvalidPageSizeValueException(_pageSize);
+            }
+            _rSqlSort = rSqlSort
+                ;
         }
 
         /// <summary>

@@ -4,8 +4,10 @@ using System.Linq.Expressions;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Moq;
 using RSql4Net.Configurations;
 using RSql4Net.Models.Queries;
 
@@ -45,7 +47,6 @@ namespace RSql4Net.Tests
                 data[ args[i*2]]= new StringValues(args[i*2+1]);
             }
             return new QueryCollection(data);    
-            
         }
 
         public static Expression<Func<T, bool>> Expression<T>(string query,
@@ -57,7 +58,9 @@ namespace RSql4Net.Tests
             var queryCollection = QueryCollection(
                 jsonOptions.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(settings.QueryField),
                 query);
-            var rSqlQueryModelBinder = new RSqlQueryModelBinder<T>(settings, jsonOptions);
+            var mockLogger = new Mock<ILogger<T>>();
+            mockLogger.Setup(m => m.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+            var rSqlQueryModelBinder = new RSqlQueryModelBinder<T>(settings, jsonOptions, mockLogger.Object);
             return rSqlQueryModelBinder
                 .Build(queryCollection)
                 .Value();

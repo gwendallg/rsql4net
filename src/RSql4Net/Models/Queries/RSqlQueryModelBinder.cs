@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RSql4Net.Configurations;
 
@@ -15,11 +16,13 @@ namespace RSql4Net.Models.Queries
     {
         private readonly Settings _settings;
         private readonly IOptions<JsonOptions> _options;
+        private readonly ILogger<T> _logger;
 
-        public RSqlQueryModelBinder(Settings settings,IOptions<JsonOptions> options)
+        public RSqlQueryModelBinder(Settings settings,IOptions<JsonOptions> options, ILogger<T> logger)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _logger = logger;
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
@@ -44,14 +47,21 @@ namespace RSql4Net.Models.Queries
         /// <returns></returns>
         public IRSqlQuery<T> Build(IQueryCollection queryCollection)
         {
+            var queryField =
+                _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.QueryField);
             if (
-                !queryCollection.TryGetValue(_options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.QueryField), out var query) ||
+                !queryCollection.TryGetValue(queryField, out var query) ||
                 string.IsNullOrWhiteSpace(query.FirstOrDefault()))
             {
-                return  new RSqlQuery<T>(RSqlQueryExpressionHelper.True<T>());
+                return new RSqlQuery<T>(RSqlQueryExpressionHelper.True<T>());
             }
-           
-            return CreateAndAddCacheQuery(query.FirstOrDefault());
+
+            var result = CreateAndAddCacheQuery(query.FirstOrDefault());
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"RSqlQuery tracing : ?{queryField}={query.FirstOrDefault()} -> {result.Value()}");
+            }
+            return result;
         }
 
         private IRSqlQuery<T> CreateAndAddCacheQuery(string query)

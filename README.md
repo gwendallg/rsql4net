@@ -57,11 +57,22 @@ dotnet add package RSql4Net
 
     // like Get operation
     [HttpGet]
-    public IActionResult Get(IRSqlQuery<[your model]> query, IRSqlPageable<[your model]> pageable)
+    public IActionResult Get([FromQuery] IRSqlQuery<[your model]> query,[FromQuery] IRSqlPageable<[your model]> pageable)
     {
+        // the query parameters are correctly parsed ?
         if (ModelState.IsValid)
         {
+            // your repository to filter
+            IQueryable<[your model]> repository; 
+            
+            // the C# expression from query string parsing
             var filter = query.Value();
+
+            // your filtered repository
+            var filteredData = repository.Where(filter);
+
+            // create Http result response
+            
             ...
         }
         // your code here
@@ -91,7 +102,7 @@ To change query string parameter names, you would modify the RSql configuration.
                         .PageSizeField("si")
                         // change the query string parameter name for page number field
                         .PageNumberField("of")
-                        // change the query string parameter name for default page size
+                        // change the default page size
                         .PageSize(50)
             );
         ...

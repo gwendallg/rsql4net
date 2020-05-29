@@ -1,12 +1,10 @@
-using System.Collections.Generic;
-using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.Logging;
+using Moq;
 using RSql4Net.Configurations;
 using RSql4Net.Models.Queries;
 using Xunit;
@@ -19,13 +17,7 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public async void ShouldBeBindModelAsyncTest()
         {
-            var queryCollection = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("Query", new StringValues("Name==a*"))
-                    }
-                ));
-
+            var queryCollection = Helper.QueryCollection("query", "name==a*");
             var context = new DefaultHttpContext();
             context.Request.Query = queryCollection;
             var actionContext = new ActionContext {HttpContext = context};
@@ -33,11 +25,10 @@ namespace RSql4Net.Tests.Models.Queries
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-            var options = Options.Create(new JsonOptions()
-            {
-                JsonSerializerOptions = {PropertyNamingPolicy = JsonNamingPolicy.CamelCase}
-            });
-            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings(), options);
+            var mockLogger = new Mock<ILogger<Customer>>();
+            mockLogger.Setup(m => m.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+            
+            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings(), Helper.JsonOptions(), mockLogger.Object);
             await queryModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result.Model as IRSqlQuery<Customer>;
@@ -52,13 +43,7 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public async void ShouldBeBindModelWithModelErrorAsyncTest()
         {
-            var queryCollection = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("query", new StringValues("name=a*"))
-                    }
-                ));
-
+            var queryCollection = Helper.QueryCollection("query", "name=a*");
             var context = new DefaultHttpContext();
             context.Request.Query = queryCollection;
             var actionContext = new ActionContext {HttpContext = context};
@@ -66,12 +51,9 @@ namespace RSql4Net.Tests.Models.Queries
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-
-            var options = Options.Create(new JsonOptions()
-            {
-                JsonSerializerOptions = {PropertyNamingPolicy = JsonNamingPolicy.CamelCase}
-            });
-            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings(), options);
+            var mockLogger = new Mock<ILogger<Customer>>();
+            mockLogger.Setup(m => m.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings(), Helper.JsonOptions(), mockLogger.Object);
             await queryModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result;
@@ -86,14 +68,8 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public async void ShouldBeBindModelAsyncWithCacheTest()
         {
-            string query = "name==a*";
-            
-            var queryCollection = new QueryCollection(
-                new Dictionary<string, StringValues>(new[]
-                    {
-                        new KeyValuePair<string, StringValues>("query", new StringValues(query))
-                    }
-                ));
+            const string query = "name==a*";
+            var queryCollection = Helper.QueryCollection("query", query);
 
             var context = new DefaultHttpContext();
             context.Request.Query = queryCollection;
@@ -108,13 +84,11 @@ namespace RSql4Net.Tests.Models.Queries
                 QueryCache = new MemoryCache(new MemoryCacheOptions()),
                 OnCreateCacheEntry = (m) => { m.Size = 1024;}
             };
+            var mockLogger = new Mock<ILogger<Customer>>();
+            mockLogger.Setup(m => m.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
 
-            var options = Options.Create(new JsonOptions()
-            {
-                JsonSerializerOptions = {PropertyNamingPolicy = JsonNamingPolicy.CamelCase}
-            });
             
-            var queryModelBinder = new RSqlQueryModelBinder<Customer>(settings, options);
+            var queryModelBinder = new RSqlQueryModelBinder<Customer>(settings, Helper.JsonOptions(),mockLogger.Object);
             await queryModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result.Model as IRSqlQuery<Customer>;

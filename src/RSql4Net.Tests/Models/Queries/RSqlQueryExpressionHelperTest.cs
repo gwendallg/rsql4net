@@ -9,6 +9,14 @@ namespace RSql4Net.Tests.Models.Queries
     public class RSqlQueryExpressionHelperTest
     {
         [Fact]
+        public void ShouldBeTrue()
+        {
+            var expected = RSqlQueryExpressionHelper.True<Customer>();
+            expected.Compile()(new Customer())
+                .Should().BeTrue();
+        }
+        
+        [Fact]
         public void ShouldBeGetAndExpressionThrowArgumentNullExceptionTest()
         {
             // visitor = null

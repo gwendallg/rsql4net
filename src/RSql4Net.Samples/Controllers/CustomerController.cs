@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RSql4Net.Models;
 using RSql4Net.Models.Paging;
 using RSql4Net.Models.Queries;
 using RSql4Net.Samples.Models;
+using RSql4Net.Controllers;
 
 namespace RSql4Net.Samples.Controllers
 {
@@ -23,25 +22,20 @@ namespace RSql4Net.Samples.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(IRSqlQuery<Customer> irSqlQuery,
-            IRSqlPageable<Customer> irSqlPageable)
+        public IActionResult Get([FromQuery] IRSqlQuery<Customer> query,
+            [FromQuery] IRSqlPageable<Customer> pageable)
         {
             if (!ModelState.IsValid)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorModel(ModelState));
+                return BadRequest(new ErrorModel(ModelState));
             }
 
-            _logger.LogDebug(irSqlQuery?.ToString());
+            _logger.LogDebug(query?.ToString());
 
             var content = _customers
                 .AsQueryable();
 
-            content = content
-                .Where(irSqlQuery?.Value());
-
-            var page = content.Page(irSqlPageable);
-
-            return StatusCode((int)HttpStatusCode.PartialContent, page);
+            return this.Page(content, pageable, query);
         }
     }
 }
