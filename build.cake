@@ -2,6 +2,7 @@
 #addin Cake.Coverlet&version=2.4.2
 #addin Cake.Coveralls&version=0.10.0
 #addin Cake.Sonar&version=1.1.25
+#addin Cake.FileHelpers&version=3.2.1
 
 #tool nuget:?package=ReportGenerator&version=4.5.8
 #tool nuget:?package=GitVersion.CommandLine&version=4.0.0
@@ -9,7 +10,7 @@
 #tool nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0
 
 var target = Argument("target", "Report");
-var configuration = Argument("configuration", "debug");
+var configuration = Argument("configuration", "Debug");
 var lastCommit = GitLogTip("./");
 
 // coverallio configuration
@@ -24,12 +25,14 @@ var nugetSource= "https://api.nuget.org/v3/index.json";
 
 // coverage configuration
 var coverageDirectory = Directory(@"./coverage-results/");
-var artifactDirectory = Directory(@"./artifacts/");
 var coverageFileName = "coverage.xml";
-
-// coverage report configuration
-var reportTypes = "Html";
 var coverageFilePath = coverageDirectory + File(coverageFileName);
+var coverageReportTypes = "Html";
+
+// arfifact configuration
+var artifactDirectory = Directory(@"./artifacts/");
+var artifactFileName = "RSql4Net.nuspec";
+var artifactFilePath = artifactDirectory + File(artifactFileName);
 
 GitVersion version;
 
@@ -43,6 +46,10 @@ Task("Clean")
         CreateDirectory(coverageDirectory);
     else
         CleanDirectory(coverageDirectory);
+    if (!DirectoryExists(artifactDirectory))
+        CreateDirectory(artifactDirectory);
+    else
+        CleanDirectory(artifactDirectory);
 });
 
 Task("Version")
@@ -148,19 +155,14 @@ Task("Sonar-end")
 Task("Package")
     .IsDependentOn("Sonar-end")
     .Does(() =>{
-        NuGetPack("./src/RSql4Net/RSql4Net.csproj", new NuGetPackSettings{
-            Version = version.SemVer,
+        CopyFile("./src/RSql4Net/RSql4Net.nuspec",artifactFilePath);
+        ReplaceTextInFiles(artifactFilePath,"{{version}}",version.SemVer);
+        ReplaceTextInFiles(artifactFilePath,"{{configuration}}",configuration);
+        NuGetPack(artifactFilePath, new NuGetPackSettings{
             OutputDirectory = artifactDirectory,
-            IncludeReferencedProjects = true,
             Verbosity = NuGetVerbosity.Detailed,
-            Copyright = "MIT",
-            ProjectUrl = new Uri("https://github.com/gwendallg/rsql4net"),
-            RequireLicenseAcceptance = true,
-            Description = "Rsql4net is AspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lambda expression. Install it and test it!",
-            KeepTemporaryNuSpecFile = true
-        }
-    );
-});
+        });
+    });
 
 Task("Publish-package")
     .IsDependentOn("Package")
@@ -190,7 +192,7 @@ Task("Report")
     {
         var reportSettings = new ReportGeneratorSettings
         {
-            ArgumentCustomization = args => args.Append($"-reportTypes:{reportTypes}")
+            ArgumentCustomization = args => args.Append($"-reportTypes:{coverageReportTypes}")
         };
         ReportGenerator(coverageFilePath, coverageDirectory, reportSettings);
     }

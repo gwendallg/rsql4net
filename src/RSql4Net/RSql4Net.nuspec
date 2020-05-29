@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>RSql4Net</id>
+    <version>{{version}}</version>
+    <authors>Gwendall Garnier</authors>
+    <owners>Gwendall Garnier</owners>
+    <description>RSql4Net is AspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lambba expression. Install it and test it!</description>
+    <projectUrl>https://github.com/gwendallg/rsql4net</projectUrl>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <icon>icon.png</icon>
+    <dependencies>
+      <group targetFramework="netcoreapp3.1">
+        <dependency id="Antlr4.Runtime.Standard" version="4.8.0" />
+        <dependency id="Microsoft.AspNetCore" version="2.2.0"  />
+        <dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.2.5" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="3.1.4" />
+        <dependency id="Swashbuckle.AspNetCore" version="5.4.1" />
+      </group>
+    </dependencies>
+    </metadata>
+    <files>
+      <file src="../src/RSql4Net/bin/{{configuration}}/netcoreapp3.1/RSql4Net.dll" target="lib/netcoreapp3.1" />
+      <file src="../docs/icon.png" target="" />
+    </files>
+</package>
