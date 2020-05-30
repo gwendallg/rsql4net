@@ -3,7 +3,7 @@
 <img src="docs/logo.svg" alt="logo" height="100">
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE) [![Nuget](https://img.shields.io/nuget/v/rsql4net)]()
 
 RSql4Net is AspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lambda expression.
 
@@ -13,6 +13,8 @@ RSql4Net is AspNet Core extension that will make it easier for you to write your
 |-----------------------------|--------|--------------|----------|
 | master                      | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master)| [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gwendallg_rsql4net&branch=master&metric=alert_status)](https://sonarcloud.io/dashboard?id=gwendallg_rsql4net&branch=master) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=master)](https://coveralls.io/github/gwendallg/rsql4net?branch=master) |
 | develop                     | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop) | | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop) |
+
+
 
 ## Table of Contents
 
@@ -63,8 +65,8 @@ dotnet add package RSql4Net
         if (ModelState.IsValid)
         {
             // your repository to filter
-            IQueryable<[your model]> repository; 
-            
+            IQueryable<[your model]> repository;
+
             // the C# expression from query string parsing
             var filter = query.Value();
 
@@ -72,7 +74,7 @@ dotnet add package RSql4Net
             var filteredData = repository.Where(filter);
 
             // create Http result response
-            
+
             ...
         }
         // your code here
