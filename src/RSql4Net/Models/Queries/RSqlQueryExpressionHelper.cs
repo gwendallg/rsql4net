@@ -89,12 +89,6 @@ namespace RSql4Net.Models.Queries
             {
                 throw new ArgumentNullException(nameof(context));
             }
-
-            if (context.constraint().Length == 0)
-            {
-                return True<T>();
-            }
-
             var right = context.constraint()[0].Accept(visitor);
             if (context.constraint().Length == 1)
             {
@@ -128,11 +122,6 @@ namespace RSql4Net.Models.Queries
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
-            }
-
-            if (context.and().Length == 0)
-            {
-                return True<T>();
             }
 
             var right = context.and()[0].Accept(visitor);

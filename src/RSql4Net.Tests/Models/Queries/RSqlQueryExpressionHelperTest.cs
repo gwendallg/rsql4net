@@ -1,6 +1,8 @@
 using System;
+using System.Linq.Expressions;
 using System.Text.Json;
 using FluentAssertions;
+using Moq;
 using RSql4Net.Models.Queries;
 using Xunit;
 
@@ -15,7 +17,7 @@ namespace RSql4Net.Tests.Models.Queries
             expected.Compile()(new Customer())
                 .Should().BeTrue();
         }
-        
+
         [Fact]
         public void ShouldBeGetAndExpressionThrowArgumentNullExceptionTest()
         {

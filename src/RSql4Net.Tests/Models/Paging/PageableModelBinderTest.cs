@@ -15,11 +15,22 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeThrowArgumentNullException()
         {
+            // constructor
             this.Invoking((a) => new RSqlPageableModelBinder<Customer>(null, Helper.JsonOptions()))
                 .Should()
                 .Throw<ArgumentNullException>();
             
+            // constructor
             this.Invoking((a) => new RSqlPageableModelBinder<Customer>(Helper.Settings(), null))
+                .Should()
+                .Throw<ArgumentNullException>();
+            
+            // build
+            this.Invoking((a) =>
+                {
+                    var binder =  new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+                    binder.Build(null);
+                })
                 .Should()
                 .Throw<ArgumentNullException>();
         }

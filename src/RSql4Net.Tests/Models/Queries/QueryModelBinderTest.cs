@@ -1,3 +1,4 @@
+using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,30 @@ namespace RSql4Net.Tests.Models.Queries
 {
     public class QueryModelBinderTest
     {
-        
+
+        [Fact]
+        public void ShouldBeThrowArgumentNullException()
+        {
+            var option = Helper.JsonOptions();
+            var settings = Helper.Settings();
+            var logger = new Mock<ILogger<Customer>>();
+            // constructor
+            this.Invoking((a) =>
+                {
+                    new RSqlQueryModelBinder<Customer>(null, option, logger.Object);
+                })
+                .Should()
+                .Throw<ArgumentNullException>();
+
+            // constructor
+            this.Invoking((a) =>
+                {
+                    new RSqlQueryModelBinder<Customer>(settings, null, logger.Object);
+                })
+                .Should()
+                .Throw<ArgumentNullException>();
+        }
+
         [Fact]
         public async void ShouldBeBindModelAsyncTest()
         {

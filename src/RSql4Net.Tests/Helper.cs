@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.Json;
+using Antlr4.Runtime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -47,6 +48,14 @@ namespace RSql4Net.Tests
                 data[ args[i*2]]= new StringValues(args[i*2+1]);
             }
             return new QueryCollection(data);    
+        }
+
+        public static RSqlQueryParser Parser(string query)
+        {
+            var antlrInputStream = new AntlrInputStream(query);
+            var lexer = new RSqlQueryLexer(antlrInputStream);
+            var commonTokenStream = new CommonTokenStream(lexer);
+            return new RSqlQueryParser(commonTokenStream);
         }
 
         public static Expression<Func<T, bool>> Expression<T>(string query,

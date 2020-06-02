@@ -26,7 +26,7 @@ namespace RSql4Net.Tests.Models.Queries
             this.Invoking(f => { QueryableExtensions.Page(customers, null); })
                 .Should().Throw<ArgumentNullException>();
         }
-        
+ 
         [Fact]
         public void ShouldBePageWithNoSort()
         {

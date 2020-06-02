@@ -75,6 +75,30 @@ namespace RSql4Net.Tests.Controllers
         }
         
         [Fact]
+        public void ShouldBeWithNoQuery()
+        {
+            var fakeCustomers = new Faker<Customer>()
+                .Rules((f, o) => o.Name = f.Name.FullName())
+                .Generate(100)
+                .AsQueryable();
+
+            var pageable = new RSqlPageable<Customer>(0, 10);
+            var controller = new MockController();
+
+            var expected = controller.Page(fakeCustomers, pageable);
+            expected
+                .Should().BeOfType<ObjectResult>();
+            ((ObjectResult)expected).StatusCode
+                .Should().Be((int)HttpStatusCode.PartialContent);
+            ((ObjectResult)expected).Value.As<IRSqlPage<Customer>>()
+                .Should().NotBeNull();
+            ((IRSqlPage<Customer>)((ObjectResult)expected).Value).Content
+                .Count.Should().Be(10);
+            ((IRSqlPage<Customer>)((ObjectResult)expected).Value).HasNext
+                .Should().BeTrue();
+        }
+        
+        [Fact]
         public void ShouldBeAllContent()
         {
             var fakeCustomers = new Faker<Customer>()
