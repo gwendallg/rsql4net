@@ -142,7 +142,7 @@ Task("Publish-Coverage-Report")
 });
 
 Task("Sonar-end")
-    .IsDependentOn("Tests")
+    .IsDependentOn("Publish-Coverage-Report")
     .Does(() => {
         if(BuildSystem.TravisCI.IsRunningOnTravisCI)
         {
