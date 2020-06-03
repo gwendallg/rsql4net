@@ -52,7 +52,7 @@ namespace RSql4Net.Samples
             {
                 SizeLimit = 1024
             });
-            
+
             services
                 .AddControllers()
                 .AddJsonOptions(options =>
