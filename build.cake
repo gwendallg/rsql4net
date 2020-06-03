@@ -13,6 +13,10 @@ var target = Argument("target", "Report");
 var configuration = Argument("configuration", "Debug");
 var lastCommit = GitLogTip("./");
 
+var i = 1;
+var a=i.ToString();
+
+
 // coverallio configuration
 var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN") ?? "";
 
@@ -116,7 +120,8 @@ Task("Tests")
             "**/*/ServiceCollectionExtensions.cs",
             "**/*/RSqlQueryBaseVisitor.cs",
             "**/*/RSqlQueryErrorNodeException.cs",
-            "**/*/RSql4Net.Samples*"
+            "**/*/Program.cs",
+            "**/*/Startup.cs",
         })
     };
     Coverlet(
@@ -137,7 +142,7 @@ Task("Publish-Coverage-Report")
             CommitMessage = lastCommit.MessageShort,
             CommitId = version.Sha,
             RepoToken = coverallsRepoToken,
-            JobId = TravisCI.Environment.Build.BuildNumber,
+            JobId = TravisCI.Environment.Build.BuildNumber.ToString()
         });
      }
 });
