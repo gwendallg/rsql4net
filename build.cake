@@ -136,7 +136,8 @@ Task("Publish-Coverage-Report")
             CommitAuthor = lastCommit.Author.Name,
             CommitMessage = lastCommit.MessageShort,
             CommitId = version.Sha,
-            RepoToken = coverallsRepoToken
+            RepoToken = coverallsRepoToken,
+            JobId = TravisCI.Environment.Build.BuildNumber,
         });
      }
 });
