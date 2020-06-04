@@ -309,13 +309,13 @@ with customer json model like ,
 }
 ```
 
-#### example n°1 : find all items with : **name** equal West and debit > 0**
+#### example n°1 : find all items with : **name** equal West AND debit > 0**
 
 **RSQL** : name==West;debit=gt=0
 
 **Request URL** : https://localhost:5003/customers?query=name%3D%3DWest%3Bdebit%3Dgt%3D0
 
-#### example n°2 : find all items with : **address.city** start with Pales% West or *name* equals West or East
+#### example n°2 : find all items with : **address.city** start with Pales% OR *name* equals West or East
 
 **RSQL** : address.city==Pales*,name=in=(West,East)
 
