@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 #endif
 using Microsoft.OpenApi.Models;
+using RSql4Net.Samples.Models;
 using RSql4Net.SwaggerGen;
 
 namespace RSql4Net.Samples
@@ -23,7 +24,7 @@ namespace RSql4Net.Samples
             return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
         }
     }
-    
+
     public class SnakeCaseNamingPolicy : JsonNamingPolicy
     {
         public static SnakeCaseNamingPolicy Instance { get; } = new SnakeCaseNamingPolicy();
@@ -47,6 +48,7 @@ namespace RSql4Net.Samples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // message rsql query cache sample
             var memoryCache = new MemoryCache(new MemoryCacheOptions()
             {
                 SizeLimit = 1024
@@ -64,7 +66,9 @@ namespace RSql4Net.Samples
                 )
                 .AddRSql(options =>
                     options
+                        // use the memory cache
                         .QueryCache(memoryCache)
+                        // when add a new query in cache ...
                         .OnCreateCacheEntry((o) =>
                         {
                             o.Size = 1024;
@@ -75,12 +79,12 @@ namespace RSql4Net.Samples
             services.AddSingleton(Helper.Fake());
             services.AddSwaggerGen(c =>
             {
+                // add supported to Rsql SwaggerGen Documentation
                 c.OperationFilter<RSqlOperationFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
         }
 
-        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

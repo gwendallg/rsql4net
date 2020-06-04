@@ -44,7 +44,6 @@ namespace RSql4Net.Models.Paging
             Number = irSqlPageable.PageNumber();
             HasPrevious = irSqlPageable.PageNumber() > 0;
             HasNext = TotalElements > NumberOfElements + (Number * irSqlPageable.PageSize());
-            
             var mod = (int)TotalElements % irSqlPageable.PageSize();
             var quo = (int)TotalElements - mod;
             TotalPages = (quo / irSqlPageable.PageSize()) + (mod > 0 ? 1 : 0);

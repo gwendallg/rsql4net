@@ -25,6 +25,7 @@ namespace RSql4Net.Samples.Controllers
         public IActionResult Get([FromQuery] IRSqlQuery<Customer> query,
             [FromQuery] IRSqlPageable<Customer> pageable)
         {
+            // is not valid request
             if (!ModelState.IsValid)
             {
                 return BadRequest(new ErrorModel(ModelState));
