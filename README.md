@@ -311,13 +311,13 @@ with customer json model like ,
 
 #### example n°1 : find all items with : **name** equal West and debit > 0**
 
-**RSQL** : ?query=**name==West;debit=gt=0**
+**RSQL** : name==West;debit=gt=0
 
 **Request URL** : https://localhost:5003/customers?query=name%3D%3DWest%3Bdebit%3Dgt%3D0
 
 #### example n°2 : find all items with : **address.city** start with Pales% West or *name* equals West or East
 
-**RSQL** : ?query=**address.city==Pales*,name=in=(West,East)**
+**RSQL** : address.city==Pales*,name=in=(West,East)
 
 **Request URL** : https://localhost:5003/customers?query=address.city%3D%3DPales%2A%2Cname%3Din%3D%28West%2CEast%29
 
@@ -325,13 +325,13 @@ with customer json model like ,
 
 #### example n°1 : find all items with : **debit** great than or equals to 0 AND i want the 2nd page with 50 items by page
 
-**RSQL** : ?query=**debit=ge=0&pageNumber=1&pageSize=50**
+**RSQL** : debit=ge=0&pageNumber=1&pageSize=50
 
 **Request URL** : https://localhost:5003/customers?query=debit%3Dge%3D0&page_number=1&page_size=50
 
 #### example n°2 : find all items with : **debit** great than or equals to 0 AND i want the first page with 50 items by page AND i sort ascending by name AND i sort descending by credit
 
-**RSQL** : ?query=**debit=ge=0&pageNumber=1&pageSize=50&sort=name;asc&sort=credit;desc***
+**RSQL** : debit=ge=0&pageNumber=1&pageSize=50&sort=name;asc&sort=credit;desc
 
 **Request URL** :  https://localhost:5003/customers?query=debit%3Dge%3D0&page_number=0&page_size=50&sort=name%3Basc&sort=credit%3Bdesc
 
