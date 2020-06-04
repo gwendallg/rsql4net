@@ -120,7 +120,7 @@ or more simply, with use the extension method in ControllerBaseExtensions.cs to 
 ## Documentation
 
 <p align="center">
-<img src="docs/video.gif"/>
+<img src="docs/video.gif" height="720" width="1280" />
 </p>
 
 ### Main components
