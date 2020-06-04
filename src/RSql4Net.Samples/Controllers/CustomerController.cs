@@ -13,12 +13,12 @@ namespace RSql4Net.Samples.Controllers
     public class CustomerController : Controller
     {
         private readonly IList<Customer> _customers;
-        private readonly ILogger _logger;
+        private readonly ILogger<CustomerController> _logger;
 
-        public CustomerController(IList<Customer> customers, ILoggerFactory loggerFactory)
+        public CustomerController(IList<Customer> customers, ILogger<CustomerController> logger)
         {
             _customers = customers;
-            _logger = loggerFactory.CreateLogger("CustomerLog");
+            _logger = logger;
         }
 
         [HttpGet]

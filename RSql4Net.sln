@@ -17,6 +17,8 @@ ProjectSection(SolutionItems) = preProject
 	README.md = README.md
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSql4Net.Samples.Tests", "src\RSql4Net.Samples.Tests\RSql4Net.Samples.Tests.csproj", "{C9639735-0DF6-48E7-9EC8-DED9F0E5C89F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{0CDE2FBD-3B71-4764-8905-6166F7FEE352}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CDE2FBD-3B71-4764-8905-6166F7FEE352}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CDE2FBD-3B71-4764-8905-6166F7FEE352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9639735-0DF6-48E7-9EC8-DED9F0E5C89F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9639735-0DF6-48E7-9EC8-DED9F0E5C89F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9639735-0DF6-48E7-9EC8-DED9F0E5C89F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9639735-0DF6-48E7-9EC8-DED9F0E5C89F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

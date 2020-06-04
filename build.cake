@@ -13,10 +13,6 @@ var target = Argument("target", "Report");
 var configuration = Argument("configuration", "Debug");
 var lastCommit = GitLogTip("./");
 
-var i = 1;
-var a=i.ToString();
-
-
 // coverallio configuration
 var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN") ?? "";
 
@@ -31,6 +27,8 @@ var nugetSource= "https://api.nuget.org/v3/index.json";
 var coverageDirectory = Directory(@"./coverage-results/");
 var coverageFileName = "coverage.xml";
 var coverageFilePath = coverageDirectory + File(coverageFileName);
+var mergeCoverageFileName = "merge-coverage.json";
+var mergeCoverageFilePath = coverageDirectory + File(mergeCoverageFileName);
 var coverageReportTypes = "Html";
 
 // arfifact configuration
@@ -109,8 +107,7 @@ Task("Tests")
     {
         CollectCoverage = true,
         CoverletOutputDirectory = coverageDirectory,
-        CoverletOutputName =  coverageFileName,
-        CoverletOutputFormat = CoverletOutputFormat.opencover,
+        CoverletOutputName =  mergeCoverageFileName,
         ExcludeByFile = new List<string>( new string [] {
             "**/*/RSqlQueryBaseListener.cs",
             "**/*/RSqlQueryVisitor.cs.",
@@ -120,13 +117,25 @@ Task("Tests")
             "**/*/ServiceCollectionExtensions.cs",
             "**/*/RSqlQueryBaseVisitor.cs",
             "**/*/RSqlQueryErrorNodeException.cs",
+            "**/*/RSql4Net.Samples/Models/Customer.cs",
+            "**/*/RSql4Net.Samples/Models/Address.cs",
             "**/*/Program.cs",
             "**/*/Startup.cs",
         })
     };
+    // RSql4net.Tests
     Coverlet(
         File("./src/RSql4Net.Tests/RSql4Net.Tests.csproj"),
         coverletSettings);
+
+     coverletSettings.CoverletOutputName = coverageFileName;
+     coverletSettings.MergeWithFile = mergeCoverageFilePath;
+     coverletSettings.CoverletOutputFormat = CoverletOutputFormat.opencover;
+
+    // RSql4net.SamplesTests
+    Coverlet(
+        File("./src/RSql4Net.Samples.Tests/RSql4Net.Samples.Tests.csproj"),
+         coverletSettings);
 });
 
 Task("Publish-Coverage-Report")
