@@ -120,9 +120,7 @@ or more simply, with use the extension method in ControllerBaseExtensions.cs to 
 ## Documentation
 
 <p align="center">
-<video width="1024" height="786" loop=1>
-  <source src="docs/video.mp4" type="video/mp4">
-</video>
+<img src="docs/video.gif"/>
 </p>
 
 ### Main components
