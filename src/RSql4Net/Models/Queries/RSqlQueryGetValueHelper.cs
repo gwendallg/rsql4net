@@ -22,6 +22,7 @@ namespace RSql4Net.Models.Queries
         private static bool IsByte(Type type) => type == typeof(byte) || type == typeof(byte?);
         private static bool IsDateTime(Type type) => type == typeof(DateTime) || type == typeof(DateTime?);
         private static bool IsDateTimeOffset(Type type) => type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?);
+        private static bool IsGuid(Type type) =>  type == typeof(Guid) || type == typeof(Guid?);
         private static bool IsEnum(Type type) =>
             type.IsEnum || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
                             type.GetGenericArguments()[0].IsEnum);
@@ -168,6 +169,17 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
+        private static List<object> GetGuids(RSqlQueryParser.ArgumentsContext argumentsContext)
+        {
+            var items = new List<object>();
+            foreach (var valueContext in argumentsContext.value())
+            {
+                items.Add(Guid.Parse(valueContext.GetText()));
+            }
+
+            return items;
+        }
+
         private static List<object> GetBytes(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
@@ -267,6 +279,11 @@ namespace RSql4Net.Models.Queries
                 return GetDateTimeOffsets(argumentsContext);
             }
 
+            if (IsGuid(type))
+            {
+                return GetGuids(argumentsContext);
+            }
+
             return IsEnum(type) ? GetEnums(argumentsContext, type) : new List<object>();
         }
 
@@ -360,6 +377,11 @@ namespace RSql4Net.Models.Queries
                     expressionValue.Property.PropertyType);
             }
 
+            if (IsGuid(expressionValue.Property.PropertyType))
+            {
+                return GetGuid<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
+            }
+            
             return null;
         }
 
@@ -403,6 +425,23 @@ namespace RSql4Net.Models.Queries
             }
 
             return valueContext.GetText();
+        }
+
+        private static object GetGuid<T>(ParameterExpression parameter,
+            RSqlQueryParser.ValueContext valueContext,
+            JsonNamingPolicy jsonNamingPolicy = null)
+        {
+            if (Guid.TryParse(valueContext.GetText(), out var result))
+            {
+                return result;
+            }
+
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
+            {
+                return expression;
+            }
+
+            throw new InvalidConversionException(valueContext, typeof(Guid));
         }
 
         private static object GetChar<T>(ParameterExpression parameter,

@@ -10,6 +10,10 @@ namespace RSql4Net.Tests.Models.Queries
 
         public MockQuery ChildP { get; set; }
 
+        public Guid GuidP { get; set; }
+        
+        public Guid? GuidNullP { get; set; }
+        
         public string StringP { get; set; }
 
         public short Int16P { get; set; }

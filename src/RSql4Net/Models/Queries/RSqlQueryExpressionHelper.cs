@@ -34,7 +34,9 @@ namespace RSql4Net.Models.Queries
             typeof(char),
             typeof(char?),
             typeof(byte),
-            typeof(byte?)
+            typeof(byte?),
+            typeof(Guid),
+            typeof(Guid?)
         };
 
         private static readonly IList<Type> LtOrGtOrLeOrLeAuthorizedType = new List<Type>
