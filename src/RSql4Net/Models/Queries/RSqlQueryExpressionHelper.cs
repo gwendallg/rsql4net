@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -228,6 +229,10 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
+            if (expressionValue == null)
+            {
+                throw new ComparisonUnknownSelectorException(context);
+            }
             if (!EqOrNeqOrInOrOutAuthorizedType.Contains(expressionValue.Property.PropertyType) &&
                 (!expressionValue.Property.PropertyType.IsEnum &&
                  !(expressionValue.Property.PropertyType.IsGenericType &&
@@ -407,13 +412,8 @@ namespace RSql4Net.Models.Queries
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (!ExpressionValue.TryParse<T>(parameter, context.selector().GetText(), jsonNamingPolicy,
-                out var expressionValue))
-            {
-                throw new ComparisonUnknownSelectorException(context);
-            }
-
-            return expressionValue;
+            var result = ExpressionValue.Parse<T>(parameter, context.selector().GetText(), jsonNamingPolicy);
+            return result ?? throw new ComparisonUnknownSelectorException(context);
         }
 
         /// <summary>
@@ -481,7 +481,7 @@ namespace RSql4Net.Models.Queries
             MethodInfo method;
             if (criteria.IndexOf('*') == -1)
             {
-                criteria = criteria + '*';
+                criteria += '*';
             }
 
             if (criteria.StartsWith("*", StringComparison.Ordinal) && criteria.EndsWith("*", StringComparison.Ordinal))

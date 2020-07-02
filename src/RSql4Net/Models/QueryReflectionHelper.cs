@@ -69,12 +69,11 @@ namespace RSql4Net.Models
                         new Dictionary<Type, Dictionary<string, PropertyInfo>>());
                 }
 
-                if (MappingJson2PropertyInfo[typeStrategy].ContainsKey(type))
+                if (!MappingJson2PropertyInfo[typeStrategy].ContainsKey(type))
                 {
-                    return MappingJson2PropertyInfo[typeStrategy][type][name];
+                    MappingJson2PropertyInfo[typeStrategy][type] = Build(type, jsonNamingPolicy);
                 }
-
-                MappingJson2PropertyInfo[typeStrategy][type] = Build(type, jsonNamingPolicy);
+                
                 return MappingJson2PropertyInfo[typeStrategy][type].ContainsKey(name)
                     ? MappingJson2PropertyInfo[typeStrategy][type][name]
                     : null;

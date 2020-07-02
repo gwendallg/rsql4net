@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Text;
 using FluentAssertions;
 using Xunit;
@@ -412,5 +414,12 @@ namespace RSql4Net.Tests.Models.Queries
         }
 
         #endregion
+
+        protected void OnShouldThrowInvalidConversionException(string invalidValue)
+        {
+            var obj2 = Manifest2();
+            var query = $"{Helper.GetJsonPropertyName(obj2)}P=={invalidValue}";
+            Helper.Function<MockQuery>(query);
+        }
     }
 }

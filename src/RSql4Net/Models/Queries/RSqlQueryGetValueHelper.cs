@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Threading;
+using Microsoft.OpenApi.Any;
 using RSql4Net.Models.Queries.Exceptions;
 
 namespace RSql4Net.Models.Queries
@@ -23,6 +24,10 @@ namespace RSql4Net.Models.Queries
         private static bool IsDateTime(Type type) => type == typeof(DateTime) || type == typeof(DateTime?);
         private static bool IsDateTimeOffset(Type type) => type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?);
         private static bool IsGuid(Type type) =>  type == typeof(Guid) || type == typeof(Guid?);
+        private static bool IsNumeric(Type type) => IsShort(type) || IsInt(type) || IsLong(type) || IsByte(type) || IsFloat(type) || IsDecimal(type) || IsDouble(type);
+        private static bool IsTemporal(Type type) => IsDateTime(type) || IsDateTimeOffset(type);
+        private static bool IsAlphabetic(Type type) => type == typeof(string) || IsChar(type);
+        
         private static bool IsEnum(Type type) =>
             type.IsEnum || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
                             type.GetGenericArguments()[0].IsEnum);
@@ -209,34 +214,17 @@ namespace RSql4Net.Models.Queries
                 )
                 .ToList();
         }
-        
-        
 
-        public static List<object> GetValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        public static List<object> GetNumerics(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
         {
-            if (argumentsContext?.value() == null || argumentsContext.value().Length == 0)
+            if (IsByte(type))
             {
-                return new List<object>();
+                return GetBytes(argumentsContext);
             }
-
-            if (type == typeof(string))
-            {
-                return GetStrings(argumentsContext);
-            }
-
-            if (IsDateTime(type))
-            {
-                return GetDateTimes(argumentsContext);
-            }
-
+            
             if (IsShort(type))
             {
                 return GetShorts(argumentsContext);
-            }
-
-            if (IsInt(type))
-            {
-                return GetInts(argumentsContext);
             }
 
             if (IsLong(type))
@@ -258,25 +246,52 @@ namespace RSql4Net.Models.Queries
             {
                 return GetDecimals(argumentsContext);
             }
+            return GetInts(argumentsContext);
+        }
 
-            if (IsBool(type))
+        public static List<object> GetTemporals(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        {
+            if (IsDateTimeOffset(type))
             {
-                return GetBooleans(argumentsContext);
+                return GetDateTimeOffsets(argumentsContext);
             }
+            return GetDateTimes(argumentsContext);
+        }
 
+        public static List<object> GetAlphabetics(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        {
             if (IsChar(type))
             {
                 return GetChars(argumentsContext);
             }
+            return GetStrings(argumentsContext);
+        }
 
-            if (IsByte(type))
+        public static List<object> GetValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        {
+            if (argumentsContext?.value() == null || argumentsContext.value().Length == 0)
             {
-                return GetBytes(argumentsContext);
+                return new List<object>();
             }
 
-            if (IsDateTimeOffset(type))
+            if (IsNumeric(type))
             {
-                return GetDateTimeOffsets(argumentsContext);
+                return GetNumerics(type, argumentsContext);
+            }
+            
+            if (IsAlphabetic(type))
+            {
+                return GetAlphabetics(type, argumentsContext);
+            }
+
+            if (IsTemporal(type))
+            {
+                return GetTemporals(type, argumentsContext);
+            }
+
+            if (IsBool(type))
+            {
+                return GetBooleans(argumentsContext);
             }
 
             if (IsGuid(type))
@@ -305,27 +320,39 @@ namespace RSql4Net.Models.Queries
             }
         }
 
-        public static object GetValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+        public static object GetAlphabetic<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy = null)
         {
-            CheckParameters(parameter, expressionValue, context);
-
-            if (expressionValue.Property.PropertyType == typeof(string))
+            if (IsChar(expressionValue.Property.PropertyType))
             {
-                return GetString<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
+                return GetChar<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
+            
+            return GetString<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
+        }
 
+        public static object GetTemporal<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+            RSqlQueryParser.ComparisonContext context,
+            JsonNamingPolicy jsonNamingPolicy = null)
+        { 
+            if (IsDateTimeOffset(expressionValue.Property.PropertyType))
+            {
+                return GetDateTimeOffset<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
+            }
+            
+            return GetDateTime<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
+        }
+
+        public static object GetNumeric<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+            RSqlQueryParser.ComparisonContext context,
+            JsonNamingPolicy jsonNamingPolicy = null)
+        {
             if (IsShort(expressionValue.Property.PropertyType))
             {
                 return GetShort<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
-
-            if (IsInt(expressionValue.Property.PropertyType))
-            {
-                return GetInt<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
-            }
-
+            
             if (IsLong(expressionValue.Property.PropertyType))
             {
                 return GetLong<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
@@ -345,30 +372,39 @@ namespace RSql4Net.Models.Queries
             {
                 return GetDecimal<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
-
-            if (IsBool(expressionValue.Property.PropertyType))
-            {
-                return GetBoolean<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
-            }
-
-            if (IsDateTime(expressionValue.Property.PropertyType))
-            {
-                return GetDateTime<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
-            }
-
-            if (IsDateTimeOffset(expressionValue.Property.PropertyType))
-            {
-                return GetDateTimeOffset<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
-            }
-
+            
             if (IsByte(expressionValue.Property.PropertyType))
             {
                 return GetByte<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
+            
+            return GetInt<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
+        }
 
-            if (IsChar(expressionValue.Property.PropertyType))
+        public static object GetValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+            RSqlQueryParser.ComparisonContext context,
+            JsonNamingPolicy jsonNamingPolicy = null)
+        {
+            CheckParameters(parameter, expressionValue, context);
+
+            if (IsNumeric(expressionValue.Property.PropertyType))
             {
-                return GetChar<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
+                return GetNumeric<T>(parameter, expressionValue, context, jsonNamingPolicy);
+            }
+
+            if (IsTemporal(expressionValue.Property.PropertyType))
+            {
+                return GetTemporal<T>(parameter, expressionValue, context, jsonNamingPolicy);
+            }
+
+            if (IsAlphabetic(expressionValue.Property.PropertyType))
+            {
+                return GetAlphabetic<T>(parameter, expressionValue, context, jsonNamingPolicy);
+            }
+
+            if (IsBool(expressionValue.Property.PropertyType))
+            {
+                return GetBoolean<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
 
             if (IsEnum(expressionValue.Property.PropertyType))
@@ -434,11 +470,6 @@ namespace RSql4Net.Models.Queries
             if (Guid.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
-            }
-
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
-            {
-                return expression;
             }
 
             throw new InvalidConversionException(valueContext, typeof(Guid));

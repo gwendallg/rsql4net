@@ -108,5 +108,13 @@ namespace RSql4Net.Tests.Models.Queries
         {
             Assert.Throws<ComparisonInvalidComparatorSelectionException>(() => OnShouldBeLowerThanOrEquals());
         }
+        
+        [Fact]
+        public void ShouldThrowInvalidConversionException()
+        {
+            this.Invoking(s => OnShouldThrowInvalidConversionException("a"))
+                .Should()
+                .Throw<InvalidConversionException>();
+        }
     }
 }

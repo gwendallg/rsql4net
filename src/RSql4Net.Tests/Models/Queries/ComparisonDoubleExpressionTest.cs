@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using FluentAssertions;
+using RSql4Net.Models.Queries.Exceptions;
 using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries
@@ -109,20 +111,24 @@ namespace RSql4Net.Tests.Models.Queries
             OnShouldBeNotInNullable();
         }
 
-        /*
         [Fact]
         public virtual void ShouldBeIn()
         {
             OnShouldBeIn();
         }
-        */
-
-        /*
+     
         [Fact]
         public virtual void ShouldBeInNullable()
         {
             OnShouldBeInNullable();
         }
-        */
+        
+        [Fact]
+        public void ShouldThrowInvalidConversionException()
+        {
+            this.Invoking(s => OnShouldThrowInvalidConversionException("a"))
+                .Should()
+                .Throw<InvalidConversionException>();
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void ShouldBeThrowQueryComparisonUnknownSelectorException()
         {
-            const string query = "int32==1";
+            const string query = "int32>=1";
             this.Invoking(o => Helper.Function<MockQuery>(query))
                 .Should().Throw<ComparisonUnknownSelectorException>();
         }
