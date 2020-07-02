@@ -132,3 +132,4 @@ namespace RSql4Net.Tests.Models.Queries
         }
     }
 }
+
