@@ -157,8 +157,8 @@ These objects define the paging and sorting criteria to apply.
 | Operation |  Description |
 |-----------|--------------|
 | PageSize | defined the size of page to return |
-| PageNumber | defined the page number of page to return |
-| Sort | contains the list of sorts to apply |
+| PageNumber | defined the page number to return |
+| Sort | contains the list of sorts to apply (see RSqlSort)|
 
 #### RSqlSort
 
@@ -173,16 +173,16 @@ These objects define the paging and sorting criteria to apply.
 <img src="docs/uml_IRSqlPage.svg" alt="uml_IRSqlPage" >
 </p>
 
+
 | Operation |  Description |
 |-----------|--------------|
-| TotalElements | total number of items contained |
-| Number | number page |
-| NumberOfElement | number of items contained in page |
-| TotalPages | total number of pages |
-| HasContent | the current page contains items |
-| HasPrevious | the current page has a previous page |
-| HasNext | the current page has a next page |
-| HasNext | contains of current page |
+| TotalElements | total count of element returned by where clause |
+| Number | current number page |
+| NumberOfElement | count of elements in the current page |
+| TotalPages | total count of pages |
+| HasContent | does the current page contains elements ? |
+| HasPrevious | does the current page have a previous page ? |
+| HasNext | does the current page have a next page ? |
 
 ### Configuration
 
