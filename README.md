@@ -5,7 +5,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE) [![Nuget](https://img.shields.io/nuget/v/rsql4net)]()
 
-RSql4Net is AspNet Core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a query in RSQL format to lambda expression.
+RSql4Net is a aspNet .net core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a HTTP request who is in RSQL format to C# lambda expression.
 
 ## Continuous integration
 
@@ -34,19 +34,22 @@ dotnet add package RSql4Net
 
 ## Quick Start
 
-1. Add the RSql4Ndt nuget package in your project.
+1. Add the RSql4Net nuget package in your project.
 
-2. In your project, modify the Startup.cs class to add the RSql Extension
+2. In your project, modify the Startup.cs class to add the RSql extension
 
 ```csharp
 
-    public void ConfigureServices(IServiceCollection services)
+    using RSql4Net;
+
+    public class Startup
     {
-        ...
-        services
-            .AddControllers()
-            .AddRSql();
-        ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services
+                .AddControllers()
+                .AddRSql();
+        }
     }
 
 ```
@@ -55,25 +58,32 @@ dotnet add package RSql4Net
 
 ```csharp
 
-    // like Get operation
-    [HttpGet]
-    public IActionResult Get([FromQuery] IRSqlQuery<MyModel> query,[FromQuery] IRSqlPageable<Model> pageable)
+    using RSql4Net.Models.Paging;
+    using RSql4Net.Models.Queries;
+
+    namespace MyNamespace
     {
-        // the query parameters are correctly parsed ?
-        if (ModelState.IsValid)
+        public MyController : Controller
         {
-            // your repository to filter
-            IQueryable<MyModel> repository;
+            [HttpGet]
+            public IActionResult Get([FromQuery] IRSqlQuery<MyModel> query,[FromQuery] IRSqlPageable<MyModel> pageable)
+            {
+                // the query parameters are correctly parsed ?
+                if (ModelState.IsValid)
+                {
+                    // your repository to filter
+                    IQueryable<MyModel> repository;
 
-            // the C# expression from query string parsing
-            var filter = query.Value();
+                    // the C# expression from query string parsing
+                    var filter = query.Value();
 
-            // your filtered repository
-            var filteredData = repository.Where(filter);
+                    // your filtered repository
+                    var filteredData = repository.Where(filter);
 
-            // create Http result response
-
-            ...
+                    // create Http result response
+                    return OK();
+                }
+            }
         }
     }
 
@@ -83,18 +93,15 @@ or more simply, with use the extension method in ControllerBaseExtensions.cs to 
 
 ```csharp
 
-    ...
     using RSql4Net.Models.Paging;
     using RSql4Net.Models.Queries;
     using RSql4Net.Samples.Models;
     using RSql4Net.Controllers;
-    ...
 
     namespace MyNamespace
     {
         public class MyController : Controller
         {
-            ...
             [HttpGet]
             public IActionResult Get([FromQuery] IRSqlQuery<MyModel> query,[FromQuery] IRSqlPageable<MyModel> pageable)
             {
@@ -112,9 +119,9 @@ or more simply, with use the extension method in ControllerBaseExtensions.cs to 
                 // PartialContent:206 ( the page contains a part results)
                 return this.Page(repository, pageable, query);
             }
-            ...
         }
     }
+
 ```
 
 ## Documentation
@@ -135,7 +142,7 @@ This objects define the RSql Query.
 
 | Operation |  Description |
 |-----------|--------------|
-| Value |  contains the Query string parameters converted to Lambda Expression.|
+| Value |  contains the Query string parameters converted to C# Lambda Expression.|
 
 ### IRSqlPageable, RSqlPageable and RSqlSort
 
@@ -181,84 +188,93 @@ These objects define the paging and sorting criteria to apply.
 
 #### Customize query string parameter names
 
-To change query string parameter names, you would modify the RSql configuration.
+To change query string parameter names, you could modify the RSql configuration like the below sample.
 
 ```csharp
 
-    public void ConfigureServices(IServiceCollection services)
+    using RSql4Net;
+
+    public class Startup
     {
-        ...
-        services
-            .AddControllers()
-            .AddRSql(
-                options =>
-                    options
-                        // change the query string parameter name for RSql query field
-                        .QueryField("q")
-                        // change the query string parameter name for page size field
-                        .PageSizeField("si")
-                        // change the query string parameter name for page number field
-                        .PageNumberField("of")
-                        // change the default page size
-                        .PageSize(50)
-            );
-        ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services
+                .AddControllers()
+                .AddRSql(
+                    options =>
+                        options
+                            // change the query string parameter name for RSql query field
+                            .QueryField("q")
+                            // change the query string parameter name for page size field
+                            .PageSizeField("si")
+                            // change the query string parameter name for page number field
+                            .PageNumberField("of")
+                            // change the default page size
+                            .PageSize(50)
+                );
+        }
     }
+
 ```
 
 #### Add Memory cache for RSql queries
 
-To add a cache Memory for RSql queries, you would modify the RSql configuration.
+To add a cache Memory to RSql queries, you could modify the RSql configuration like below sample.
 
 ```csharp
 
-    public void ConfigureServices(IServiceCollection services)
+    using RSql4Net;
+
+    public class Startup
     {
-        ...
-
-        // create the memory cache
-        var memoryCache = new MemoryCache(
-            new MemoryCacheOptions()
-            {
-                SizeLimit = 1024
-            }
-        );
-
-        services
-            .AddRSql(
-                options =>
-                    // define the memory cache used for RSql queries
-                    .QueryCache(memoryCache)
-                    // invoked when register a new Rsql query in memory cache
-                    .OnCreateCacheEntry((o) =>
-                    {
-                        o.Size = 1024;
-                        o.SlidingExpiration = TimeSpan.FromSeconds(25);
-                        o.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                    })
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // we create the RSql cache memory
+            var memoryCache = new MemoryCache(
+                new MemoryCacheOptions()
+                {
+                    SizeLimit = 1024
+                }
             );
-        ...
+
+            services
+                .AddRSql(
+                    options =>
+                        // we define the memory cache who is used for RSql queries
+                        .QueryCache(memoryCache)
+                        // we define a function who is invoked when register a new Rsql query in memory cache
+                        .OnCreateCacheEntry((o) =>
+                        {
+                            o.Size = 1024;
+                            o.SlidingExpiration = TimeSpan.FromSeconds(25);
+                            o.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                        })
+                );
+        }
     }
+
 ```
 
 #### Add Rsql definition in SwaggerGen
 
-To add a cache Memory for RSql queries, you would modify the RSql configuration.
+To add a Swashbuckle OpenAPI suppport to RSql queries, you could modify the RSql configuration like the below sample.
 
 ```csharp
 
-    public void ConfigureServices(IServiceCollection services)
+    using RSql4Net.SwaggerGen;
+
+    public class Startup
     {
-        ...
-        services.AddSwaggerGen(c =>
-            {
-                ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+                {
                 // add supported to Rsql SwaggerGen Documentation
                 c.OperationFilter<RSqlOperationFilter>();
-                ...
-            }
-        ...
+                }
+        }
     }
+
 ```
 
 ## RSQL syntax
@@ -309,13 +325,13 @@ with customer json model like ,
 }
 ```
 
-#### example n°1 : find all items with : **name** equal West AND debit > 0**
+#### example n°1 : find all items with : name equal West AND debit > 0
 
 **RSQL** : name==West;debit=gt=0
 
 **Request URL** : https://localhost:5003/customers?query=name%3D%3DWest%3Bdebit%3Dgt%3D0
 
-#### example n°2 : find all items with : **address.city** start with Pales% OR *name* equals West or East
+#### example n°2 : find all items with : address.city start with Pales OR name equals West or East
 
 **RSQL** : address.city==Pales*,name=in=(West,East)
 
@@ -323,13 +339,13 @@ with customer json model like ,
 
 ### Paging and sorting examples
 
-#### example n°1 : find all items with : **debit** great than or equals to 0 AND i want the 2nd page with 50 items by page
+#### example n°1 : find all items with : debit great than or equals to 0 AND i want the 2nd page with 50 items by page
 
 **RSQL** : debit=ge=0&pageNumber=1&pageSize=50
 
 **Request URL** : https://localhost:5003/customers?query=debit%3Dge%3D0&page_number=1&page_size=50
 
-#### example n°2 : find all items with : **debit** great than or equals to 0 AND i want the first page with 50 items by page AND i sort ascending by name AND i sort descending by credit
+#### example n°2 : find all items with : debit great than or equals to 0 AND i want the first page with 50 items by page AND i sort ascending by name AND i sort descending by credit
 
 **RSQL** : debit=ge=0&pageNumber=1&pageSize=50&sort=name;asc&sort=credit;desc
 
