@@ -5,7 +5,7 @@
 #addin Cake.FileHelpers&version=3.2.1
 
 #tool nuget:?package=ReportGenerator&version=4.5.8
-#tool nuget:?package=GitVersion.CommandLine&version=4.0.0
+#tool nuget:?package=GitVersion.CommandLine&version=5.0.1
 #tool nuget:?package=Coveralls.net&version=1.0.0
 #tool nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0
 
@@ -59,7 +59,7 @@ Task("Version")
     .Does(()=>{
         version = GitVersion(
             new GitVersionSettings {
-                UpdateAssemblyInfo = true
+                //UpdateAssemblyInfo = true
         });
         Information($"SemVer: {version.SemVer}");
 });
