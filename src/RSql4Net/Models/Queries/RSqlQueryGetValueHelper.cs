@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Threading;
-using Microsoft.OpenApi.Any;
 using RSql4Net.Models.Queries.Exceptions;
 
 namespace RSql4Net.Models.Queries
@@ -215,7 +214,7 @@ namespace RSql4Net.Models.Queries
                 .ToList();
         }
 
-        public static List<object> GetNumerics(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        public static List<object> GetNumericValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             if (IsByte(type))
             {
@@ -249,7 +248,7 @@ namespace RSql4Net.Models.Queries
             return GetInts(argumentsContext);
         }
 
-        public static List<object> GetTemporals(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        public static List<object> GetTemporalValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             if (IsDateTimeOffset(type))
             {
@@ -258,7 +257,7 @@ namespace RSql4Net.Models.Queries
             return GetDateTimes(argumentsContext);
         }
 
-        public static List<object> GetAlphabetics(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        public static List<object> GetAlphabeticValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             if (IsChar(type))
             {
@@ -276,17 +275,17 @@ namespace RSql4Net.Models.Queries
 
             if (IsNumeric(type))
             {
-                return GetNumerics(type, argumentsContext);
+                return GetNumericValues(type, argumentsContext);
             }
             
             if (IsAlphabetic(type))
             {
-                return GetAlphabetics(type, argumentsContext);
+                return GetAlphabeticValues(type, argumentsContext);
             }
 
             if (IsTemporal(type))
             {
-                return GetTemporals(type, argumentsContext);
+                return GetTemporalValues(type, argumentsContext);
             }
 
             if (IsBool(type))
@@ -320,7 +319,7 @@ namespace RSql4Net.Models.Queries
             }
         }
 
-        public static object GetAlphabetic<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+        public static object GetAlphabeticValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy = null)
         {
@@ -332,7 +331,7 @@ namespace RSql4Net.Models.Queries
             return GetString<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
         }
 
-        public static object GetTemporal<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+        public static object GetTemporalValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy = null)
         { 
@@ -344,7 +343,7 @@ namespace RSql4Net.Models.Queries
             return GetDateTime<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
         }
 
-        public static object GetNumeric<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+        public static object GetNumericValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy = null)
         {
@@ -389,17 +388,17 @@ namespace RSql4Net.Models.Queries
 
             if (IsNumeric(expressionValue.Property.PropertyType))
             {
-                return GetNumeric<T>(parameter, expressionValue, context, jsonNamingPolicy);
+                return GetNumericValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
             }
 
             if (IsTemporal(expressionValue.Property.PropertyType))
             {
-                return GetTemporal<T>(parameter, expressionValue, context, jsonNamingPolicy);
+                return GetTemporalValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
             }
 
             if (IsAlphabetic(expressionValue.Property.PropertyType))
             {
-                return GetAlphabetic<T>(parameter, expressionValue, context, jsonNamingPolicy);
+                return GetAlphabeticValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
             }
 
             if (IsBool(expressionValue.Property.PropertyType))
@@ -409,8 +408,8 @@ namespace RSql4Net.Models.Queries
 
             if (IsEnum(expressionValue.Property.PropertyType))
             {
-                return GetEnum(context.arguments().value()[0],
-                    expressionValue.Property.PropertyType);
+                return GetEnum<T>(parameter, context.arguments().value()[0],
+                    expressionValue.Property.PropertyType, jsonNamingPolicy);
             }
 
             if (IsGuid(expressionValue.Property.PropertyType))
@@ -422,24 +421,33 @@ namespace RSql4Net.Models.Queries
         }
 
         /// <summary>
-        ///     try to convert value context to enum value
+        /// try to convert value context to enum values
         /// </summary>
+        /// <param name="parameter"></param>
         /// <param name="valueContext"></param>
         /// <param name="enumType"></param>
+        /// <param name="jsonNamingPolicy"></param>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="InvalidConversionException"></exception>
-        private static object GetEnum(RSqlQueryParser.ValueContext valueContext,
-            Type enumType)
+        private static object GetEnum<T>(
+            ParameterExpression parameter,
+            RSqlQueryParser.ValueContext valueContext,
+            Type enumType,
+            JsonNamingPolicy jsonNamingPolicy = null)
         {
-            try
+            if (Enum.TryParse(enumType.IsGenericType ? enumType.GetGenericArguments()[0] : enumType,
+                valueContext.GetText(), true, out var result))
             {
-                return Enum.Parse(enumType.IsGenericType ? enumType.GetGenericArguments()[0] : enumType,
-                    valueContext.GetText(), true);
+                return result;
             }
-            catch
+
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
             {
-                throw new InvalidConversionException(valueContext, enumType);
+                return expression;
             }
+
+            throw new InvalidConversionException(valueContext, enumType);
         }
 
         private static object GetString<T>(ParameterExpression parameter,
@@ -470,6 +478,11 @@ namespace RSql4Net.Models.Queries
             if (Guid.TryParse(valueContext.GetText(), out var result))
             {
                 return result;
+            }
+            
+            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
+            {
+                return expression;
             }
 
             throw new InvalidConversionException(valueContext, typeof(Guid));

@@ -78,8 +78,8 @@ namespace RSql4Net.Tests
         public static Func<T, bool> Function<T>(string query, Action<Settings> settingsConfiguration = null,
             Action<JsonOptions> jsonOptionsConfiguration = null) where T : class
         {
-            return Expression<T>(query, settingsConfiguration, jsonOptionsConfiguration)
-                .Compile();
+            var expression = Expression<T>(query, settingsConfiguration, jsonOptionsConfiguration);
+            return expression.Compile();
         }
 
         public static string GetJsonPropertyName(object obj, IOptions<JsonOptions> option = null)
@@ -87,6 +87,14 @@ namespace RSql4Net.Tests
             var o = option ?? JsonOptions();
             return o.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(obj.GetType().Name);
         }
+
+        public static string GetChildJsonPropertyName(object obj, IOptions<JsonOptions> option =null)
+        {
+            var o = option ?? JsonOptions();
+            return o.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName("ChildP") + "." +
+                GetJsonPropertyName(obj, o);
+        }
+        
 
     }
 }

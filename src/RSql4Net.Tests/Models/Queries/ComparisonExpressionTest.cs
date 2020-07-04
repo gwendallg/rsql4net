@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
+﻿using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
-using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries
 {
@@ -46,18 +43,24 @@ namespace RSql4Net.Tests.Models.Queries
             return new List<T> {Manifest1(), Manifest2()};
         }
 
-        protected MockQuery Actual(object obj, bool nullable = false)
+        protected MockQuery Actual(object obj, bool nullable = false, MockQuery child = null)
         {
             var property = typeof(MockQuery).GetProperty(obj.GetType().Name + (nullable ? "Null" : "") + "P");
             var result = new MockQuery();
             property?.SetValue(result, obj);
+            if (child != null)
+            {
+                result.ChildP = child;
+            }
             return result;
         }
         
         #region =in=
 
         /// <summary>
-        /// test query is :  {type}P =in= ( manifest1, manifest2 ) 
+        /// test query is :
+        ///     - {type}P =in= ( manifest1, manifest2 )
+        ///     - childP.{type}P =in= ( manifest1, manifest2 )
         /// </summary>
         /// <param name="closure"></param>
         protected void OnShouldBeIn(char? closure = null)
@@ -70,11 +73,23 @@ namespace RSql4Net.Tests.Models.Queries
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
+            
+            // childP.{type}P =in= ( manifest1, manifest2 )
+            var child = Actual(obj);
+            actual = new MockQuery() { ChildP = child };
+            query = $"{Helper.GetChildJsonPropertyName(obj)}P=in={listOfManifest}";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
         }
 
         /// <summary>
-        /// test query is : {type}NullP =in= ( manifest1, manifest2 ) 
+        /// test query is :
+        ///     - {type}NullP =in= ( manifest1, manifest2 )
+        ///     - childP.{type}NullP =in= ( manifest1, manifest2 )
         /// </summary>
         protected void OnShouldBeInNullable()
         {
@@ -86,7 +101,16 @@ namespace RSql4Net.Tests.Models.Queries
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj, true);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
+            
+            // childP.{type}NullP =in= ( manifest1, manifest2 )
+            query = $"{Helper.GetChildJsonPropertyName(obj)}NullP=in={listManifest}";
+            expected = Helper.Function<MockQuery>(query);
+            actual = new MockQuery() {ChildP = actual};
+            expected(actual)
+                .Should()
+                .BeTrue();
         }
         
         #endregion
@@ -94,7 +118,9 @@ namespace RSql4Net.Tests.Models.Queries
         #region =out=
       
         /// <summary>
-        /// test query is: {type}P =out= ( manifest1, manifest2 )
+        /// test query is:
+        ///     - {type}P =out= ( manifest1, manifest2 )
+        ///     - childP.{type}P =out= ( manifest1, manifest2 )
         /// </summary>
         protected void OnShouldBeNotIn()
         {
@@ -105,11 +131,23 @@ namespace RSql4Net.Tests.Models.Queries
             var query = $"{Helper.GetJsonPropertyName(obj)}P=out={listManifest}";
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(default(T));
-            Assert.True(expected(actual));
+            expected(actual)
+                .Should()
+                .BeTrue();
+
+            var child = Actual(default(T));
+            actual = new MockQuery() {ChildP = child};
+            query = $"{Helper.GetChildJsonPropertyName(obj)}P=out={listManifest}";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
         }
 
         /// <summary>
-        /// test query is : {type}NullP =out= ( manifest1, manifest2 ) 
+        /// test query is :
+        ///     - {type}NullP =out= ( manifest1, manifest2 )
+        ///     - childP.{type}NullP =out= ( manifest1, manifest2 )
         /// </summary>
         protected void OnShouldBeNotInNullable()
         {
@@ -121,7 +159,18 @@ namespace RSql4Net.Tests.Models.Queries
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(default(T), true);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
+            
+            // childP.{type}NullP =out= ( manifest1, manifest2 )
+            query = $"{Helper.GetChildJsonPropertyName(obj)}NullP=out={listManifest}";
+            expected = Helper.Function<MockQuery>(query);
+            actual = new MockQuery() {ChildP = actual};
+            expected(actual)
+                .Should()
+                .BeTrue();
+
+
         }
         
         #endregion
@@ -129,7 +178,11 @@ namespace RSql4Net.Tests.Models.Queries
         #region ==eq== Or ==
 
         /// <summary>
-        /// test query is : {type}P == manifest1 OR {type}P =eq= manifest1
+        /// test query is :
+        ///     - {type}P == manifest1
+        ///     - {type}P =eq= manifest1
+        ///     - {type}P == childP.{type}P
+        ///     - {type}P =eq= childP.{type}P 
         /// </summary>
         protected void OnShouldBeEquals()
         {
@@ -148,10 +201,30 @@ namespace RSql4Net.Tests.Models.Queries
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
                 .Should().BeTrue();
+            
+            //  {type}P=eq=childP.{type}P
+            var child = Actual(obj);
+            actual = Actual(obj, child: child);
+            query = $"{Helper.GetJsonPropertyName(obj)}P=={Helper.GetChildJsonPropertyName(obj)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should().BeTrue();
+            
+            //  {type}P=eq=childP.{type}P
+            child = Actual(obj);
+            actual = Actual(obj, child: child);
+            query = $"{Helper.GetJsonPropertyName(obj)}P=eq={Helper.GetChildJsonPropertyName(obj)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should().BeTrue();
         }
             
         /// <summary>
-        /// test query is : {type}NullP == manifest1 OR {type}NullP =eq= manifest1
+        /// test query is :
+        ///     - {type}NullP == manifest1
+        ///     - {type}NullP =eq= manifest1
+        ///     - {type}NullP == childP.{type}NullP
+        ///     - {type}NullP =eq= childP.{type}NullP
         /// </summary>
         protected void OnShouldBeEqualsWithNullable()
         {
@@ -170,6 +243,22 @@ namespace RSql4Net.Tests.Models.Queries
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
                 .Should().BeTrue();
+            
+            //  {type}P=eq=childP.{type}P
+            var child = Actual(obj);
+            actual = Actual(obj, child: child);
+            query = $"{Helper.GetJsonPropertyName(obj)}NullP=={Helper.GetChildJsonPropertyName(obj)}NullP";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should().BeTrue();
+            
+            //  {type}P=eq=childP.{type}P
+            child = Actual(obj);
+            actual = Actual(obj, child: child);
+            query = $"{Helper.GetJsonPropertyName(obj)}NullP=eq={Helper.GetChildJsonPropertyName(obj)}NullP";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should().BeTrue();
         }
 
         #endregion
@@ -177,7 +266,11 @@ namespace RSql4Net.Tests.Models.Queries
         #region =neq= Or !=
 
         /// <summary>
-        /// test query is : {type}P != manifest1 OR {type}P =neq= manifest1
+        /// test query is :
+        ///     - {type}P != manifest1
+        ///     - {type}P =neq= manifest1
+        ///     - {type}P != childP.{type}P
+        ///     - {type}P =neq= childP.{type}P
         /// </summary>
         protected void OnShouldBeNotEquals()
         {
@@ -190,17 +283,37 @@ namespace RSql4Net.Tests.Models.Queries
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj2);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
            
             // {type}P =neq= manifest1
             query = $"{Helper.GetJsonPropertyName(obj1)}P=neq={obj1ToString}";
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
+            
+            // {type}P != childP.{type}P
+            query = $"{Helper.GetJsonPropertyName(obj1)}P!={Helper.GetChildJsonPropertyName(obj1)}";
+            actual.ChildP = Actual(obj1);
+            expected(actual)
+                .Should()
+                .BeTrue();
+            
+            // {type}P =neq= childP.{type}P
+            query = $"{Helper.GetJsonPropertyName(obj1)}P=neq={Helper.GetChildJsonPropertyName(obj1)}";
+            actual.ChildP = Actual(obj1);
+            expected(actual)
+                .Should()
+                .BeTrue(); 
         }
 
         /// <summary>
-        /// test query is : {type}NullP != manifest1 OR {type}NullP =neq= manifest1
+        /// test query is :
+        ///     - {type}NullP != manifest1
+        ///     - {type}NullP =neq= manifest1
+        ///     - {type}NullP != childP.{type}NullP
+        ///     - {type}NullP =neq= childP.{type}NullP
         /// </summary>
         protected void OnShouldBeNotEqualsWithNullable()
         {
@@ -213,13 +326,29 @@ namespace RSql4Net.Tests.Models.Queries
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj2, true);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
 
             // {type}NullP =eq= manifest1
             query = $"{Helper.GetJsonPropertyName(obj1)}NullP=neq={obj1ToString}";
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
+            
+            // {type}NullP != childP.{type}NullP
+            query = $"{Helper.GetJsonPropertyName(obj1)}NullP!={Helper.GetChildJsonPropertyName(obj1)}NullP";
+            expected = Helper.Function<MockQuery>(query);
+            actual.ChildP = Actual(obj1, true);
+            expected(actual)
+                .Should()
+                .BeTrue();
+            
+            // {type}NullP =neq= childP.{type}NullP
+            query = $"{Helper.GetJsonPropertyName(obj1)}NullP=neq={Helper.GetChildJsonPropertyName(obj1)}NullP";
+            expected(actual)
+                .Should()
+                .BeTrue();
         }
 
         #endregion
@@ -227,7 +356,11 @@ namespace RSql4Net.Tests.Models.Queries
         #region =lt= Or <
 
         /// <summary>
-        /// test query is : {type}P < manifest1 OR {type}P =lt= manifest1
+        /// test query is :
+        ///     - {type}P < manifest1
+        ///     - {type}P =lt= manifest1
+        ///     - {type}P < child.{type}P
+        ///     - {type}P =lt= child.{type}P
         /// </summary>
         protected void OnShouldBeLowerThan()
         {
@@ -239,13 +372,37 @@ namespace RSql4Net.Tests.Models.Queries
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj1, true);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
 
             // {type}P =lt= manifest1
             query = $"{Helper.GetJsonPropertyName(obj1)}P=lt={obj2ToString}";
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
-                .Should().BeTrue();
+                .Should()
+                .BeTrue();
+            
+            //  {type}P<childP.{type}P
+            var child = Actual(Manifest2(), true);
+            actual = Actual(Manifest1(), child: child);
+            System.Diagnostics.Debug.Print(Manifest1ToString());
+            System.Diagnostics.Debug.Print(Manifest2ToString());
+            
+            
+            /*
+            query = $"{Helper.GetJsonPropertyName(obj1)}P<{Helper.GetChildJsonPropertyName(obj1)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
+            */
+            /*
+            query = $"{Helper.GetJsonPropertyName(obj1)}P=lt={Helper.GetChildJsonPropertyName(obj1)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
+                */
         }
 
         /// <summary>

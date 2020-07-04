@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -11,61 +10,52 @@ namespace RSql4Net.Models.Queries
 {
     public static class RSqlQueryExpressionHelper
     {
-        private static readonly IList<Type> EqOrNeqOrInOrOutAuthorizedType = new List<Type>
-        {
-            typeof(string),
-            typeof(bool),
-            typeof(bool?),
-            typeof(short),
-            typeof(short?),
-            typeof(int),
-            typeof(int?),
-            typeof(long),
-            typeof(long?),
-            typeof(float),
-            typeof(float?),
-            typeof(double),
-            typeof(double?),
-            typeof(decimal),
-            typeof(decimal?),
-            typeof(DateTime),
-            typeof(DateTime?),
-            typeof(DateTimeOffset),
-            typeof(DateTimeOffset?),
-            typeof(char),
-            typeof(char?),
-            typeof(byte),
-            typeof(byte?),
-            typeof(Guid),
-            typeof(Guid?)
-        };
+        private static readonly IList<Type> EqualComparisonTypes;
+        private static readonly IList<Type> LowerOrGreaterComparisonTypes;
 
-        private static readonly IList<Type> LtOrGtOrLeOrLeAuthorizedType = new List<Type>
+        static RSqlQueryExpressionHelper()
         {
-            typeof(short),
-            typeof(short?),
-            typeof(int),
-            typeof(int?),
-            typeof(long),
-            typeof(long?),
-            typeof(float),
-            typeof(float?),
-            typeof(double),
-            typeof(double?),
-            typeof(decimal),
-            typeof(decimal?),
-            typeof(DateTime),
-            typeof(DateTime?),
-            typeof(DateTimeOffset),
-            typeof(DateTimeOffset?),
-            typeof(char),
-            typeof(char?),
-            typeof(byte),
-            typeof(byte?)
-        };
+            LowerOrGreaterComparisonTypes = new List<Type>
+            {
+                typeof(short),
+                typeof(short?),
+                typeof(int),
+                typeof(int?),
+                typeof(long),
+                typeof(long?),
+                typeof(float),
+                typeof(float?),
+                typeof(double),
+                typeof(double?),
+                typeof(decimal),
+                typeof(decimal?),
+                typeof(DateTime),
+                typeof(DateTime?),
+                typeof(DateTimeOffset),
+                typeof(DateTimeOffset?),
+                typeof(char),
+                typeof(char?),
+                typeof(byte),
+                typeof(byte?)
+            };
+
+            EqualComparisonTypes = new List<Type>(LowerOrGreaterComparisonTypes)
+            {
+                typeof(string),
+                typeof(bool), 
+                typeof(bool?), 
+                typeof(Guid), 
+                typeof(Guid?)
+            };
+        }
 
         private static readonly string MaskLk = $"[{Guid.NewGuid().ToString()}]";
 
+        /// <summary>
+        /// 42 is a true response
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static Expression<Func<T, bool>> True<T>()
         {
             return f => true;
@@ -185,7 +175,18 @@ namespace RSql4Net.Models.Queries
             result = Expression.Lambda<Func<T, bool>>(body, parameter);
             return result;
         }
-
+        
+        /// <summary>
+        /// extract the unique value
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="expressionValue"></param>
+        /// <param name="context"></param>
+        /// <param name="jsonNamingPolicy"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ComparisonNotEnoughArgumentException"></exception>
+        /// <exception cref="ComparisonTooManyArgumentException"></exception>
         private static object GetUniqueValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy = null)
@@ -204,6 +205,13 @@ namespace RSql4Net.Models.Queries
             return RSqlQueryGetValueHelper.GetValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
         }
 
+        /// <summary>
+        /// extract the multi value
+        /// </summary>
+        /// <param name="expressionValue"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="ComparisonNotEnoughArgumentException"></exception>
         private static List<object> GetMultipleValue(ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context)
         {
@@ -233,7 +241,7 @@ namespace RSql4Net.Models.Queries
             {
                 throw new ComparisonUnknownSelectorException(context);
             }
-            if (!EqOrNeqOrInOrOutAuthorizedType.Contains(expressionValue.Property.PropertyType) &&
+            if (!EqualComparisonTypes.Contains(expressionValue.Property.PropertyType) &&
                 (!expressionValue.Property.PropertyType.IsEnum &&
                  !(expressionValue.Property.PropertyType.IsGenericType &&
                    expressionValue.Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
@@ -312,7 +320,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -345,7 +353,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -378,7 +386,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -398,6 +406,15 @@ namespace RSql4Net.Models.Queries
                 expression), parameter);
         }
 
+        /// <summary>
+        /// extract the selector
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="context"></param>
+        /// <param name="jsonNamingPolicy"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         private static ExpressionValue GetSelector<T>(ParameterExpression parameter,
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy)
@@ -429,7 +446,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LtOrGtOrLeOrLeAuthorizedType.Contains(expressionValue.Property.PropertyType))
+            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
