@@ -10,44 +10,39 @@ namespace RSql4Net.Models.Queries
 {
     public static class RSqlQueryExpressionHelper
     {
-        private static readonly IList<Type> EqualComparisonTypes;
-        private static readonly IList<Type> LowerOrGreaterComparisonTypes;
-
-        static RSqlQueryExpressionHelper()
+        
+        private static readonly IList<Type> LowerOrGreaterComparisonTypes = new List<Type>
         {
-            LowerOrGreaterComparisonTypes = new List<Type>
-            {
-                typeof(short),
-                typeof(short?),
-                typeof(int),
-                typeof(int?),
-                typeof(long),
-                typeof(long?),
-                typeof(float),
-                typeof(float?),
-                typeof(double),
-                typeof(double?),
-                typeof(decimal),
-                typeof(decimal?),
-                typeof(DateTime),
-                typeof(DateTime?),
-                typeof(DateTimeOffset),
-                typeof(DateTimeOffset?),
-                typeof(char),
-                typeof(char?),
-                typeof(byte),
-                typeof(byte?)
-            };
+            typeof(short),
+            typeof(short?),
+            typeof(int),
+            typeof(int?),
+            typeof(long),
+            typeof(long?),
+            typeof(float),
+            typeof(float?),
+            typeof(double),
+            typeof(double?),
+            typeof(decimal),
+            typeof(decimal?),
+            typeof(DateTime),
+            typeof(DateTime?),
+            typeof(DateTimeOffset),
+            typeof(DateTimeOffset?),
+            typeof(char),
+            typeof(char?),
+            typeof(byte),
+            typeof(byte?)
+        };
 
-            EqualComparisonTypes = new List<Type>(LowerOrGreaterComparisonTypes)
-            {
-                typeof(string),
-                typeof(bool), 
-                typeof(bool?), 
-                typeof(Guid), 
-                typeof(Guid?)
-            };
-        }
+        private static readonly IList<Type> EqualComparisonTypes = new List<Type>(LowerOrGreaterComparisonTypes)
+        {
+            typeof(string),
+            typeof(bool), 
+            typeof(bool?), 
+            typeof(Guid), 
+            typeof(Guid?)
+        };
 
         private static readonly string MaskLk = $"[{Guid.NewGuid().ToString()}]";
 
