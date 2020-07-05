@@ -18,14 +18,14 @@ namespace RSql4Net.Models
         public static readonly MethodInfo MethodStringEndsWith =
             typeof(string).GetMethod("EndsWith", new[] {typeof(string)});
 
-        private static readonly Dictionary<Type, MethodContainsInfo> MethodListContains =
+        public static readonly Dictionary<Type, MethodContainsInfo> MethodListContains =
             new Dictionary<Type, MethodContainsInfo>();
 
-        private static readonly Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>
+        public static readonly Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>
             MappingJson2PropertyInfo =
                 new Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>();
 
-        private static readonly Type CDefaultNamingStrategy = typeof(DefaultNamingStrategy);
+        public static readonly Type CDefaultNamingStrategy = typeof(DefaultNamingStrategy);
 
         private static Dictionary<string, PropertyInfo> Build(IReflect type, JsonNamingPolicy jsonNamingPolicy = null)
         {
@@ -52,7 +52,7 @@ namespace RSql4Net.Models
             var attribute = propertyInfo.GetCustomAttribute<JsonPropertyAttribute>();
             if (attribute != null)
             {
-                return attribute.PropertyName;
+                propertyName = attribute.PropertyName;
             }
 
             return jsonNamingPolicy == null ? propertyName : jsonNamingPolicy.ConvertName(propertyName);

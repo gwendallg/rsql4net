@@ -447,25 +447,60 @@ namespace RSql4Net.Tests.Models.Queries
         #region =le= Or <=
     
         /// <summary>
-        /// test query : {type}P <= manifest1 Or {type}P =le= manifest1
+        /// test query :
+        ///     - {type}P <= manifest1
+        ///     - {type}P =le= manifest1
+        ///     - {type}P <= child.{type}P
+        ///     - {type}P =le= child.{type}P
         /// </summary>
         protected virtual void OnShouldBeLowerThanOrEquals()
         {
             var obj1 = Manifest1();
             var obj2ToString = Manifest2ToString();
+            var ob1ToString = Manifest1ToString();
             
-            // {type}P <= manifest1
+            // {type}P <= manifest2
             var query = $"{Helper.GetJsonPropertyName(obj1)}P<={obj2ToString}";
             var expected = Helper.Function<MockQuery>(query);
-            var actual = Actual(obj1, true);
+            var actual = Actual(obj1);
+            expected(actual)
+                .Should().BeTrue();
+            
+            // {type}P <= manifest1
+            query = $"{Helper.GetJsonPropertyName(obj1)}P<={ob1ToString}";
+            expected = Helper.Function<MockQuery>(query);
+            actual = Actual(obj1);
             expected(actual)
                 .Should().BeTrue();
 
-            // {type}P =le= manifest1
+            // {type}P =le= manifest2
             query = $"{Helper.GetJsonPropertyName(obj1)}P=le={obj2ToString}";
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
                 .Should().BeTrue();
+            
+            // {type}P <= manifest1
+            query = $"{Helper.GetJsonPropertyName(obj1)}P<={ob1ToString}";
+            expected = Helper.Function<MockQuery>(query);
+            actual = Actual(obj1);
+            expected(actual)
+                .Should().BeTrue();
+            
+            //  {type}P<=childP.{type}P
+            var child = Actual(Manifest2(), false);
+            actual.ChildP = child;
+            query = $"{Helper.GetJsonPropertyName(obj1)}P<={Helper.GetChildJsonPropertyName(obj1)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
+            
+            //  {type}P=lt=childP.{type}P
+            query = $"{Helper.GetJsonPropertyName(obj1)}P=le={Helper.GetChildJsonPropertyName(obj1)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
         }
 
         /// <summary>
@@ -488,6 +523,22 @@ namespace RSql4Net.Tests.Models.Queries
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
                 .Should().BeTrue();
+                        
+            //  {type}NullP<=childP.{type}NullP
+            var child = Actual(Manifest2(), true);
+            actual.ChildP = child;
+            query = $"{Helper.GetJsonPropertyName(obj1)}NullP<={Helper.GetChildJsonPropertyName(obj1)}NullP";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
+            
+            //  {type}P=lt=childP.{type}P
+            query = $"{Helper.GetJsonPropertyName(obj1)}NullP=le={Helper.GetChildJsonPropertyName(obj1)}NullP";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
         }
 
         #endregion
@@ -495,13 +546,17 @@ namespace RSql4Net.Tests.Models.Queries
         #region =gt= Or >
         
         /// <summary>
-        /// test query : {type}P > manifest1 Or {type}P =gt= manifest1
+        /// test query :
+        ///     - {type}P > manifest1
+        ///     - {type}P =gt= manifest
+        ///     - {type}P =gt= child.{type}P
+        ///     - {type}P =gt= child.{type}P 
         /// </summary>
         protected void OnShouldBeGreaterThan()
         {
             var obj2 = Manifest2();
             var obj1ToString = Manifest1ToString();
-            
+
             var query = $"{Helper.GetJsonPropertyName(obj2)}P>{obj1ToString}";
             var expected = Helper.Function<MockQuery>(query);
             var actual = Actual(obj2);
@@ -513,6 +568,22 @@ namespace RSql4Net.Tests.Models.Queries
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
                 .Should().BeTrue();
+            
+            //  {type}NullP>childP.{type}NullP
+            var child = Actual(Manifest2(), true);
+            actual.ChildP = child;
+            query = $"{Helper.GetJsonPropertyName(obj2)}P>{Helper.GetChildJsonPropertyName(obj2)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
+            
+            //  {type}P=gt=childP.{type}P
+            query = $"{Helper.GetJsonPropertyName(obj2)}P=gt={Helper.GetChildJsonPropertyName(obj2)}P";
+            expected = Helper.Function<MockQuery>(query);
+            expected(actual)
+                .Should()
+                .BeTrue();
         }
         
         /// <summary>

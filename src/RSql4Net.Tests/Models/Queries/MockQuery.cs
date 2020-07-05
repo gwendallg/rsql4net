@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace RSql4Net.Tests.Models.Queries
 {
@@ -59,5 +60,11 @@ namespace RSql4Net.Tests.Models.Queries
         public byte ByteP { get; set; }
 
         public byte? ByteNullP { get; set; }
+        
+        [JsonIgnore]
+        public string ExcludeProperty { get; set; }
+        
+        [JsonProperty("Test")]
+        public string OverrideProperty { get; set; }
     }
 }
