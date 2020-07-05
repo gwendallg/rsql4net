@@ -57,7 +57,7 @@ namespace RSql4Net.Models.Queries
             }
 
             var result = CreateAndAddCacheQuery(query.FirstOrDefault());
-            if (_logger.IsEnabled(LogLevel.Debug))
+            if (_logger.IsEnabled(LogLevel.Trace))
             {
                 _logger.LogDebug($"RSqlQuery tracing : ?{queryField}={query.FirstOrDefault()} -> {result.Value()}");
             }

@@ -38,7 +38,10 @@ namespace RSql4Net.Tests.Models.Queries.Exceptions
             this
                 .Invoking(f => Helper.Expression<MockQuery>(query))
                 .Should()
-                .Throw<InvalidConversionException>();
+                .Throw<InvalidConversionException>()
+                .And
+                .Origin.Should()
+                .NotBeNull();
         }
     }
 }
