@@ -197,7 +197,7 @@ To change query string parameter names, you could modify the RSql configuration 
 
 ```
 
-#### Add Memory cache for RSql queries
+#### How do you add a memory cache for RSql queries ?
 
 To add a cache Memory to RSql queries, you could modify the RSql configuration like below sample.
 
@@ -235,9 +235,9 @@ To add a cache Memory to RSql queries, you could modify the RSql configuration l
 
 ```
 
-#### Add RSql definition in SwaggerGen
+#### How do you add RSql definition in SwaggerGen ?
 
-To add a Swashbuckle OpenAPI suppport to RSql queries, you could modify the RSql configuration like the below sample.
+To add a Swashbuckle OpenAPI support to RSql queries, you could modify the RSql configuration like the below sample.
 
 ```csharp
 
@@ -257,7 +257,27 @@ To add a Swashbuckle OpenAPI suppport to RSql queries, you could modify the RSql
 
 ```
 
-#### Convert a RSql page To the other kind RSql page 
+#### How do you log your RSql Queries ?
+
+Update the appsettings.json file with debug level for RSql4net namespace
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "RSql4Net":"Debug"
+    }
+  }
+}
+```
+
+In the console ...
+
+<p align="center">
+<img src="docs/logs.png" alt="log" >
+</p>
+
+#### How do you convert a RSql page To the other kind RSql page ?
 
 ```csharp
 

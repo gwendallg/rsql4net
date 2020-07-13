@@ -5,8 +5,6 @@ using System.Linq.Expressions;
 using System.Net;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Moq;
 using RSql4Net.Models.Paging;
 using RSql4Net.Models.Queries;
 using RSql4Net.Samples.Controllers;
@@ -19,8 +17,7 @@ namespace RSql4Net.Samples.Tests.Controllers
     {
         private static CustomerController SeTup(IList<Customer> data)
         {
-            var logger = new Mock<ILogger<CustomerController>>();
-            return  new CustomerController(data, logger.Object);
+            return  new CustomerController(data);
         }
         
         [Fact]

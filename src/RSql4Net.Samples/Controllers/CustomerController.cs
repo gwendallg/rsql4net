@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using RSql4Net.Models.Paging;
 using RSql4Net.Models.Queries;
 using RSql4Net.Samples.Models;
@@ -14,12 +13,10 @@ namespace RSql4Net.Samples.Controllers
     public class CustomerController : Controller
     {
         private readonly IList<Customer> _customers;
-        private readonly ILogger<CustomerController> _logger;
-
-        public CustomerController(IList<Customer> customers, ILogger<CustomerController> logger)
+ 
+        public CustomerController(IList<Customer> customers)
         {
             _customers = customers;
-            _logger = logger;
         }
 
         /// <summary>

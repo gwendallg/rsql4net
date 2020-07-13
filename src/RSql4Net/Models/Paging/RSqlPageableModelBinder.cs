@@ -97,11 +97,10 @@ namespace RSql4Net.Models.Paging
                 }
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    _logger.LogDebug($"RSqlPageable<{typeof(T).FullName}> tracing pagesize: {pageSizeField}={pageSizeString} -> PageSize => {pageSize}");
+                    _logger.LogDebug($"RSqlPageable<{typeof(T).FullName}> pageSize: ?{pageSizeField}={pageSizeString} -> PageSize => {pageSize}");
                 }
                 return pageSize;
             }
-            
             return _settings.PageSize;
         }
 
@@ -116,10 +115,6 @@ namespace RSql4Net.Models.Paging
                 _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.PageNumberField);
             if (queryCollection.TryGetValue(pageNumberField, out var pageNumberString))
             {
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug($"RSqlPage<{typeof(T).FullName}> ?{pageNumberField}={pageNumberString}");
-                }
                 if (int.TryParse(pageNumberString[0], out var pageNumber))
                 {
                     if (pageNumber < 0)
@@ -133,7 +128,7 @@ namespace RSql4Net.Models.Paging
                 }
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    _logger.LogDebug($"RSqlPageable<{typeof(T).FullName}> tracing pagesize: {pageNumberField}={pageNumberString} -> PageNumber => {pageNumber}");
+                    _logger.LogDebug($"RSqlPageable<{typeof(T).FullName}> pageNumber: ?{pageNumberField}=s{pageNumberString} -> PageNumber => {pageNumber}");
                 }
                 return pageNumber;
             }
@@ -199,10 +194,8 @@ namespace RSql4Net.Models.Paging
 
                     var expression = Expression.Convert(exp.Expression, typeof(object));
                     var orderExpression = Expression.Lambda<Func<T, object>>(expression, parameter);
-                    if (_logger.IsEnabled(LogLevel.Debug))
-                    {
-                        _logger.LogDebug($"RSqlPageable<{typeof(T).FullName}> tracing sort: {sortField}={key};{value} -> {expression}");
-                    }
+                    var type = value ? "desc" : "asc";
+                    var expressionString = value ? "OrderByDescending" : "OrderBy";
                     if (value)
                     {
                         orderDescendingBy.Add(orderExpression);
@@ -210,6 +203,10 @@ namespace RSql4Net.Models.Paging
                     else
                     {
                         orderBy.Add(orderExpression);
+                    }
+                    if (_logger.IsEnabled(LogLevel.Debug))
+                    {
+                        _logger.LogDebug($"RSqlPageable<{typeof(T).FullName}> sort: ?{sortField}={key};{type} -> {expressionString}({exp.Expression})");
                     }
                 }
                 
