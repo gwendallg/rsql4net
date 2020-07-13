@@ -1,5 +1,7 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text;
+using FluentAssertions;
 using RSql4Net.Models.Queries.Exceptions;
 using Xunit;
 
@@ -121,6 +123,36 @@ namespace RSql4Net.Tests.Models.Queries
         }
 
         [Fact]
+        public void ShouldBeStartsWith()
+        {
+            var obj1 = Guid.NewGuid().ToString();
+            var query = Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}P=={obj1.ToCharArray()[0]}*");
+            query
+                .Compile()(Actual(obj1))
+                .Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldBeEndsWith()
+        {
+            var obj1 = Guid.NewGuid().ToString();
+            var query = Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}P==*{obj1.ToCharArray()[^1]}");
+            query
+                .Compile()(Actual(obj1))
+                .Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldBeContains()
+        {
+            var obj1 = Guid.NewGuid().ToString();
+            var query = Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}P==*{obj1.Substring(1, 1)}*");
+            query
+                .Compile()(Actual(obj1))
+                .Should().BeTrue();
+        }
+
+        [Fact]
         public virtual void ShouldBeNotEquals()
         {
             OnShouldBeNotEquals();
@@ -154,6 +186,15 @@ namespace RSql4Net.Tests.Models.Queries
             Assert.True(expected(actual));
         }
 
+        [Fact]
+        public void ShouldBeThrowComparisonInvalidComparatorSelectionExceptionTest()
+        {
+            var obj1 = Manifest1();
+            this.Invoking(f => _ = Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}P==(1,2)"))
+                .Should()
+                .Throw<ComparisonTooManyArgumentException>();
+        }
+        
         [Fact]
         public virtual void ShouldThrowExceptionGreaterThanOrEquals()
         {

@@ -703,7 +703,6 @@ namespace RSql4Net.Tests.Models.Queries
             var child = Actual(Manifest1(), true);
             actual.ChildP = child;
             query = $"{Helper.GetJsonPropertyName(obj2)}NullP>={Helper.GetChildJsonPropertyName(obj2)}NullP";
-            Console.WriteLine(query);
             expected = Helper.Function<MockQuery>(query);
             expected(actual)
                 .Should()

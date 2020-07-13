@@ -17,8 +17,15 @@ namespace RSql4Net.Tests.Models.Paging
             expected
                 .Should()
                 .BeNull();
+            
+            modelBinderProviderContextMock = new MockModelBinderProviderContext(typeof(int?));
+            pageableModelBinderProvider = new RSqlPageableModelBinderProvider();
+            expected = pageableModelBinderProvider.GetBinder(modelBinderProviderContextMock);
+            expected
+                .Should()
+                .BeNull();
         }
-
+        
         [Fact]
         public void ShouldBeWithClassPageableModelBinder()
         {

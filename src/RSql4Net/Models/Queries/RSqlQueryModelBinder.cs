@@ -22,7 +22,7 @@ namespace RSql4Net.Models.Queries
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
@@ -47,6 +47,10 @@ namespace RSql4Net.Models.Queries
         /// <returns></returns>
         public IRSqlQuery<T> Build(IQueryCollection queryCollection)
         {
+            if (queryCollection == null)
+            {
+                throw new ArgumentNullException(nameof(queryCollection));
+            }
             var queryField =
                 _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.QueryField);
             if (
@@ -57,9 +61,9 @@ namespace RSql4Net.Models.Queries
             }
 
             var result = CreateAndAddCacheQuery(query.FirstOrDefault());
-            if (_logger.IsEnabled(LogLevel.Trace))
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"RSqlQuery tracing : ?{queryField}={query.FirstOrDefault()} -> {result.Value()}");
+                _logger.LogDebug($"RSqlQuery<{typeof(T).FullName}> tracing query : ?{queryField}={query.FirstOrDefault()} -> {result.Value()}");
             }
             return result;
         }

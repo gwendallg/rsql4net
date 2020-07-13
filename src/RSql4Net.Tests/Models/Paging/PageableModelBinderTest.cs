@@ -15,20 +15,25 @@ namespace RSql4Net.Tests.Models.Paging
         [Fact]
         public void ShouldBeThrowArgumentNullException()
         {
-            // constructor
-            this.Invoking((a) => new RSqlPageableModelBinder<Customer>(null, Helper.JsonOptions()))
+            // constructor: settings is null
+            this.Invoking((a) => _= new RSqlPageableModelBinder<Customer>(null, Helper.JsonOptions(), Helper.MockLogger<Customer>().Object))
                 .Should()
                 .Throw<ArgumentNullException>();
             
-            // constructor
-            this.Invoking((a) => new RSqlPageableModelBinder<Customer>(Helper.Settings(), null))
+            // constructor: option is null
+            this.Invoking((a) => _= new RSqlPageableModelBinder<Customer>(Helper.Settings(), null, Helper.MockLogger<Customer>().Object))
+                .Should()
+                .Throw<ArgumentNullException>();
+            
+            // constructor: logger is null
+            this.Invoking((a) => _= new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(), null))
                 .Should()
                 .Throw<ArgumentNullException>();
             
             // build
             this.Invoking((a) =>
                 {
-                    var binder =  new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+                    var binder =  new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<Customer>().Object);
                     binder.Build(null);
                 })
                 .Should()
@@ -53,7 +58,7 @@ namespace RSql4Net.Tests.Models.Paging
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
            
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<Customer>().Object);
             await pageableModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result.Model as IRSqlPageable<Customer>;
@@ -90,7 +95,7 @@ namespace RSql4Net.Tests.Models.Paging
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<Customer>().Object);
             await pageableModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result;
@@ -113,7 +118,7 @@ namespace RSql4Net.Tests.Models.Paging
                 "sort", "name;desc,birthDate"
             );
             
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<Customer>().Object);
             var expected = pageableModelBinder.Build(queryCollection);
 
             // exp
@@ -143,7 +148,7 @@ namespace RSql4Net.Tests.Models.Paging
         {
             const int pageNumber = 10;
             var queryCollection = Helper.QueryCollection("pageNumber", Convert.ToString(pageNumber));
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<Customer>().Object);
             var expected = pageableModelBinder.Build(queryCollection);
             expected.PageNumber()
                 .Should().Be(pageNumber);
@@ -154,7 +159,7 @@ namespace RSql4Net.Tests.Models.Paging
         {
             const int pageSize = 10;
             var queryCollection = Helper.QueryCollection("pageSize", Convert.ToString(pageSize));
-            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var pageableModelBinder = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(),Helper.MockLogger<Customer>().Object);
             var expected = pageableModelBinder.Build(queryCollection);
 
             expected.PageSize()

@@ -11,7 +11,7 @@ namespace RSql4Net.Tests.Models.Paging.Exceptions
         public void ShouldBeInvalidSortDirectionException()
         {
             var queryCollection = Helper.QueryCollection("sort", "name;asc;sd");
-            var expected = new RSqlPageableModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions());
+            var expected = new RSqlPageableModelBinder<object>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<object>().Object);
             expected
                 .Invoking(i => i.Build(queryCollection))
                 .Should().Throw<InvalidSortDirectionException>();

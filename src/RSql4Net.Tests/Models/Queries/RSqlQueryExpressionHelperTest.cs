@@ -1,9 +1,8 @@
 using System;
-using System.Linq.Expressions;
 using System.Text.Json;
 using FluentAssertions;
-using Moq;
 using RSql4Net.Models.Queries;
+using RSql4Net.Models.Queries.Exceptions;
 using Xunit;
 
 namespace RSql4Net.Tests.Models.Queries
@@ -28,7 +27,7 @@ namespace RSql4Net.Tests.Models.Queries
             
             var visitor = new RSqlDefaultQueryVisitor<Customer>(JsonNamingPolicy.CamelCase);
             // context = null
-            this.Invoking(a => RSqlQueryExpressionHelper.GetAndExpression<Customer>(visitor, null))
+            this.Invoking(a => RSqlQueryExpressionHelper.GetAndExpression(visitor, null))
                 .Should().Throw<ArgumentNullException>();
         }
         
@@ -42,8 +41,52 @@ namespace RSql4Net.Tests.Models.Queries
             
             var visitor = new RSqlDefaultQueryVisitor<Customer>(JsonNamingPolicy.CamelCase);
             // context = null
-            this.Invoking(a => RSqlQueryExpressionHelper.GetOrExpression<Customer>(visitor, null))
+            this.Invoking(a => RSqlQueryExpressionHelper.GetOrExpression(visitor, null))
                 .Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void ShouldBeGetIsNullExpressionThrowComparisonInvalidComparatorSelectionExceptionTest()
+        {
+            const int obj1 = 1;
+            this.Invoking(a => Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}P=is-null=true"))
+                .Should()
+                .Throw<ComparisonInvalidComparatorSelectionException>();
+        }
+        
+        [Fact]
+        public void ShouldBeGetIsNullExpressionThrowComparisonNotEnoughArgumentExceptionTest()
+        {
+            const int obj1 = 1;
+            this.Invoking(a => Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}NullP=is-null="))
+                .Should()
+                .Throw<ComparisonNotEnoughArgumentException>();
+        }
+        
+        [Fact]
+        public void ShouldBeGetIsNullExpressionThrowComparisonTooManyArgumentExceptionTest()
+        {
+            const string obj1 = "test";
+            this.Invoking(a => Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}P=is-null=(true,false)"))
+                .Should()
+                .Throw<ComparisonTooManyArgumentException>();
+        }
+
+        [Fact]
+        public void ShouldBeGetLkExpressionThrowComparisonTooManyArgumentExceptionTest()
+        {
+            const string obj1 = "test";
+            this.Invoking(a => Helper.Expression<MockQuery>($"{Helper.GetJsonPropertyName(obj1)}P==(true,false)"))
+                .Should()
+                .Throw<ComparisonTooManyArgumentException>();
+        }
+
+        [Fact]
+        public void ShouldBeGetEqExpressionThrowComparisonInvalidComparatorSelectionExceptionTest()
+        {
+            this.Invoking(a => Helper.Expression<MockQuery>($"childP==true"))
+                .Should()
+                .Throw<ComparisonInvalidComparatorSelectionException>();
         }
     }
 }

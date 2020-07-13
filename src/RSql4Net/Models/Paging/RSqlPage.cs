@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RSql4Net.Models.Paging
 {
@@ -53,48 +55,72 @@ namespace RSql4Net.Models.Paging
         ///     Gets the total elements.
         /// </summary>
         /// <value>The total elements.</value>
-        public long TotalElements { get; }
+        public long TotalElements { get; private set; }
 
         /// <summary>
         ///     Gets the number.
         /// </summary>
         /// <value>The number.</value>
-        public int Number { get; }
+        public int Number { get; private set; }
 
         /// <summary>
         ///     Gets the number of elements.
         /// </summary>
         /// <value>The number of elements.</value>
-        public int NumberOfElements { get; }
+        public int NumberOfElements { get;  private set; }
 
         /// <summary>
         ///     Gets the total pages.
         /// </summary>
         /// <value>The total pages.</value>
-        public int TotalPages { get; }
+        public int TotalPages { get;  private set;}
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="T:RSql4Net.Models.Paging.Page`1" /> has content.
         /// </summary>
         /// <value><c>true</c> if has content; otherwise, <c>false</c>.</value>
-        public bool HasContent { get; }
+        public bool HasContent { get;  private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="T:RSql4Net.Mvc.Models.Paginations.Page`1" /> has next.
         /// </summary>
         /// <value><c>true</c> if has next; otherwise, <c>false</c>.</value>
-        public bool HasNext { get; }
+        public bool HasNext { get;  private set;}
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="T:RSql4Net.Models.Paging.Page`1" /> has previous.
         /// </summary>
         /// <value><c>true</c> if has previous; otherwise, <c>false</c>.</value>
-        public bool HasPrevious { get; }
+        public bool HasPrevious { get;  private set;}
 
         /// <summary>
         ///     Gets the content.
         /// </summary>
         /// <value>The content.</value>
-        public IList<T> Content { get; }
+        public IList<T> Content { get; private set; }
+
+        /// <summary>
+        ///     Convert to page to other type page
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TU"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public IRSqlPage<TResult> As<TResult>(Func<T, TResult> selector)
+            where TResult : class
+        {
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+            return new RSqlPage<TResult>
+            {
+                Number = Number,
+                Content = Content.Select(selector).ToList(),
+                HasContent = HasContent,
+                HasNext = HasNext,
+                TotalElements = TotalElements,
+                TotalPages = TotalPages,
+                NumberOfElements = NumberOfElements
+            };
+        }
     }
 }

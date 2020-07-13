@@ -94,7 +94,13 @@ namespace RSql4Net.Tests
             return o.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName("ChildP") + "." +
                 GetJsonPropertyName(obj, o);
         }
-        
 
+
+        public static Mock<ILogger<T>> MockLogger<T>()
+        {
+            var mockLogger = new Mock<ILogger<T>>();
+            mockLogger.Setup(l => l.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+            return mockLogger;
+        }
     }
 }

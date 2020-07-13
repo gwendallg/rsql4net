@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RSql4Net.Models.Paging
 {
@@ -54,5 +55,15 @@ namespace RSql4Net.Models.Paging
         /// </summary>
         /// <value><c>true</c> if has previous; otherwise, <c>false</c>.</value>
         bool HasPrevious { get; }
+
+        /// <summary>
+        ///     Convert to page to other type page
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        IRSqlPage<TResult> As<TResult>(Func<T, TResult> selector) where TResult : class;
     }
 }

@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Bogus;
 using FluentAssertions;
 using Moq;
 using RSql4Net.Models.Paging;
+using RSql4Net.Models;
 using Xunit;
 
 namespace RSql4Net.Tests.Models.Paging
@@ -106,6 +110,46 @@ namespace RSql4Net.Tests.Models.Paging
                 .NumberOfElements.Should().Be(2);
             expected
                 .TotalPages.Should().Be(100);
+        }
+
+        [Fact]
+        public void ShouldBeToValid()
+        {
+
+            var mockPageable = new Mock<IRSqlPageable<Customer>>();
+            mockPageable.Setup(x => x.PageNumber()).Returns(10);
+            mockPageable.Setup(x => x.PageSize()).Returns(2);
+            mockPageable.Setup(x => x.Sort()).Returns((RSqlSort<Customer>)null);
+
+            var fake = new Faker<Customer>()
+                .RuleFor(c => c.Name, f => f.Name.FullName())
+                .Generate(100)
+                .AsQueryable()
+                .Page(mockPageable.Object);
+
+            var expected = fake.As(c => c.Name);
+            expected
+                .Should()
+                .NotBeNull();
+
+        }
+
+        [Fact]
+        public void ShouldBeToThrowArgumentNullExceptionWhenSelectorNull()
+        {
+            var mockPageable = new Mock<IRSqlPageable<Customer>>();
+            mockPageable.Setup(x => x.PageNumber()).Returns(10);
+            mockPageable.Setup(x => x.PageSize()).Returns(2);
+            mockPageable.Setup(x => x.Sort()).Returns((RSqlSort<Customer>)null);
+
+            var fake = new Faker<Customer>()
+                .RuleFor(c => c.Name, f => f.Name.FullName())
+                .Generate(100)
+                .AsQueryable()
+                .Page(mockPageable.Object);
+            this.Invoking(f => { fake.As((Func<Customer, string>)null); })
+                .Should()
+                .Throw<ArgumentNullException>();
         }
     }
 }

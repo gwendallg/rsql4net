@@ -28,7 +28,7 @@ namespace RSql4Net.Samples.Tests.Controllers
         {
             var data = Helper.Fake();
             var controller = SeTup(data);
-            Expression<Func<Customer, bool>> value = customer => customer.Id > 0;
+            Expression<Func<Customer, bool>> value = customer => customer.Id >= 0;
             var actual = data.Where(value.Compile()).Skip(9).Take(9).ToList();
             var rSqlQuery = new RSqlQuery<Customer>(value);
             var rSqlPageable = new RSqlPageable<Customer>(1, 9);

@@ -19,6 +19,11 @@ namespace RSql4Net.Tests.Models.Queries
             var expected = new RSqlQueryModelBinderProvider();
             expected.GetBinder(modelBinderProviderContextMock)
                 .Should().BeNull();
+            
+            modelBinderProviderContextMock = new MockModelBinderProviderContext(typeof(int?));
+            expected = new RSqlQueryModelBinderProvider();
+            expected.GetBinder(modelBinderProviderContextMock)
+                .Should().BeNull();
         }
 
         [Fact]

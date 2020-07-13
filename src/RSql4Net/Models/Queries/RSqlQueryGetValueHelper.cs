@@ -11,22 +11,57 @@ namespace RSql4Net.Models.Queries
 {
     public static class RSqlQueryGetValueHelper
     {
-        private static bool IsBool(Type type) => type == typeof(bool) || type == typeof(bool?);
-        private static bool IsShort(Type type) => type == typeof(short) || type == typeof(short?);
-        private static bool IsInt(Type type) => type == typeof(int) || type == typeof(int?);
-        private static bool IsLong(Type type) => type == typeof(long) || type == typeof(long?);
-        private static bool IsFloat(Type type) => type == typeof(float) || type == typeof(float?);
-        private static bool IsDecimal(Type type) => type == typeof(decimal) || type == typeof(decimal?);
-        private static bool IsDouble(Type type) => type == typeof(double) || type == typeof(double?);
-        private static bool IsChar(Type type) => type == typeof(char) || type == typeof(char?);
-        private static bool IsByte(Type type) => type == typeof(byte) || type == typeof(byte?);
-        private static bool IsDateTime(Type type) => type == typeof(DateTime) || type == typeof(DateTime?);
-        private static bool IsDateTimeOffset(Type type) => type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?);
-        private static bool IsGuid(Type type) =>  type == typeof(Guid) || type == typeof(Guid?);
-        private static bool IsNumeric(Type type) => IsShort(type) || IsInt(type) || IsLong(type) || IsByte(type) || IsFloat(type) || IsDecimal(type) || IsDouble(type);
-        private static bool IsTemporal(Type type) => IsDateTime(type) || IsDateTimeOffset(type);
-        private static bool IsAlphabetic(Type type) => type == typeof(string) || IsChar(type);
+        public static bool IsBool(Type type) => type == typeof(bool) || type == typeof(bool?);
+        public static bool IsShort(Type type) => type == typeof(short) || type == typeof(short?);
+        public static bool IsInt(Type type) => type == typeof(int) || type == typeof(int?);
+        public static bool IsLong(Type type) => type == typeof(long) || type == typeof(long?);
+        public static bool IsFloat(Type type) => type == typeof(float) || type == typeof(float?);
+        public static bool IsDecimal(Type type) => type == typeof(decimal) || type == typeof(decimal?);
+        public static bool IsDouble(Type type) => type == typeof(double) || type == typeof(double?);
+        public static bool IsChar(Type type) => type == typeof(char) || type == typeof(char?);
+        public static bool IsByte(Type type) => type == typeof(byte) || type == typeof(byte?);
+        public static bool IsDateTime(Type type) => type == typeof(DateTime) || type == typeof(DateTime?);
+        public static bool IsDateTimeOffset(Type type) => type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?);
+        public static bool IsGuid(Type type) =>  type == typeof(Guid) || type == typeof(Guid?);
+        public static bool IsNumeric(Type type) => IsShort(type) || IsInt(type) || IsLong(type) || IsByte(type) || IsFloat(type) || IsDecimal(type) || IsDouble(type);
+        public static bool IsTemporal(Type type) => IsDateTime(type) || IsDateTimeOffset(type);
+        public static bool IsAlphabetic(Type type) => type == typeof(string) || IsChar(type);
+
+        /// <summary>
+        /// true if a lower / greater comparison tyme
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsLowerOrGreaterComparisonType(Type type)
+        {
+            return IsNumeric(type) || IsTemporal(type) || IsChar(type);
+        }
         
+        /// <summary>
+        /// true if a equal comparison type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsEqualComparisonType(Type type)
+        {
+            if (IsLowerOrGreaterComparisonType(type)) return true;
+            if (IsAlphabetic(type)) return true;
+            if (IsGuid(type)) return true;
+            if (IsEnum(type)) return true;
+            return IsBool(type);
+        }
+
+        /// <summary>
+        /// true if a nullable comparison type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsNullableComparisonType(Type type)
+        {
+            if (type == typeof(string)) return true;
+            return IsEqualComparisonType(type) && type.IsGenericType;
+        }
+  
         private static bool IsEnum(Type type) =>
             type.IsEnum || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
                             type.GetGenericArguments()[0].IsEnum);

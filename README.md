@@ -58,6 +58,8 @@ dotnet add package RSql4Net
 
 ```csharp
 
+    using RSql4Net.Models;
+    using RSql4Net.Controllers;
     using RSql4Net.Models.Paging;
     using RSql4Net.Models.Queries;
 
@@ -65,60 +67,38 @@ dotnet add package RSql4Net
     {
         public MyController : Controller
         {
+
+            private IList<MyModel> _myRepository;
+
+            public MyController(IList<MyModel> myRepository) {
+                _myRepository == myRepository ?? throw new ArgumentNullReferenceException(nameof(myRepository));
+            }
+            
+            /// <summary>
+            /// Get resource items by RSql Query and Pageable Query
+            /// </summary>
+            /// <param name="query"></param>
+            /// <param name="pageable"></param>
+            /// <returns></returns>
             [HttpGet]
             public IActionResult Get([FromQuery] IRSqlQuery<MyModel> query,[FromQuery] IRSqlPageable<MyModel> pageable)
             {
-                // the query parameters are correctly parsed ?
-                if (ModelState.IsValid)
+                // is not valid request
+                if (!ModelState.IsValid)
                 {
-                    // your repository to filter
-                    IQueryable<MyModel> repository;
-
-                    // the C# expression from query string parsing
-                    var filter = query.Value();
-
-                    // your filtered repository
-                    var filteredData = repository.Where(filter);
-
-                    // create Http result response
-                    return OK();
-                }
-            }
-        }
-    }
-
-```
-
-or more simply, with use the extension method in ControllerBaseExtensions.cs to return a RSqlPage.
-
-```csharp
-
-    using RSql4Net.Models.Paging;
-    using RSql4Net.Models.Queries;
-    using RSql4Net.Samples.Models;
-    using RSql4Net.Controllers;
-
-    namespace MyNamespace
-    {
-        public class MyController : Controller
-        {
-            [HttpGet]
-            public IActionResult Get([FromQuery] IRSqlQuery<MyModel> query,[FromQuery] IRSqlPageable<MyModel> pageable)
-            {
-                // the query parameters are correctly parsed ?
-                if (!ModlState.IsValid)
-                {
-                    return BadRequest();
+                    return BadRequest(new ErrorModel(ModelState));
                 }
 
-                // your repository to filter
-                IQueryable<MyModel> repository;
-
-                //
-                // OK:200 ( the page contains all results)
-                // PartialContent:206 ( the page contains a part results)
-                return this.Page(repository, pageable, query);
+                // use the extension method from RSql4Net.Models.QueryableExtensions.cs
+                var page = _myRepository
+                    .AsQueryable()
+                    .Page(pageable, query);
+                // 200 OK : if result page contains all items from in repository
+                // 206 Partial : if the result page contains a part of items from repository
+                // use the extension method from RSql4Net.Controllers.ControllerBaseExtensions.cs
+                return this.Page(page);
             }
+            
         }
     }
 
@@ -255,7 +235,7 @@ To add a cache Memory to RSql queries, you could modify the RSql configuration l
 
 ```
 
-#### Add Rsql definition in SwaggerGen
+#### Add RSql definition in SwaggerGen
 
 To add a Swashbuckle OpenAPI suppport to RSql queries, you could modify the RSql configuration like the below sample.
 
@@ -277,7 +257,53 @@ To add a Swashbuckle OpenAPI suppport to RSql queries, you could modify the RSql
 
 ```
 
-## RSQL syntax
+#### Convert a RSql page To the other kind RSql page 
+
+```csharp
+
+    using RSql4Net.Models.Paging;
+
+    namespace RSql4Net.Samples
+    {
+        public class Customer {
+        
+            /// <summary>
+            /// get of set LastName
+            /// </summary>
+            public string LastName {get; set; }
+        
+            /// <summary>
+            /// Get or Set FirstName
+            /// </summary>
+            public string FirstName {get; set; }
+        }
+
+        public class CustomerDto
+        {
+            /// <summary>
+            /// Get of Set Name
+            /// </summary>
+            public string Name { get; set; }
+        }
+
+        /// <summary>
+        /// sample   
+        /// </summary>
+        public static class MyConversionHelper
+        {
+            public static IRSqlPage<CustomerDto> Convert(IRSqlPage<Customer> src)
+            {
+                //use "As" method on IRSqlPage<T>
+                // and create your selector ...
+                return src.As(
+                    c => new CustomerDto() {Name = string.Concat(c.LastName, "", c.FirstName)});
+            }
+        }
+    }
+
+```
+
+## RSql syntax
 
 ### The operators
 

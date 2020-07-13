@@ -6,6 +6,7 @@ using RSql4Net.Models.Paging;
 using RSql4Net.Models.Queries;
 using RSql4Net.Samples.Models;
 using RSql4Net.Controllers;
+using RSql4Net.Models;
 
 namespace RSql4Net.Samples.Controllers
 {
@@ -21,6 +22,12 @@ namespace RSql4Net.Samples.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get resource items by RSql Query and Pageable Query
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="pageable"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get([FromQuery] IRSqlQuery<Customer> query,
             [FromQuery] IRSqlPageable<Customer> pageable)
@@ -31,12 +38,11 @@ namespace RSql4Net.Samples.Controllers
                 return BadRequest(new ErrorModel(ModelState));
             }
 
-            _logger.LogDebug(query?.ToString());
+            var page = _customers
+                .AsQueryable()
+                .Page(pageable, query);
 
-            var content = _customers
-                .AsQueryable();
-
-            return this.Page(content, pageable, query);
+            return this.Page(page);
         }
     }
 }

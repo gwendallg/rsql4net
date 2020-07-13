@@ -20,19 +20,36 @@ namespace RSql4Net.Tests.Models.Queries
         {
             var option = Helper.JsonOptions();
             var settings = Helper.Settings();
-            var logger = new Mock<ILogger<Customer>>();
-            // constructor
+            
+            // constructor : settings is null
             this.Invoking((a) =>
                 {
-                    new RSqlQueryModelBinder<Customer>(null, option, logger.Object);
+                   _=  new RSqlQueryModelBinder<Customer>(null, option, Helper.MockLogger<Customer>().Object);
                 })
                 .Should()
                 .Throw<ArgumentNullException>();
 
-            // constructor
+            // constructor: options is null
             this.Invoking((a) =>
                 {
-                    new RSqlQueryModelBinder<Customer>(settings, null, logger.Object);
+                    _= new RSqlQueryModelBinder<Customer>(settings, null, Helper.MockLogger<Customer>().Object);
+                })
+                .Should()
+                .Throw<ArgumentNullException>();
+            
+            // constructor: options is null
+            this.Invoking((a) =>
+                {
+                    _= new RSqlQueryModelBinder<Customer>(settings, Helper.JsonOptions(), null);
+                })
+                .Should()
+                .Throw<ArgumentNullException>();
+            
+            // build
+            this.Invoking((a) =>
+                {
+                    var binder =  new RSqlQueryModelBinder<Customer>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<Customer>().Object);
+                    binder.Build(null);
                 })
                 .Should()
                 .Throw<ArgumentNullException>();
@@ -49,10 +66,7 @@ namespace RSql4Net.Tests.Models.Queries
             {
                 ActionContext = actionContext, ModelState = new ModelStateDictionary()
             };
-            var mockLogger = new Mock<ILogger<Customer>>();
-            mockLogger.Setup(m => m.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
-            
-            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings(), Helper.JsonOptions(), mockLogger.Object);
+            var queryModelBinder = new RSqlQueryModelBinder<Customer>(new Settings(), Helper.JsonOptions(), Helper.MockLogger<Customer>().Object);
             await queryModelBinder.BindModelAsync(mock);
 
             var expected = mock.Result.Model as IRSqlQuery<Customer>;

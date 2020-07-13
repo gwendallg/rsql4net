@@ -13,11 +13,12 @@ namespace RSql4Net.Samples
                 .RuleFor(o => o.City, f => f.Address.City())
                 .RuleFor(o => o.Street, f => f.Address.StreetAddress())
                 .RuleFor(o => o.Country, f => f.Address.Country())
-                .RuleFor(o => o.Zipcode, f => f.Address.ZipCode());
+                .RuleFor(o => o.Zipcode, f => f.Address.ZipCode())
+                .Generate(100);
 
             var customerFaker = new Faker<Customer>()
                 .CustomInstantiator(f => new Customer {Id = customerId++})
-                .RuleFor(o => o.Address, addressFaker.Generate())
+                .RuleFor(o => o.Address,f=> addressFaker[f.Random.Int(0,99)] )
                 .RuleFor(o => o.BirthDate, f => f.Date.Past(20))
                 .RuleFor(o => o.Company, f => f.Company.CompanyName())
                 .RuleFor(o => o.Credit, f => f.Random.Double())

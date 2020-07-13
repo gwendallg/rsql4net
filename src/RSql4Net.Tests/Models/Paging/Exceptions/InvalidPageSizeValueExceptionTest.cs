@@ -11,7 +11,7 @@ namespace RSql4Net.Tests.Models.Paging.Exceptions
         public void ShouldBeInvalidPageSizeValueException()
         {
             var queryCollection = Helper.QueryCollection("pageSize","a");
-            var expected = new RSqlPageableModelBinder<object>(Helper.Settings(),Helper.JsonOptions());
+            var expected = new RSqlPageableModelBinder<object>(Helper.Settings(), Helper.JsonOptions(), Helper.MockLogger<object>().Object);
 
             expected
                 .Invoking(f => f.Build(queryCollection))

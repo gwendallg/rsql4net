@@ -10,39 +10,6 @@ namespace RSql4Net.Models.Queries
 {
     public static class RSqlQueryExpressionHelper
     {
-        
-        private static readonly IList<Type> LowerOrGreaterComparisonTypes = new List<Type>
-        {
-            typeof(short),
-            typeof(short?),
-            typeof(int),
-            typeof(int?),
-            typeof(long),
-            typeof(long?),
-            typeof(float),
-            typeof(float?),
-            typeof(double),
-            typeof(double?),
-            typeof(decimal),
-            typeof(decimal?),
-            typeof(DateTime),
-            typeof(DateTime?),
-            typeof(DateTimeOffset),
-            typeof(DateTimeOffset?),
-            typeof(char),
-            typeof(char?),
-            typeof(byte),
-            typeof(byte?)
-        };
-
-        private static readonly IList<Type> EqualComparisonTypes = new List<Type>(LowerOrGreaterComparisonTypes)
-        {
-            typeof(string),
-            typeof(bool), 
-            typeof(bool?), 
-            typeof(Guid), 
-            typeof(Guid?)
-        };
 
         private static readonly string MaskLk = $"[{Guid.NewGuid().ToString()}]";
 
@@ -127,6 +94,8 @@ namespace RSql4Net.Models.Queries
             return right;
         }
 
+
+
         /// <summary>
         ///     create is null expression ( operator "=is-null=" or "=nil=" )
         /// </summary>
@@ -140,9 +109,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (expressionValue.Property.PropertyType.IsValueType &&
-                !(expressionValue.Property.PropertyType.IsGenericType &&
-                  expressionValue.Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+            if (!RSqlQueryGetValueHelper.IsNullableComparisonType(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -187,11 +154,6 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var value = context.arguments().value();
-            if (value.Length == 0)
-            {
-                throw new ComparisonNotEnoughArgumentException(context);
-            }
-
             if (value.Length > 1)
             {
                 throw new ComparisonTooManyArgumentException(context);
@@ -210,12 +172,6 @@ namespace RSql4Net.Models.Queries
         private static List<object> GetMultipleValue(ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context)
         {
-            var value = context.arguments().value();
-            if (value.Length == 0)
-            {
-                throw new ComparisonNotEnoughArgumentException(context);
-            }
-
             return RSqlQueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
         }
 
@@ -232,15 +188,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (expressionValue == null)
-            {
-                throw new ComparisonUnknownSelectorException(context);
-            }
-            if (!EqualComparisonTypes.Contains(expressionValue.Property.PropertyType) &&
-                (!expressionValue.Property.PropertyType.IsEnum &&
-                 !(expressionValue.Property.PropertyType.IsGenericType &&
-                   expressionValue.Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                   expressionValue.Property.PropertyType.GetGenericArguments()[0].IsEnum)))
+            if (!RSqlQueryGetValueHelper.IsEqualComparisonType(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -287,16 +235,6 @@ namespace RSql4Net.Models.Queries
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy = null)
         {
-            if (parameter == null)
-            {
-                throw new ArgumentException(nameof(parameter));
-            }
-
-            if (context == null)
-            {
-                throw new ArgumentException(nameof(context));
-            }
-
             var expression = GetEqExpression<T>(parameter, context, jsonNamingPolicy);
             var body = Expression.Not(expression.Body);
             return Expression.Lambda<Func<T, bool>>(body, parameter);
@@ -315,7 +253,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
+            if (!RSqlQueryGetValueHelper.IsLowerOrGreaterComparisonType(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -348,7 +286,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
+            if (!RSqlQueryGetValueHelper.IsLowerOrGreaterComparisonType(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -381,7 +319,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
+            if (!RSqlQueryGetValueHelper.IsLowerOrGreaterComparisonType(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -414,16 +352,6 @@ namespace RSql4Net.Models.Queries
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy)
         {
-            if (parameter == null)
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
-
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
             var result = ExpressionValue.Parse<T>(parameter, context.selector().GetText(), jsonNamingPolicy);
             return result ?? throw new ComparisonUnknownSelectorException(context);
         }
@@ -441,7 +369,7 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (!LowerOrGreaterComparisonTypes.Contains(expressionValue.Property.PropertyType))
+            if (!RSqlQueryGetValueHelper.IsLowerOrGreaterComparisonType(expressionValue.Property.PropertyType))
             {
                 throw new ComparisonInvalidComparatorSelectionException(context);
             }
@@ -471,23 +399,14 @@ namespace RSql4Net.Models.Queries
             JsonNamingPolicy jsonNamingPolicy = null)
         {
             var expressionValue = GetSelector<T>(parameter, context, jsonNamingPolicy);
-            if (expressionValue.Property.PropertyType != typeof(string))
-            {
-                throw new ComparisonInvalidComparatorSelectionException(context);
-            }
-
             var values = RSqlQueryGetValueHelper.GetValues(expressionValue.Property.PropertyType, context.arguments());
-            if (!values.Any())
-            {
-                throw new ComparisonNotEnoughArgumentException(context);
-            }
 
             if (values.Count > 1)
             {
                 throw new ComparisonTooManyArgumentException(context);
             }
 
-            var criteria = Convert.ToString(values[0]);
+            var criteria = Convert.ToString(values[0])??string.Empty;
             var maskStar = "{" + Guid.NewGuid() + "}";
             criteria = criteria.Replace(@"\*", maskStar);
             MethodInfo method;
@@ -543,16 +462,6 @@ namespace RSql4Net.Models.Queries
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy namingStrategy = null)
         {
-            if (parameter == null)
-            {
-                throw new ArgumentException(nameof(parameter));
-            }
-
-            if (context == null)
-            {
-                throw new ArgumentException(nameof(context));
-            }
-
             var expression = GetInExpression<T>(parameter, context, namingStrategy);
             var body = Expression.Not(expression.Body);
             return Expression.Lambda<Func<T, bool>>(body, parameter);
