@@ -80,9 +80,9 @@ namespace RSql4Net.Models.Queries
             var lexer = new RSqlQueryLexer(antlrInputStream);
             var commonTokenStream = new CommonTokenStream(lexer);
             var parser = new RSqlQueryParser(commonTokenStream);
-            var or = parser.or();
+            var eval = parser.eval();
             var visitor = new RSqlDefaultQueryVisitor<T>(_options.Value.JsonSerializerOptions.PropertyNamingPolicy);
-            var value = visitor.Visit(or);
+            var value = visitor.Visit(eval);
             var result = new RSqlQuery<T>(value);
             if (_settings.QueryCache == null)
             {

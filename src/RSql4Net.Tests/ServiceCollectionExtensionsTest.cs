@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,15 @@ namespace RSql4Net.Tests
 {
     public class ServiceCollectionExtensionsTest
     {
+
+        [Fact]
+        void ShouldBeWithArgumentNullException()
+        {
+            this
+                .Invoking((f) => ServiceCollectionExtensions.AddRSql(null))
+                .Should().Throw<ArgumentNullException>();
+        }
+
         [Fact]
         void ShouldBeWithRSql()
         {
