@@ -5,24 +5,24 @@ ANY : . ;
 selector	: ~('('| ')'| ';'|','|'='|'<'|'>'|' '|'!'|'\''|'"')+;
 
 eval 	:
-	or EOF
+	or
 	;
 
 or	:
-	and  (','and)*
+	and (','and)*
 	;
 
 and 	:
 	constraint (';'constraint)*
 	;
 
-constraint	:
+constraint:
  	group
  	| comparison
 ;
 
 group	:
-	'('or')'
+	'(' or ')'
 	;
 
 comparison
