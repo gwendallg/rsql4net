@@ -144,8 +144,8 @@ These objects define the paging and sorting criteria to apply.
 
 | Operation |  Description |
 |-----------|--------------|
-| OrderBy | contains list of ascending sorts to apply |
-| OrderDescendingBy | contains list of descending sorts to apply |
+| Value | value of sort|
+| IsDescending | defines if sort is descending or ascending |
 
 ### IRSqlPage and RSqlPage
 
@@ -322,6 +322,20 @@ In the console ...
     }
 
 ```
+
+### Dockerization
+
+To try sample, you can build docker build file. In the project directory ...
+
+
+```shell
+
+docker build -t rsql4net-sample:latest .
+docker run -p 5001:5001 rsql4net-sample:latest -d 
+
+```
+
+go to http://localhost:5001/swagger
 
 ## RSql syntax
 
