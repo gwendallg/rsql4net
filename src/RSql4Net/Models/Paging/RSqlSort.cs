@@ -10,27 +10,35 @@ namespace RSql4Net.Models.Paging
     public class RSqlSort<T> where T : class
     {
         /// <summary>
-        ///     Initializes a new instance of.
+        /// next sort
         /// </summary>
-        /// <param name="orderBy">Order by.</param>
-        /// <param name="orderDescendingBy">Order descending by.</param>
-        public RSqlSort(IEnumerable<Expression<Func<T, object>>> orderBy = null,
-            IEnumerable<Expression<Func<T, object>>> orderDescendingBy = null)
+        public RSqlSort<T> Next { get; set; }
+        
+        /// <summary>
+        /// previous sort
+        /// </summary>
+        public RSqlSort<T> Previous { get; set; }
+
+        /// <summary>
+        /// root sort
+        /// </summary>
+        public RSqlSort<T> Root
         {
-            OrderBy = orderBy;
-            OrderDescendingBy = orderDescendingBy;
+            get
+            {
+                return Previous == null ? this : Previous.Root;
+            }
         }
 
-        /// <summary>
-        ///     Gets the order by.
-        /// </summary>
-        /// <value>The order by.</value>
-        public IEnumerable<Expression<Func<T, object>>> OrderBy { get; }
 
         /// <summary>
-        ///     Gets the order descending by.
+        /// value of sort
         /// </summary>
-        /// <value>The order descending by.</value>
-        public IEnumerable<Expression<Func<T, object>>> OrderDescendingBy { get; }
+        public Expression<Func<T, object>> Value { get; set; }
+        
+        /// <summary>
+        /// is descending sort
+        /// </summary>
+        public bool IsDescending { get; set; }
     }
 }

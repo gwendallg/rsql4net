@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using FluentAssertions;
 using RSql4Net.Models.Queries.Exceptions;
 using Xunit;
@@ -9,22 +10,22 @@ namespace RSql4Net.Tests.Models.Queries
     {
         protected override double Manifest1()
         {
-            return 1.1;
+            return Math.Round(1.1,1);
         }
 
         protected override string Manifest1ToString()
         {
-            return Manifest1().ToString(CultureInfo.InvariantCulture);
+            return Manifest1().ToString(NumberFormatInfo.InvariantInfo);
         }
 
         protected override double Manifest2()
         {
-            return 1.2;
+            return Math.Round(1.2,1);
         }
 
         protected override string Manifest2ToString()
         {
-            return Manifest2().ToString(CultureInfo.InvariantCulture);
+            return Manifest2().ToString(NumberFormatInfo.InvariantInfo);
         }
 
         [Fact]
@@ -126,7 +127,7 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void ShouldThrowInvalidConversionException()
         {
-            this.Invoking(s => OnShouldThrowInvalidConversionException("a"))
+            this.Invoking(_ => OnShouldThrowInvalidConversionException("a"))
                 .Should()
                 .Throw<InvalidConversionException>();
         }

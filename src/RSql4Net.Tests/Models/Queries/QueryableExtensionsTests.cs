@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Bogus;
@@ -60,10 +59,8 @@ namespace RSql4Net.Tests.Models.Queries
                 .CustomInstantiator(f => new Customer() {Id = f.Random.Int(0, 100)})
                 .Generate(100).AsQueryable();
 
-            var orderBy = new List<Expression<Func<Customer, object>>>();
             Expression<Func<Customer, object>> a = (c) => c.Id;
-            orderBy.Add(a);
-            var sort = new RSqlSort<Customer>(orderBy);
+            var sort = new RSqlSort<Customer>(){Value = a};
             var pageable = new RSqlPageable<Customer>(2, 10, sort);
             var query = new RSqlQuery<Customer>(c => c.Id >= 0);
 
@@ -90,10 +87,8 @@ namespace RSql4Net.Tests.Models.Queries
                 .CustomInstantiator(f=> new Customer(){Id = f.Random.Int(0,100)})
                 .Generate(100).AsQueryable();
             
-            var orderBy = new List<Expression<Func<Customer,object>>>();
             Expression<Func<Customer, object>> a = (c) => c.Id;
-            orderBy.Add(a);
-            var sort = new RSqlSort<Customer>(orderDescendingBy: orderBy);
+            var sort = new RSqlSort<Customer>() {Value = a, IsDescending = true};
             var pageable = new RSqlPageable<Customer>(2,10, sort);
 
             var expected = QueryableExtensions.Page(customers, pageable);

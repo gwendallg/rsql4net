@@ -1,0 +1,8 @@
+.idea
+artifacts/
+coverage-results/
+docs/
+grammar/
+tools/
+**/bin
+**/obj

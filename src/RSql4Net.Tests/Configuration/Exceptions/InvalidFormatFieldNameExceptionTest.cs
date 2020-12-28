@@ -1,6 +1,5 @@
 using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using FluentAssertions;
 using RSql4Net.Configurations.Exceptions;
 using Xunit;
@@ -15,16 +14,15 @@ namespace RSql4Net.Tests.Configuration.Exceptions
             var actual = new InvalidFormatFieldNameException("A", "B");
             var fileName = Path.GetRandomFileName();
             using var stream = new FileStream(fileName, FileMode.Create);
-            var formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.File));
-            formatter.Serialize(stream, actual);
+            var serializer = new DataContractSerializer(typeof(InvalidFormatFieldNameException));
+            serializer.WriteObject(stream, actual);
             stream.Position = 0;
-            var expected = formatter.Deserialize(stream) as InvalidFormatFieldNameException;
+            var expected = serializer.ReadObject(stream) as InvalidFormatFieldNameException;
             expected
                 .Should().NotBeNull();
-
-            expected.Message
+            expected?.Message
                 .Should()
-                .Equals(actual.Message);
+                .Be(actual.Message);
         }
     }
 }

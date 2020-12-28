@@ -63,7 +63,7 @@ namespace RSql4Net.Models.Queries
             var result = CreateAndAddCacheQuery(query.FirstOrDefault());
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"RSqlQuery<{typeof(T).FullName}>  query : ?{queryField}={query.FirstOrDefault()} -> {result.Value()}");
+                _logger.LogDebug($"RSqlQuery<{typeof(T).FullName}> query: ?{queryField}={query.FirstOrDefault()} -> {result.Value()}");
             }
             return result;
         }

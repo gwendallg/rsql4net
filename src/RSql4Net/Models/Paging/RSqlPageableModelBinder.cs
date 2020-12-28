@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -180,11 +181,17 @@ namespace RSql4Net.Models.Paging
             var sortField = _options.Value.JsonSerializerOptions.PropertyNamingPolicy.ConvertName(_settings.SortField);
             if (queryCollection.TryGetValue(sortField, out var sortStringValues))
             {
-                var parameter = Expression.Parameter(typeof(T));
-                var orderBy = new List<Expression<Func<T, object>>>();
-                var orderDescendingBy = new List<Expression<Func<T, object>>>();
+                StringBuilder prefixLogBuilder = null;
+                StringBuilder suffixLogBuilder = null;
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    prefixLogBuilder = new StringBuilder();
+                    suffixLogBuilder = new StringBuilder();
+                }
 
-                foreach (var (key, value) in ExtractSortFromQueryCollection(sortStringValues))
+                var parameter = Expression.Parameter(typeof(T));
+                RSqlSort<T> currentSort = null;
+                foreach (var (key, isDescending) in ExtractSortFromQueryCollection(sortStringValues))
                 {
                     if (!ExpressionValue.TryParse<T>(parameter, key, _options.Value.JsonSerializerOptions.PropertyNamingPolicy,
                         out var exp))
@@ -194,24 +201,39 @@ namespace RSql4Net.Models.Paging
 
                     var expression = Expression.Convert(exp.Expression, typeof(object));
                     var orderExpression = Expression.Lambda<Func<T, object>>(expression, parameter);
-                    var type = value ? "desc" : "asc";
-                    var expressionString = value ? "OrderByDescending" : "OrderBy";
-                    if (value)
+                    var newSort = new RSqlSort<T>()
                     {
-                        orderDescendingBy.Add(orderExpression);
-                    }
-                    else
+                        Value = orderExpression, 
+                        IsDescending = isDescending, 
+                        Previous = currentSort
+                    };
+
+                    if (currentSort != null)
                     {
-                        orderBy.Add(orderExpression);
+                        currentSort.Next = newSort;
                     }
+
+                    currentSort = newSort;
+
                     if (_logger.IsEnabled(LogLevel.Debug))
                     {
-                        _logger.LogDebug($"RSqlPageable<{typeof(T).FullName}> sort: ?{sortField}={key};{type} -> {expressionString}({exp.Expression})");
+                        var sort = currentSort.IsDescending ? "desc" : "asc";
+                        prefixLogBuilder?.Append($"{sortField}={key};{sort},");
+                        var sort2 = currentSort.IsDescending ? "OrderByDescending" : "OrderBy";
+                        suffixLogBuilder?.Append($"{sort2}({exp.Expression}) && ");
                     }
                 }
-                
-                
-                return new RSqlSort<T>(orderBy, orderDescendingBy);
+
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    var prefixLog = prefixLogBuilder?.ToString().TrimEnd(',');
+                    var suffixLog = suffixLogBuilder?.ToString();
+                    suffixLog = suffixLog?.Substring(0, suffixLog.Length - 4);
+                    _logger.LogDebug(
+                        $"RSqlPageable<{typeof(T).FullName}> sort: ?{prefixLog} -> {suffixLog}");
+                }
+
+                return currentSort?.Root;
             }
 
             return null;

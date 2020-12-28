@@ -19,17 +19,17 @@ namespace RSql4Net.Tests.Models.Queries.Exceptions
             var actual = (T)constructor.Invoke(new object[] {mockComparisonContext, null});
             var fileName = Path.GetRandomFileName();
             using var stream = new FileStream(fileName, FileMode.Create);
-            var formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.File));
-            formatter.Serialize(stream, actual);
+            var serializer = new DataContractSerializer(typeof(T));
+            serializer.WriteObject(stream, actual);
             stream.Position = 0;
-            var expected = (T)formatter.Deserialize(stream);
+            var expected = (T)serializer.ReadObject(stream);
 
             expected
                 .Should().NotBeNull();
 
-            expected.Message
+            expected?.Message
                 .Should()
-                .Equals(actual.Message);
+                .Be(actual.Message);
         }
     }
 }

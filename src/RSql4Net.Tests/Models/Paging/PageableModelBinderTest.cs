@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -65,13 +64,13 @@ namespace RSql4Net.Tests.Models.Paging
 
             expected.Should().NotBeNull();
 
-            expected.PageNumber()
+            expected?.PageNumber()
                 .Should().Be(2);
 
-            expected
+            expected?
                 .PageSize().Should().Be(1);
 
-            expected
+            expected?
                 .Sort().Should().NotBeNull();
            
             mock.ModelState
@@ -127,20 +126,27 @@ namespace RSql4Net.Tests.Models.Paging
             expected
                 .PageSize().Should().Be(1);
 
-            // expected on sort order by
-            var order = new List<Expression<Func<Customer, object>>>(expected.Sort().OrderBy);
+            // expected on sort order by ( first )
+            expected.Sort()
+                .Should().NotBeNull();
 
-            order.Count
-                .Should().Be(1);
-
-            ((MemberExpression)((UnaryExpression)order[0].Body).Operand).Member.Name
-                .Should().Be("BirthDate");
-
-            order = new List<Expression<Func<Customer, object>>>(expected.Sort().OrderDescendingBy);
-            order.Count
-                .Should().Be(1);
-            ((MemberExpression)((UnaryExpression)order[0].Body).Operand).Member.Name
+            // first sort
+            expected.Sort().IsDescending
+                .Should().BeTrue();
+            
+            ((MemberExpression)((UnaryExpression)expected.Sort().Value.Body).Operand).Member.Name
                 .Should().Be("Name");
+
+            // expected on sort order by ( second )
+            expected.Sort().Next.Should()
+                .NotBeNull();
+            
+            // second sort
+            expected.Sort().Next.IsDescending
+                .Should().BeFalse();
+        
+            ((MemberExpression)((UnaryExpression)expected.Sort().Next.Value.Body).Operand).Member.Name
+                .Should().Be("BirthDate");
         }
 
         [Fact]

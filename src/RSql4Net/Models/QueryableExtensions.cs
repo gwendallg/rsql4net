@@ -24,15 +24,15 @@ namespace RSql4Net.Models
             if (pageable == null) throw new ArgumentNullException(nameof(pageable));
             var where = query == null ? RSqlQueryExpressionHelper.True<T>() : query.Value();
             var count = obj.Count(where);
-            if (pageable.Sort()?.OrderBy?.Count() > 0)
+            if (pageable.Sort() != null)
             {
-                obj = pageable.Sort().OrderBy.Aggregate(obj, (current, order) => current.OrderBy(order));
-            }
+                var sort = pageable.Sort();
+                while (sort != null)
+                {
+                    obj = sort.IsDescending ? obj.OrderByDescending(sort.Value) : obj.OrderBy(sort.Value);
+                    sort = sort.Next;
+                }
 
-            if (pageable.Sort()?.OrderDescendingBy?.Count() > 0)
-            {
-                obj = pageable.Sort().OrderDescendingBy.Aggregate(obj,
-                    (current, order) => current.OrderByDescending(order));
             }
 
             var offset = pageable.PageNumber() * pageable.PageSize();

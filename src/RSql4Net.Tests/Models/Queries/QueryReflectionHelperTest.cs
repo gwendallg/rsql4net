@@ -24,5 +24,17 @@ namespace RSql4Net.Tests.Models.Queries
                 ["Test"]
                 .Should().NotBeNull();
         }
+        
+        [Fact]
+        public void ShouldBeParentProperty()
+        {
+            var _ = QueryReflectionHelper.GetOrRegistryProperty(typeof(MockQuery), "StringParentP");
+            var a = QueryReflectionHelper
+                .MappingJson2PropertyInfo[QueryReflectionHelper.CDefaultNamingStrategy]
+                [typeof(MockQuery)]
+                ["StringParentP"]
+                .Should().NotBeNull();
+        }
     }
 }
+        

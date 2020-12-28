@@ -126,7 +126,7 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void ShouldThrowInvalidConversionException()
         {
-            this.Invoking(s => OnShouldThrowInvalidConversionException("a"))
+            this.Invoking(_ => OnShouldThrowInvalidConversionException("a"))
                 .Should()
                 .Throw<InvalidConversionException>();
         }

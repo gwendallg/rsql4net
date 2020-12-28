@@ -1,6 +1,5 @@
 using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using FluentAssertions;
 using RSql4Net.Models.Queries.Exceptions;
 using Xunit;
@@ -18,17 +17,17 @@ namespace RSql4Net.Tests.Models.Queries.Exceptions
             var actual = new InvalidConversionException(mockValueContext, null);
             var fileName = Path.GetRandomFileName();
             using var stream = new FileStream(fileName, FileMode.Create);
-            var formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.File));
-            formatter.Serialize(stream, actual);
+            var serializer = new DataContractSerializer(typeof(InvalidConversionException));
+            serializer.WriteObject(stream, actual);
             stream.Position = 0;
-            var expected = formatter.Deserialize(stream) as InvalidConversionException;
+            var expected = serializer.ReadObject(stream) as InvalidConversionException;
 
             expected
                 .Should().NotBeNull();
 
             expected?.Message
                 .Should()
-                .Equals(actual.Message);
+                .Be(actual.Message);
         }
 
         [Fact]
@@ -36,7 +35,7 @@ namespace RSql4Net.Tests.Models.Queries.Exceptions
         {
             const string query = "int32P==a";
             this
-                .Invoking(f => Helper.Expression<MockQuery>(query))
+                .Invoking(_ => Helper.Expression<MockQuery>(query))
                 .Should()
                 .Throw<InvalidConversionException>()
                 .And

@@ -3,7 +3,12 @@ using Newtonsoft.Json;
 
 namespace RSql4Net.Tests.Models.Queries
 {
-    public class MockQuery
+    public class MockQueryParent {
+    
+        public string StringParentP { get; set; }
+    }
+    
+    public class MockQuery : MockQueryParent
     {
         public AttributeTargets? AttributeTargetsNullP { get; set; }
 
