@@ -1,6 +1,11 @@
 using System;
+using System.IO;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 #endif
 using Microsoft.OpenApi.Models;
+using Prometheus;
 using RSql4Net.SwaggerGen;
 
 namespace RSql4Net.Samples
@@ -15,12 +21,12 @@ namespace RSql4Net.Samples
 
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
-
-        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -54,6 +60,7 @@ namespace RSql4Net.Samples
                         })
                 );
             services.AddSingleton(Helper.Fake());
+            services.AddHealthChecks();
             services.AddSwaggerGen(c =>
             {
                 // add supported to Rsql SwaggerGen Documentation
@@ -85,11 +92,32 @@ namespace RSql4Net.Samples
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapMetrics();
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = ((context, report) =>
+                    {
+                        context.Response.ContentType = "application/json; charset=utf-8";
+                        var options = new JsonWriterOptions
+                        {
+                            Indented = true
+                        };
+                        using var stream = new MemoryStream();
+                        using (var writer = new Utf8JsonWriter(stream, options))
+                        {
+                            writer.WriteStartObject();
+                            writer.WriteString("status", report.Status.ToString());
+                            writer.WriteEndObject();
+                        }
+                        var json = Encoding.UTF8.GetString(stream.ToArray());
+                        return context.Response.WriteAsync(json);
+                    })
+                });
             });
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Prometheus;
 using RSql4Net.Models.Paging;
 using RSql4Net.Models.Queries;
 using RSql4Net.Samples.Models;
@@ -9,9 +10,11 @@ using RSql4Net.Models;
 
 namespace RSql4Net.Samples.Controllers
 {
+    
     [Route("customers")]
     public class CustomerController : Controller
     {
+        private static readonly Histogram RSqlHistogramDuration = Metrics.CreateHistogram("rsql4net_sample_customer_get_duration_seconds", "Histogram of RSql4Net Sample Customer get call processing durations.");
         private readonly IList<Customer> _customers;
  
         public CustomerController(IList<Customer> customers)
@@ -29,17 +32,20 @@ namespace RSql4Net.Samples.Controllers
         public IActionResult Get([FromQuery] IRSqlQuery<Customer> query,
             [FromQuery] IRSqlPageable<Customer> pageable)
         {
-            // is not valid request
-            if (!ModelState.IsValid)
+            using (RSqlHistogramDuration.NewTimer())
             {
-                return BadRequest(new ErrorModel(ModelState));
+                // is not valid request
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ErrorModel(ModelState));
+                }
+
+                var page = _customers
+                    .AsQueryable()
+                    .Page(pageable, query);
+
+                return this.Page(page);
             }
-
-            var page = _customers
-                .AsQueryable()
-                .Page(pageable, query);
-
-            return this.Page(page);
         }
     }
 }

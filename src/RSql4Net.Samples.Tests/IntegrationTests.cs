@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualBasic;
 using Xunit;
 
 namespace RSql4Net.Samples.Tests
@@ -26,22 +26,20 @@ namespace RSql4Net.Samples.Tests
                 .StatusCode
                 .Should().Be(HttpStatusCode.OK);
             var content = await expected.Content.ReadAsStringAsync();
-            
-            dynamic json = JsonSerializer.Deserialize<object>(content);
-            (json?.status as string).Should().Be("Healthy");
+            var json = (JsonElement) JsonSerializer.Deserialize<object>(content);
+            json.GetProperty("status").GetString().Should().Be("Healthy");
         }
         
         [Fact]
         public async Task ShouldBeEnsureMetricsEndpoint()
         {
-            var expected = await _client.GetAsync("/metrics");
+            var expected = await _client.GetAsync("/customers");
+            expected = await _client.GetAsync("/metrics");
             expected
                 .StatusCode
                 .Should().Be(HttpStatusCode.OK);
             var content = await expected.Content.ReadAsStringAsync();
             content.Should().Contain("rsql4net_sample_customer_get_duration_seconds_sum");
         }
-        
-        public async Task ShouldBeEnsureEndpoint
     }
 }
