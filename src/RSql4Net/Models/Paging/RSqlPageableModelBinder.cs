@@ -50,7 +50,7 @@ namespace RSql4Net.Models.Paging
             }
             catch (Exception e)
             {
-                bindingContext.ModelState.AddModelError(GetType().FullName, e.Message);
+                bindingContext.ModelState.AddModelError(GetType().FullName ?? string.Empty, e.Message);
             }
 
             return Task.CompletedTask;
@@ -137,7 +137,7 @@ namespace RSql4Net.Models.Paging
             return 0;
         }
 
-        private IDictionary<string, bool> ExtractSortFromQueryCollection(StringValues stringValues)
+        private static IDictionary<string, bool> ExtractSortFromQueryCollection(StringValues stringValues)
         {
             var result = new Dictionary<string, bool>();
             foreach (var stringValue in stringValues)
@@ -193,7 +193,8 @@ namespace RSql4Net.Models.Paging
                 RSqlSort<T> currentSort = null;
                 foreach (var (key, isDescending) in ExtractSortFromQueryCollection(sortStringValues))
                 {
-                    if (!ExpressionValue.TryParse<T>(parameter, key, _options.Value.JsonSerializerOptions.PropertyNamingPolicy,
+                    if (!ExpressionValue.TryParse<T>(parameter, key,
+                        _options.Value.JsonSerializerOptions.PropertyNamingPolicy,
                         out var exp))
                     {
                         throw new UnknownSortException(key);
@@ -203,9 +204,7 @@ namespace RSql4Net.Models.Paging
                     var orderExpression = Expression.Lambda<Func<T, object>>(expression, parameter);
                     var newSort = new RSqlSort<T>()
                     {
-                        Value = orderExpression, 
-                        IsDescending = isDescending, 
-                        Previous = currentSort
+                        Value = orderExpression, IsDescending = isDescending, Previous = currentSort
                     };
 
                     if (currentSort != null)
@@ -215,28 +214,59 @@ namespace RSql4Net.Models.Paging
 
                     currentSort = newSort;
 
-                    if (_logger.IsEnabled(LogLevel.Debug))
-                    {
-                        var sort = currentSort.IsDescending ? "desc" : "asc";
-                        prefixLogBuilder?.Append($"{sortField}={key};{sort},");
-                        var sort2 = currentSort.IsDescending ? "OrderByDescending" : "OrderBy";
-                        suffixLogBuilder?.Append($"{sort2}({exp.Expression}) && ");
-                    }
+                    
                 }
 
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    var prefixLog = prefixLogBuilder?.ToString().TrimEnd(',');
-                    var suffixLog = suffixLogBuilder?.ToString();
-                    suffixLog = suffixLog?.Substring(0, suffixLog.Length - 4);
-                    _logger.LogDebug(
-                        $"RSqlPageable<{typeof(T).FullName}> sort: ?{prefixLog} -> {suffixLog}");
-                }
-
+                LogSort(prefixLogBuilder, suffixLogBuilder);
                 return currentSort?.Root;
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// log sort field
+        /// </summary>
+        /// <param name="sortField"></param>
+        /// <param name="key"></param>
+        /// <param name="prefixLogBuilder"></param>
+        /// <param name="suffixLogBuilder"></param>
+        /// <param name="currentSort"></param>
+        /// <param name="exp"></param>
+        private void LogSortField(string sortField, string key, StringBuilder prefixLogBuilder, StringBuilder suffixLogBuilder,
+            RSqlSort<T> currentSort, ExpressionValue exp)
+        {
+            if (!_logger.IsEnabled(LogLevel.Debug))
+            {
+                return;
+            }
+
+            var sort = currentSort.IsDescending ? "desc" : "asc";
+            prefixLogBuilder?.Append($"{sortField}={key};{sort},");
+            var sort2 = currentSort.IsDescending ? "OrderByDescending" : "OrderBy";
+            suffixLogBuilder?.Append($"{sort2}({exp.Expression}) && ");
+        }
+
+        /// <summary>
+        /// log sort
+        /// </summary>
+        /// <param name="prefixLogBuilder"></param>
+        /// <param name="suffixLogBuilder"></param>
+        private void LogSort(StringBuilder prefixLogBuilder, StringBuilder suffixLogBuilder)
+        {
+            if (!_logger.IsEnabled(LogLevel.Debug))
+            {
+                return;
+            }
+
+            var prefixLog = prefixLogBuilder?.ToString().TrimEnd(',');
+            var suffixLog = suffixLogBuilder?.ToString();
+            if (suffixLog != null && suffixLog.Length > 4)
+            {
+                suffixLog = suffixLog?.Substring(0, suffixLog.Length - 4);
+            }
+            _logger.LogDebug(
+                $"RSqlPageable<{typeof(T).FullName}> sort: ?{prefixLog} -> {suffixLog}");
         }
     }
 }

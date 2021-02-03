@@ -26,7 +26,7 @@ namespace RSql4Net.Models
                 return null;
             }
 
-            var result = _constructor.Invoke(new object[] { });
+            var result = _constructor.Invoke(Array.Empty<object>());
             values.ForEach(a =>
             {
                 _addMethod.Invoke(result, new[] {a});

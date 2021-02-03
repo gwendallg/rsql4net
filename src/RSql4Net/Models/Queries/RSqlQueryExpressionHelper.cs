@@ -410,7 +410,7 @@ namespace RSql4Net.Models.Queries
             var maskStar = "{" + Guid.NewGuid() + "}";
             criteria = criteria.Replace(@"\*", maskStar);
             MethodInfo method;
-            if (criteria.IndexOf('*') == -1)
+            if (!criteria.Contains('*'))
             {
                 criteria += '*';
             }
