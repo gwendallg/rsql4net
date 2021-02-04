@@ -41,5 +41,19 @@ namespace RSql4Net.Samples.Tests
             var content = await expected.Content.ReadAsStringAsync();
             content.Should().Contain("rsql4net_sample_customer_get_duration_seconds_sum");
         }
+        
+        
+        [Fact]
+        public async Task ShouldBeEnsureCustomerEndpoint()
+        {
+            var expected = await _client.GetAsync("/customers");
+            expected
+                .StatusCode
+                .Should().Be(HttpStatusCode.PartialContent);
+            var content = await expected.Content.ReadAsStringAsync();
+            var json = (JsonElement) JsonSerializer.Deserialize<object>(content);
+            json.GetProperty("has_content").GetBoolean()
+                .Should().BeTrue();
+        }
     }
 }
