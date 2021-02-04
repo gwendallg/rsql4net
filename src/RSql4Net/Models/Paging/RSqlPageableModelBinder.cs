@@ -214,7 +214,8 @@ namespace RSql4Net.Models.Paging
 
                     currentSort = newSort;
 
-                    
+                    LogSortField(sortField, key, prefixLogBuilder, suffixLogBuilder, currentSort, exp);
+
                 }
 
                 LogSort(prefixLogBuilder, suffixLogBuilder);
