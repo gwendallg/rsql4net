@@ -24,20 +24,22 @@ namespace RSql4Net.Models
             if (pageable == null) throw new ArgumentNullException(nameof(pageable));
             var where = query == null ? RSqlQueryExpressionHelper.True<T>() : query.Value();
             var count = obj.Count(where);
+            IOrderedQueryable<T> sorted = null;
             if (pageable.Sort() != null)
             {
                 var sort = pageable.Sort();
+                sorted = sort.IsDescending ? obj.OrderByDescending(sort.Value) : obj.OrderBy(sort.Value);
+                sort = sort.Next;
                 while (sort != null)
                 {
-                    obj = sort.IsDescending ? obj.OrderByDescending(sort.Value) : obj.OrderBy(sort.Value);
+                    sorted = sort.IsDescending ? sorted.ThenByDescending(sort.Value) : sorted.ThenBy(sort.Value);
                     sort = sort.Next;
                 }
-
             }
 
             var offset = pageable.PageNumber() * pageable.PageSize();
             var limit = pageable.PageSize();
-            var result = obj.Where(where)
+            var result = (sorted ?? obj).Where(where)
                 .Skip(offset)
                 .Take(limit)
                 .ToList();
