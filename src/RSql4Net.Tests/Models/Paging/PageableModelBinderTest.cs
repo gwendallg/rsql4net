@@ -72,7 +72,16 @@ namespace RSql4Net.Tests.Models.Paging
 
             expected?
                 .Sort().Should().NotBeNull();
-           
+
+            expected?
+                .Sort()?.IsDescending.Should().BeTrue();
+
+            expected?
+                .Sort().Next.Should().NotBeNull();
+                
+            expected?
+                .Sort()?.Next?.IsDescending.Should().BeFalse();
+
             mock.ModelState
                 .IsValid.Should().BeTrue();
         }
