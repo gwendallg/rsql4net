@@ -117,6 +117,7 @@ namespace RSql4Net.Models.Paging
                 Content = Content.Select(selector).ToList(),
                 HasContent = HasContent,
                 HasNext = HasNext,
+                HasPrevious = HasPrevious,
                 TotalElements = TotalElements,
                 TotalPages = TotalPages,
                 NumberOfElements = NumberOfElements
