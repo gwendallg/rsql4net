@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace RSql4Net.Models
 {
@@ -25,19 +25,14 @@ namespace RSql4Net.Models
             MappingJson2PropertyInfo =
                 new Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>();
 
-        public static readonly Type CDefaultNamingStrategy = typeof(DefaultNamingStrategy);
+        public static readonly Type CDefaultNamingStrategy = typeof(DefaultJsonNamingPolicy);
 
         private static Dictionary<string, PropertyInfo> Build(IReflect type, JsonNamingPolicy jsonNamingPolicy = null)
         {
             var result = new Dictionary<string, PropertyInfo>();
-            foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                         .Where(p => !IgnoreProperty(p)))
             {
-                var jsonExclude = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                if (jsonExclude != null)
-                {
-                    continue;
-                }
-
                 var jsonPropertyName = GetJsonPropertyName(property, jsonNamingPolicy);
                 result.Add(jsonPropertyName, property);
             }
@@ -45,18 +40,20 @@ namespace RSql4Net.Models
             return result;
         }
 
+        private static bool IgnoreProperty(MemberInfo property) =>
+            property.GetCustomAttribute<JsonIgnoreAttribute>() != null ||
+            property.GetCustomAttribute<Newtonsoft.Json.JsonIgnoreAttribute>() != null;
+
         private static string GetJsonPropertyName(MemberInfo propertyInfo,
             JsonNamingPolicy jsonNamingPolicy = null)
         {
-            var propertyName = propertyInfo.Name;
-            var attribute = propertyInfo.GetCustomAttribute<JsonPropertyAttribute>();
-            if (attribute != null)
-            {
-                propertyName = attribute.PropertyName;
-            }
-
+            var propertyName = GetCustomPropertyName(propertyInfo) ?? propertyInfo.Name;
             return jsonNamingPolicy == null ? propertyName : jsonNamingPolicy.ConvertName(propertyName);
         }
+
+        private static string GetCustomPropertyName(MemberInfo propertyInfo) =>
+            propertyInfo.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ??
+            propertyInfo.GetCustomAttribute<Newtonsoft.Json.JsonPropertyAttribute>()?.PropertyName;
 
         public static PropertyInfo GetOrRegistryProperty(Type type, string name, JsonNamingPolicy jsonNamingPolicy = null)
         {
@@ -96,6 +93,11 @@ namespace RSql4Net.Models
 
                 return MethodListContains[type];
             }
+        }
+
+        private class DefaultJsonNamingPolicy : JsonNamingPolicy
+        {
+            public override string ConvertName(string name) => name;
         }
     }
 }
