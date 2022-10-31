@@ -14,7 +14,6 @@ branches:
     - /^release\/.*$/
     - /^feature\/.*$/
     - /^hotfix\/.*$/
-
 dotnet: 6.0
 jdk: openjdk11
 git:
