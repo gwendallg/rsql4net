@@ -4,14 +4,14 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
-- main
-- develop
-- release/*
-- feature/*
-- hotfix/*
-- bugfix/*
-- support
+  - master
+  - main
+  - develop
+  - release/*
+  - feature/*
+  - hotfix/*
+  - bugfix/*
+  - support
 
 pool:
   vmImage: ubuntu-latest

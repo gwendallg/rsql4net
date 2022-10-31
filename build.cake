@@ -5,7 +5,6 @@
 #tool "dotnet:?package=GitVersion.Tool&version=5.10.3"
 #tool "nuget:?package=ReportGenerator&version=5.1.10"
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool nuget:?package=Microsoft.Extensions.ApiDescription.Server&version=6.0.10
 
 var configuration = Argument("configuration", "Debug");
 // coverage configuration
