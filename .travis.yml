@@ -24,6 +24,6 @@ script:
   - set -e
   - dotnet tool install --global Cake.Tool --version 2.3.0
   - export PATH="$PATH:$HOME/.dotnet/tools"
-  - git fetch -all
+  - git fetch --all
   - dotnet-cake
 
