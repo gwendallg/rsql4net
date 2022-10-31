@@ -30,7 +30,7 @@ steps:
 - task: Cake@2
   inputs:
     script: 'build.cake'
-    target: 'Tests'
+    target: 'Package'
     verbosity: 'Verbose'
 
 - task: reportgenerator@5
