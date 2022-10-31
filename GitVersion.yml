@@ -15,73 +15,35 @@ build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
 commit-date-format: 'yyyy-MM-dd'
-# ignore:
-#   sha: []
+ignore:
+  sha: []
 #   commits-before: yyyy-MM-ddTHH:mm:ss
 merge-message-formats: {}
 branches:
   main:
     regex: ^master$|^main$
     mode: ContinuousDelivery
-    tag: ''
+    tag: 
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
   release:
     regex: ^release(s)?[/-]
     mode: ContinuousDelivery
-    tag: beta
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: true
-    pre-release-weight: 1000
+    tag: rc
   feature:
     regex: ^feature(s)?[/-]
     mode: ContinuousDelivery
-    tag: useBranchName
-    increment: Inherit
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
-  pull-request:
-    regex: ^(pull|pull\-requests|pr)[/-]
-    mode: ContinuousDelivery
-    tag: PullRequest
-    increment: Inherit
-    prevent-increment-of-merged-branch-version: false
-    tag-number-pattern: '[/-](?<number>\d+)[-/]'
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
     tag: beta
-    increment: Patch
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
-    tag: ''
+    tag: 
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
   develop:
     regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
-    tag: unstable
-    increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
-    tracks-release-branches: true
-    is-release-branch: false
+    tag: alpha
