@@ -11,10 +11,11 @@ branches:
     - develop
     - master
     - main
+    - support
     - /^release\/.*$/
     - /^feature\/.*$/
     - /^hotfix\/.*$/
-    - /^bugfix\/.*$/
+
 dotnet: 6.0
 jdk: openjdk11
 
