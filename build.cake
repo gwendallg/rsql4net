@@ -2,9 +2,9 @@
 #addin nuget:?package=Cake.FileHelpers&version=5.0.0
 #addin nuget:?package=Cake.Sonar&version=1.1.30
 
-#tool "dotnet:?package=GitVersion.Tool"
-#tool "nuget:?package=ReportGenerator"
-#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool"
+#tool "dotnet:?package=GitVersion.Tool&version=5.10.3"
+#tool "nuget:?package=ReportGenerator&version=5.1.10"
+#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
 
 var configuration = Argument("configuration", "Debug");
 // coverage configuration
