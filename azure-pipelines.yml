@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- main
 - develop
 
 pool:
@@ -13,6 +14,11 @@ pool:
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
+- task: Cake@2
+  inputs:
+    script: 'build.cake'
+    target: 'Tests'
+    verbosity: 'Verbose'
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
