@@ -1,5 +1,4 @@
 language: csharp
-#dist: xenial
 services:
   - docker
 env:
@@ -19,13 +18,11 @@ branches:
 dotnet: 6.0
 jdk: openjdk11
 
-#mono: none
 os:
   - linux
 script:
   - set -e
   - dotnet tool install --global Cake.Tool --version 2.3.0
   - export PATH="$PATH:$HOME/.dotnet/tools"
-  - git fetch --unshallow
   - dotnet-cake
 
