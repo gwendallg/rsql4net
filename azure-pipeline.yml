@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+- main
+- develop
+- release/*
+- feature/*
+- hotfix/*
+- bugfix/*
+- support
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: Cake@2
+  inputs:
+    script: 'build.cake'
+    target: 'Tests'
+    verbosity: 'Verbose'
