@@ -1,11 +1,11 @@
-next-version: 0.1.0
+next-version: 0.10.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
 continuous-delivery-fallback-tag: ci
-tag-prefix: '[vV]'
+tag-prefix: ''
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
