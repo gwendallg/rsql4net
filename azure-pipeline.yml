@@ -17,6 +17,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |-
+      dotnet tool install --global coverlet.console --version 3.2.0 && \
+      dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
 
 - task: Cake@2
   inputs:
