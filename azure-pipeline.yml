@@ -29,3 +29,9 @@ steps:
     script: 'build.cake'
     target: 'Tests'
     verbosity: 'Verbose'
+
+- task: reportgenerator@5
+  inputs:
+    reports: 'coverage-results/coverage.xml'
+    targetdir: 'coveragereport'
+    sourcedirs: 'src/'
