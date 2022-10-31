@@ -13,6 +13,9 @@ trigger:
   - bugfix/*
   - support
 
+variables:
+  group: rsql4net.vars
+
 pool:
   vmImage: ubuntu-latest
 
