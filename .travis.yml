@@ -17,13 +17,13 @@ branches:
 
 dotnet: 6.0
 jdk: openjdk11
-
+git:
+   depth: false
 os:
   - linux
 script:
   - set -e
   - dotnet tool install --global Cake.Tool --version 2.3.0
   - export PATH="$PATH:$HOME/.dotnet/tools"
-  - git fetch --all
   - dotnet-cake
 
