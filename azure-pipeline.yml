@@ -49,5 +49,5 @@ steps:
   displayName: 'Publish code coverage'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/coverage.xml'
+    summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/cobertura-converage.xml'
     reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
