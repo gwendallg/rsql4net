@@ -57,4 +57,4 @@ steps:
   inputs:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
-    reportDirectory: '$(Build.SourcesDirectory)/codecoverage-tmp'
+    reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
