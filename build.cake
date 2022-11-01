@@ -111,12 +111,11 @@ Task("Tests")
         })
     };
 
-    /*
-    // RSql4net.Tests
     Coverlet(
         File("./src/RSql4Net.Tests/RSql4Net.Tests.csproj"),
         coverletSettings);
 
+    /*
      coverletSettings.CoverletOutputName = coverageFileName;
      coverletSettings.MergeWithFile = mergeCoverageFilePath;
      coverletSettings.CoverletOutputFormat = CoverletOutputFormat.opencover;
