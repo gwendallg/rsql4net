@@ -67,7 +67,7 @@ Task("SonarBegin")
                 Organization = "gwendallg",
                 Key = "gwendallg_rsql4net",
                 Branch = version.BranchName,
-                OpenCoverReportsPath = "./coverage-results/coverage.xml",
+                OpenCoverReportsPath = "./coverage-results/merge-coverage.json",
                 Url = "https://sonarcloud.io",
                 Login = sonarCloudLogin
             });
