@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
@@ -8,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace RSql4Net.Models
 {
-    public static class QueryReflectionHelper
+    public sealed class QueryReflectionHelper
     {
         public static readonly MethodInfo MethodStringContains =
             typeof(string).GetMethod("Contains", new[] {typeof(string)});
