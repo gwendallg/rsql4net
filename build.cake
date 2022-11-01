@@ -111,6 +111,10 @@ Task("Tests")
             "**/*/Startup.cs",
         })
     };
+
+    Coverlet(
+        File("./src/RSql4Net.Tests/RSql4Net.Tests.csproj"),
+        coverletSettings);
 });
 
 Task("SonarEnd")
@@ -120,7 +124,6 @@ Task("SonarEnd")
         {
             SonarEnd(new SonarEndSettings(){
                 Login = sonarCloudLogin
-                
             });
         }
     });
@@ -136,16 +139,6 @@ Task("Package")
             OutputDirectory = artifactDirectory,
             Verbosity = NuGetVerbosity.Detailed,
         });
-    });
-
-Task("Report")
-    .IsDependentOn("Package")
-    .Does(() => {
-        var reportSettings = new ReportGeneratorSettings
-        {
-            ArgumentCustomization = args => args.Append($"-reportTypes:{coverageReportTypes}")
-        };
-        ReportGenerator(coverageFilePath, coverageDirectory, reportSettings);
     });
 
 var target = Argument("target", "Package");
