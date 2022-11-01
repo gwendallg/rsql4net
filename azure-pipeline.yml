@@ -50,3 +50,11 @@ steps:
     sourcedirs: '$(System.DefaultWorkingDirectory)/src'
     verbosity: 'Verbose'
     historydir: '$(codecoveragehistory.directory)'
+
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
+    reportDirectory: '$(Build.SourcesDirectory)/codecoverage-tmp'
