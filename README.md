@@ -9,10 +9,10 @@ RSql4Net is a aspNet .net core extension that will make it easier for you to wri
 
 ## Continuous integration
 
-| Branch                      |  Build | Quality Gate | Coverage |
-|-----------------------------|--------|--------------|----------|
-| master                      | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=master)| [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gwendallg_rsql4net&branch=master&metric=alert_status)](https://sonarcloud.io/dashboard?id=gwendallg_rsql4net&branch=master) | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=master)](https://coveralls.io/github/gwendallg/rsql4net?branch=master) |
-| develop                     | ![](https://api.travis-ci.org/gwendallg/rsql4net.png?branch=develop) | | [![Coverage Status](https://coveralls.io/repos/github/gwendallg/rsql4net/badge.svg?branch=develop)](https://coveralls.io/github/gwendallg/rsql4net?branch=develop) |
+| Branch                      |  Build | Quality Gate |
+|-----------------------------|--------|--------------|
+| master                      | ![](https://dev.azure.com/gwendallg/rsql4net/_apis/build/status/gwendallg.rsql4net?branchName=master)| [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gwendallg_rsql4net&branch=master&metric=alert_status)](https://sonarcloud.io/dashboard?id=gwendallg_rsql4net&branch=master) |
+| develop                     | ![](https://dev.azure.com/gwendallg/rsql4net/_apis/build/status/gwendallg.rsql4net?branchName=develop) | | 
 
 ## Table of Contents
 

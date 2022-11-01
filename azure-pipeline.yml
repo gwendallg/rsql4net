@@ -43,7 +43,7 @@ steps:
     jdkSourceOption: 'PreInstalled'
 
 - task: Bash@3
-  displayName: 'Generate C# Antlr Parser & Visitor'
+  displayName: 'Generate C# Antlr4 Parser & Visitor'
   inputs:
     targetType: 'inline'
     script: |-
