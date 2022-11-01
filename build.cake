@@ -67,7 +67,7 @@ Task("SonarBegin")
                 Organization = "gwendallg",
                 Key = "gwendallg_rsql4net",
                 Branch = version.BranchName,
-                OpenCoverReportsPath = Environment.WorkingDirectory.Combine("coverage.xml").FullPath,
+                OpenCoverReportsPath = EnvironmentVariable("SYSTEM_DEFAULTWORKINGDIRECTORY") + "/coverage.xml",
                 Url = "https://sonarcloud.io",
                 Login = sonarCloudLogin
             });
