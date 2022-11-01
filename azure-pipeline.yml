@@ -50,7 +50,7 @@ steps:
       java  \
         -jar $(Build.SourcesDirectory)/grammar/antlr4-4.9.3-complete.jar \
         $(Build.SourcesDirectory)/grammar/RSqlQuery.g \
-        -o $(Build.SourcesDirectory)src/RSql4net/Models/Queries \
+        -o $(Build.SourcesDirectory)/src/RSql4net/Models/Queries \
         -Dlanguage=CSharp \
         -listener \
         -encoding UTF-8 \
