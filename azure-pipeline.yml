@@ -26,6 +26,7 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+
 - task: Bash@3
   displayName: 'Dotnet tools install components'
   inputs:
@@ -33,6 +34,28 @@ steps:
     script: |-
       dotnet tool install --global coverlet.console --version 3.2.0 && \
       dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
+
+- task: JavaToolInstaller@0
+  displayName: 'Java JDK install'
+  inputs:
+    versionSpec: '11'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+- task: Bash@3
+  displayName: 'Generate C# Antlr Parser & Visitor'
+  inputs:
+    targetType: 'inline'
+    script: |-
+      java  \
+        -jar $(Build.SourcesDirectory)/grammar/antlr4-4.9.3-complete.jar \
+        $(Build.SourcesDirectory)/grammar/RSqlQuery.g \
+        -o $(Build.SourcesDirectory)src/RSql4net/Models/Queries \
+        -Dlanguage=CSharp \
+        -listener \
+        -encoding UTF-8 \
+        -visitor \
+        -package RSql4Net.Models.Queries
 
 - task: Cake@2
   displayName: 'Cake execute script'
@@ -44,6 +67,7 @@ steps:
     SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
 
 - task: reportgenerator@5
+  displayName: 'Generate code coverage report'
   inputs:
     reports: '$(Build.SourcesDirectory)/coverage-results/coverage.xml'
     targetdir: '$(Build.SourcesDirectory)/codecoverage'
@@ -51,9 +75,8 @@ steps:
     verbosity: 'Verbose'
     historydir: '$(codecoveragehistory.directory)'
 
-
 - task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage'
+  displayName: 'Publish code coverage report'
   inputs:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
