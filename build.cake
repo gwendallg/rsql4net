@@ -93,7 +93,7 @@ Task("Tests")
    var coverletSettings = new CoverletSettings
     {
         CollectCoverage = true,
-        CoverletOutputFormat = CoverletOutputFormat.cobertura,
+        CoverletOutputFormat = CoverletOutputFormat.opencover,
         CoverletOutputDirectory = coverageDirectory,
         CoverletOutputName =  coverageFileName,
         ExcludeByFile = new List<string>( new string [] {
