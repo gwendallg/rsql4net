@@ -11,7 +11,7 @@ var configuration = Argument("configuration", "Debug");
 var coverageDirectory = Directory(@"./coverage-results/");
 var coverageFileName = "coverage.xml";
 var coverageFilePath = coverageDirectory + File(coverageFileName);
-var mergeCoverageFileName = "merge-coverage.json";
+var mergeCoverageFileName = "merge-coverage.xml";
 var mergeCoverageFilePath = coverageDirectory + File(mergeCoverageFileName);
 var coverageReportTypes = "Html";
 
@@ -67,7 +67,7 @@ Task("SonarBegin")
                 Organization = "gwendallg",
                 Key = "gwendallg_rsql4net",
                 Branch = version.BranchName,
-                OpenCoverReportsPath = coverageFilePath,
+                OpenCoverReportsPath = "coverage-results/coverage.xml",
                 Url = "https://sonarcloud.io",
                 Login = sonarCloudLogin
             });
@@ -94,7 +94,7 @@ Task("Tests")
     {
         CollectCoverage = true,
         CoverletOutputDirectory = coverageDirectory,
-        CoverletOutputName =  mergeCoverageFileName,
+        CoverletOutputName =  coverageFileName,
         ExcludeByFile = new List<string>( new string [] {
             "**/*/RSqlQueryBaseListener.cs",
             "**/*/RSqlQueryVisitor.cs.",
