@@ -57,8 +57,25 @@ Task("Restore")
       DotNetRestore("./RSql4Net.sln");
 });
 
-Task("Build")
+Task("SonarBegin")
     .IsDependentOn("Restore")
+    .Does(() => {
+        if(BuildSystem.AzurePipelines.IsRunningOnAzurePipelines)
+        {
+            SonarBegin(new SonarBeginSettings{
+                Language = "C#",
+                Organization = "gwendallg",
+                Key = "gwendallg_rsql4net",
+                Branch = version.BranchName,
+                OpenCoverReportsPath = "./coverage-results/coverage.xml",
+                Url = "https://sonarcloud.io",
+                Login = sonarCloudLogin
+            });
+        }
+});
+
+Task("Build")
+    .IsDependentOn("SonarBegin")
     .Does(()=>{
       DotNetBuild(
           "RSql4Net.sln",
@@ -107,6 +124,16 @@ Task("Tests")
         File("./src/RSql4Net.Samples.Tests/RSql4Net.Samples.Tests.csproj"),
          coverletSettings);
 });
+
+Task("SonarEnd")
+    .IsDependentOn("Tests")
+    .Does(() => {
+        if(BuildSystem.AzurePipelines.IsRunningOnAzurePipelines)
+        {
+            SonarEnd(new SonarEndSettings(){
+                Login = sonarCloudLogin
+            });
+    
 
 Task("Package")
     .IsDependentOn("Tests")
