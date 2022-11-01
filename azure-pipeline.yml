@@ -38,8 +38,8 @@ steps:
   env:
     SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
 
-#- task: reportgenerator@5
-#  inputs:
-#    reports: '$(System.DefaultWorkingDirectory)/coverage-results/merge-coverage.json'
-#    targetdir: 'coveragereport'
-#    sourcedirs: '$(System.DefaultWorkingDirectory)/src/'
+- task: reportgenerator@5
+  inputs:
+    reports: '$(System.DefaultWorkingDirectory)/coverage-results/coverage.xml'
+    targetdir: 'coveragereport'
+    sourcedirs: '$(System.DefaultWorkingDirectory)/src/'
