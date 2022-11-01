@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace RSql4Net.Models
 {
-    public sealed class QueryReflectionHelper
+    public static class QueryReflectionHelper
     {
         public static readonly MethodInfo MethodStringContains =
             typeof(string).GetMethod("Contains", new[] {typeof(string)});
@@ -100,7 +100,7 @@ namespace RSql4Net.Models
             }
         }
 
-        private class DefaultJsonNamingPolicy : JsonNamingPolicy
+        private sealed class DefaultJsonNamingPolicy : JsonNamingPolicy
         {
             public override string ConvertName(string name) => name;
         }
