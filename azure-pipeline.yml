@@ -30,9 +30,11 @@ steps:
 
 - task: Cake@2
   inputs:
-    script: 'build.cake'
-    target: 'Package'
-    verbosity: 'Verbose'
+    script: build.cake
+    target: Package
+    verbosity: Verbose
+  env:
+    SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
 
 - task: reportgenerator@5
   inputs:
