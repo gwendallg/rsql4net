@@ -45,8 +45,8 @@ steps:
 
 - task: reportgenerator@5
   inputs:
-    reports: '$(Build.SourcesDirectory)\**\coverage.xml'
-    targetdir: '$(Build.SourcesDirectory)\CodeCoverage'
+    reports: '$(Build.SourcesDirectory)/coverage-results/coverage.xml'
+    targetdir: '$(Build.SourcesDirectory)/codecoverage'
     sourcedirs: '$(System.DefaultWorkingDirectory)/src'
     verbosity: 'Verbose'
     historydir: '$(codecoveragehistory.directory)'
