@@ -15,9 +15,12 @@ trigger:
 
 variables:
   - group: rsql4net.vars
-  - disable.coverage.autogenerate: 'true'
-  - codecoveragehistory.directory: '$(Build.ArtifactStagingDirectory)\history'
-  - codecoveragehistory.feedName: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
+  - name: disable.coverage.autogenerate
+    value: 'true'
+  - name: codecoveragehistory.directory
+    value: '$(Build.ArtifactStagingDirectory)\history'
+  - name: codecoveragehistory.feedName
+    value: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
 
 pool:
   vmImage: ubuntu-latest
