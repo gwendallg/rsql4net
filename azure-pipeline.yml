@@ -42,4 +42,12 @@ steps:
   inputs:
     reports: '$(System.DefaultWorkingDirectory)/coverage-results/coverage.xml'
     targetdir: 'coveragereport'
-    sourcedirs: '$(System.DefaultWorkingDirectory)/src/'
+    sourcedirs: '$(System.DefaultWorkingDirectory)/src'
+    verbosity: 'Verbose'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/coverage.xml'
+    reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
