@@ -110,6 +110,8 @@ Task("Tests")
             "**/*/Startup.cs",
         })
     };
+
+    /*
     // RSql4net.Tests
     Coverlet(
         File("./src/RSql4Net.Tests/RSql4Net.Tests.csproj"),
@@ -123,6 +125,8 @@ Task("Tests")
     Coverlet(
         File("./src/RSql4Net.Samples.Tests/RSql4Net.Samples.Tests.csproj"),
          coverletSettings);
+
+    */
 });
 
 Task("SonarEnd")
