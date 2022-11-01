@@ -133,10 +133,12 @@ Task("SonarEnd")
             SonarEnd(new SonarEndSettings(){
                 Login = sonarCloudLogin
             });
+        }
+    });
     
 
 Task("Package")
-    .IsDependentOn("Tests")
+    .IsDependentOn("SonarEnd")
     .Does(() =>{
         CopyFile("./src/RSql4Net/RSql4Net.nuspec",artifactFilePath);
         ReplaceTextInFiles(artifactFilePath,"{{version}}",version.SemVer);
@@ -149,17 +151,16 @@ Task("Package")
 
 Task("Report")
     .IsDependentOn("Package")
-    .Does(() =>
-{
-    if(!BuildSystem.TravisCI.IsRunningOnTravisCI)
-    {
-        var reportSettings = new ReportGeneratorSettings
+    .Does(() => {
+        if(!BuildSystem.TravisCI.IsRunningOnTravisCI)
         {
-            ArgumentCustomization = args => args.Append($"-reportTypes:{coverageReportTypes}")
-        };
-        ReportGenerator(coverageFilePath, coverageDirectory, reportSettings);
-    }
-});
+            var reportSettings = new ReportGeneratorSettings
+            {
+                ArgumentCustomization = args => args.Append($"-reportTypes:{coverageReportTypes}")
+            };
+            ReportGenerator(coverageFilePath, coverageDirectory, reportSettings);
+        }
+    });
 
 var target = Argument("target", "Report");
 RunTarget(target);
