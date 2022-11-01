@@ -71,5 +71,11 @@ namespace RSql4Net.Tests.Models.Queries
         
         [JsonProperty("Test")]
         public string OverrideProperty { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string ExcludeProperty2 { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Test2")]
+        public string OverrideProperty2 { get; set; }
     }
 }
