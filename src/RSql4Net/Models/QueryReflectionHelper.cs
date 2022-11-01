@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
@@ -18,12 +19,14 @@ namespace RSql4Net.Models
         public static readonly MethodInfo MethodStringEndsWith =
             typeof(string).GetMethod("EndsWith", new[] {typeof(string)});
 
-        public static readonly Dictionary<Type, MethodContainsInfo> MethodListContains =
-            new Dictionary<Type, MethodContainsInfo>();
+        public static readonly ImmutableDictionary<Type, MethodContainsInfo> MethodListContains =
+            new Dictionary<Type, MethodContainsInfo>()
+                .ToImmutableDictionary();
 
-        public static readonly Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>
+        public static readonly ImmutableDictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>
             MappingJson2PropertyInfo =
-                new Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>();
+                new Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>()
+                    .ToImmutableDictionary();
 
         public static readonly Type CDefaultNamingStrategy = typeof(DefaultJsonNamingPolicy);
 
