@@ -36,6 +36,6 @@ steps:
 
 - task: reportgenerator@5
   inputs:
-    reports: 'coverage-results/merge-coverage.json'
+    reports: '$(System.DefaultWorkingDirectory)/coverage-results/merge-coverage.json'
     targetdir: 'coveragereport'
-    sourcedirs: 'src/'
+    sourcedirs: '$(System.DefaultWorkingDirectory)/src/'
