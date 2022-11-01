@@ -19,16 +19,19 @@ namespace RSql4Net.Models
         public static readonly MethodInfo MethodStringEndsWith =
             typeof(string).GetMethod("EndsWith", new[] {typeof(string)});
 
-        public static readonly ImmutableDictionary<Type, MethodContainsInfo> MethodListContains =
-            new Dictionary<Type, MethodContainsInfo>()
-                .ToImmutableDictionary();
+        private static readonly Dictionary<Type, MethodContainsInfo> MethodListContains =
+            new Dictionary<Type, MethodContainsInfo>();
 
-        public static readonly ImmutableDictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>
+        private static readonly Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>
             MappingJson2PropertyInfo =
-                new Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>()
-                    .ToImmutableDictionary();
+                new Dictionary<Type, Dictionary<Type, Dictionary<string, PropertyInfo>>>();
 
-        public static readonly Type CDefaultNamingStrategy = typeof(DefaultJsonNamingPolicy);
+        public static Dictionary<string, PropertyInfo> GetDefaultMappingForType(Type type)
+        {
+            return MappingJson2PropertyInfo[CDefaultNamingStrategy][type];
+        }
+
+        private static readonly Type CDefaultNamingStrategy = typeof(DefaultJsonNamingPolicy);
 
         private static Dictionary<string, PropertyInfo> Build(IReflect type, JsonNamingPolicy jsonNamingPolicy = null)
         {

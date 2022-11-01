@@ -22,9 +22,7 @@ namespace RSql4Net.Tests.Models.Queries
         public void ShouldBeOverrideProperty(string name)
         {
             var _ = QueryReflectionHelper.GetOrRegistryProperty(typeof(MockQuery), name);
-            var a = QueryReflectionHelper
-                .MappingJson2PropertyInfo[QueryReflectionHelper.CDefaultNamingStrategy]
-                [typeof(MockQuery)]
+            var a = QueryReflectionHelper.GetDefaultMappingForType(typeof(MockQuery))
                 [name]
                 .Should()
                 .NotBeNull();
@@ -34,9 +32,7 @@ namespace RSql4Net.Tests.Models.Queries
         public void ShouldBeParentProperty()
         {
             var _ = QueryReflectionHelper.GetOrRegistryProperty(typeof(MockQuery), "StringParentP");
-            var a = QueryReflectionHelper
-                .MappingJson2PropertyInfo[QueryReflectionHelper.CDefaultNamingStrategy]
-                [typeof(MockQuery)]
+            var a = QueryReflectionHelper.GetDefaultMappingForType(typeof(MockQuery))
                 ["StringParentP"]
                 .Should().NotBeNull();
         }
