@@ -93,6 +93,7 @@ Task("Tests")
    var coverletSettings = new CoverletSettings
     {
         CollectCoverage = true,
+        CoverletOutputFormat = CoverletOutputFormat.opencover,
         CoverletOutputDirectory = coverageDirectory,
         CoverletOutputName =  coverageFileName,
         ExcludeByFile = new List<string>( new string [] {
@@ -166,5 +167,5 @@ Task("Report")
         }
     });
 
-var target = Argument("target", "Report");
+var target = Argument("target", "Package");
 RunTarget(target);
