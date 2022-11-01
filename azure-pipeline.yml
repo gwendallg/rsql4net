@@ -14,7 +14,8 @@ trigger:
   - support
 
 variables:
-  group: rsql4net.vars
+  - group: rsql4net.vars
+
 
 pool:
   vmImage: ubuntu-latest
