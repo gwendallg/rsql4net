@@ -22,6 +22,7 @@ pool:
 
 steps:
 - task: Bash@3
+  displayName: 'Dotnet tools install components'
   inputs:
     targetType: 'inline'
     script: |-
@@ -29,6 +30,7 @@ steps:
       dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
 
 - task: Cake@2
+  displayName: 'Cake execute script'
   inputs:
     script: build.cake
     target: Package

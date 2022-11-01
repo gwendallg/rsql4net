@@ -116,7 +116,6 @@ Task("Tests")
         File("./src/RSql4Net.Tests/RSql4Net.Tests.csproj"),
         coverletSettings);
 
-    /*
      coverletSettings.CoverletOutputName = coverageFileName;
      coverletSettings.MergeWithFile = mergeCoverageFilePath;
      coverletSettings.CoverletOutputFormat = CoverletOutputFormat.opencover;
@@ -126,7 +125,6 @@ Task("Tests")
         File("./src/RSql4Net.Samples.Tests/RSql4Net.Samples.Tests.csproj"),
          coverletSettings);
 
-    */
 });
 
 Task("SonarEnd")
@@ -157,14 +155,11 @@ Task("Package")
 Task("Report")
     .IsDependentOn("Package")
     .Does(() => {
-        if(!BuildSystem.TravisCI.IsRunningOnTravisCI)
+        var reportSettings = new ReportGeneratorSettings
         {
-            var reportSettings = new ReportGeneratorSettings
-            {
-                ArgumentCustomization = args => args.Append($"-reportTypes:{coverageReportTypes}")
-            };
-            ReportGenerator(coverageFilePath, coverageDirectory, reportSettings);
-        }
+            ArgumentCustomization = args => args.Append($"-reportTypes:{coverageReportTypes}")
+        };
+        ReportGenerator(coverageFilePath, coverageDirectory, reportSettings);
     });
 
 var target = Argument("target", "Package");
