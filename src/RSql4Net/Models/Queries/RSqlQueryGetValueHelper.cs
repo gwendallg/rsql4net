@@ -67,7 +67,7 @@ namespace RSql4Net.Models.Queries
                             type.GetGenericArguments()[0].IsEnum);
 
         private static readonly char DecimalSeparator =
-            Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+            Convert.ToChar(NumberFormatInfo.InvariantInfo.NumberDecimalSeparator);
 
         private static List<object> GetStrings(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
