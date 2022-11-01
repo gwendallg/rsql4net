@@ -1,20 +1,16 @@
 #addin nuget:?package=Cake.Coverlet&version=2.5.4
 #addin nuget:?package=Cake.FileHelpers&version=5.0.0
 #addin nuget:?package=Cake.Sonar&version=1.1.30
-#addin nuget:?package=Cake.OpenCoverToCoberturaConverter&version=0.1.10.11
 
 #tool "dotnet:?package=GitVersion.Tool&version=5.10.3"
 #tool "nuget:?package=ReportGenerator&version=5.1.10"
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=Cake.OpenCoverToCoberturaConverter&version=0.1.10.11"
 
 var configuration = Argument("configuration", "Debug");
 // coverage configuration
 var coverageDirectory = Directory(@"./coverage-results/");
 var coverageFileName = "coverage.xml";
 var coverageFilePath = coverageDirectory + File(coverageFileName);
-var coverageCoberturaFileName = "cobertura-converage.xml";
-var coverageCoberturaFilePath = coverageDirectory  + File(coverageCoberturaFileName);
 
 var mergeCoverageFileName = "merge-coverage.xml";
 var mergeCoverageFilePath = coverageDirectory + File(mergeCoverageFileName);
@@ -120,11 +116,6 @@ Task("Tests")
     Coverlet(
         File("./src/RSql4Net.Tests/RSql4Net.Tests.csproj"),
         coverletSettings);
-
-    OpenCoverToCoberturaConverter(
-        coverageFilePath,
-        coverageCoberturaFilePath
-    );
 });
 
 Task("SonarEnd")

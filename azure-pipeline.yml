@@ -15,7 +15,9 @@ trigger:
 
 variables:
   - group: rsql4net.vars
-
+  - disable.coverage.autogenerate: 'true'
+  - codecoveragehistory.directory: '$(Build.ArtifactStagingDirectory)\history'
+  - codecoveragehistory.feedName: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
 
 pool:
   vmImage: ubuntu-latest
@@ -40,14 +42,8 @@ steps:
 
 - task: reportgenerator@5
   inputs:
-    reports: '$(System.DefaultWorkingDirectory)/coverage-results/coverage.xml'
-    targetdir: 'coveragereport'
+    reports: '$(Build.SourcesDirectory)\**\coverage.xml'
+    targetdir: '$(Build.SourcesDirectory)\CodeCoverage'
     sourcedirs: '$(System.DefaultWorkingDirectory)/src'
     verbosity: 'Verbose'
-
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage'
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/cobertura-converage.xml'
-    reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
+    historydir: '$(codecoveragehistory.directory)'
