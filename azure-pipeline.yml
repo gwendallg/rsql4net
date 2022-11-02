@@ -97,7 +97,7 @@ steps:
     displayName: 'Publish package'
     inputs:
       command: 'push'
-      packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+      packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'external'
       publishFeedCredentials: 'gwendallg-nuget'
     condition: |-
