@@ -74,6 +74,7 @@ steps:
       script: build.cake
       target: Package
       verbosity: Verbose
+      arguments: '--configuration=Release'
     env:
       SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
 

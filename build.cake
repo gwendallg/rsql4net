@@ -4,8 +4,10 @@
 
 #tool "nuget:?package=ReportGenerator&version=5.1.10"
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
+#tool "dotnet:?package=GitVersion.Tool&version=5.10.3"
 
 var configuration = Argument("configuration", "Debug");
+
 // coverage configuration
 var coverageDirectory = Directory(@"./coverage-results/");
 var coverageFileName = "coverage.xml";
@@ -18,6 +20,9 @@ var coverageReportTypes = "Html";
 // sonarcloud configuration
 var sonarCloudLogin = EnvironmentVariable("SONAR_CLOUD_LOGIN") ?? "";
 
+// GitVersion
+GitVersion gitVersion;
+
 Task("Clean")
     .Does(() =>
 {
@@ -28,14 +33,20 @@ Task("Clean")
         CreateDirectory(coverageDirectory);
     else
         CleanDirectory(coverageDirectory);
-    if (!DirectoryExists(artifactDirectory))
-        CreateDirectory(artifactDirectory);
-    else
-        CleanDirectory(artifactDirectory);
+});
+
+Task("Version")
+    .IsDependentOn("Clean")
+    .Does(()=>{
+        gitVersion = GitVersion(
+            new GitVersionSettings {
+                //UpdateAssemblyInfo = true
+        });
+        Information($"SemVer: {gitVersion.SemVer}");
 });
 
 Task("Restore")
-    .IsDependentOn("Clean")
+    .IsDependentOn("Version")
     .Does(()=>{
       DotNetRestore("./RSql4Net.sln");
 });
@@ -49,7 +60,7 @@ Task("SonarBegin")
                 Language = "C#",
                 Organization = "gwendallg",
                 Key = "gwendallg_rsql4net",
-                Branch = version.BranchName,
+                Branch = gitVersion.BranchName,
                 OpenCoverReportsPath = EnvironmentVariable("SYSTEM_DEFAULTWORKINGDIRECTORY") + "/coverage-results/coverage.xml",
                 Url = "https://sonarcloud.io",
                 Login = sonarCloudLogin
