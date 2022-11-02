@@ -138,7 +138,5 @@ steps:
     condition: |-
       and(
         succeeded(), 
-        or(
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-        )
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
