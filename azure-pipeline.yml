@@ -97,7 +97,7 @@ steps:
     displayName: Docker Build and Publish
     inputs:
       containerRegistry: 'gwendallg-docker'
-      repository: 'rsql4net-sample'
+      repository: 'gwendallg/rsql4net-sample'
       command: 'buildAndPush'
       Dockerfile: 'Dockerfile'
       tags: |-
