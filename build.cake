@@ -20,6 +20,11 @@ var coverageReportTypes = "Html";
 // sonarcloud configuration
 var sonarCloudLogin = EnvironmentVariable("SONAR_CLOUD_LOGIN") ?? "";
 
+// arfifact configuration
+var artifactDirectory = Directory(@"./artifacts/");
+var artifactFileName = "RSql4Net.nuspec";
+var artifactFilePath = artifactDirectory + File(artifactFileName);
+
 // GitVersion
 GitVersion gitVersion;
 
@@ -33,6 +38,10 @@ Task("Clean")
         CreateDirectory(coverageDirectory);
     else
         CleanDirectory(coverageDirectory);
+    if (!DirectoryExists(artifactDirectory))
+        CreateDirectory(artifactDirectory);
+    else
+        CleanDirectory(artifactDirectory);
 });
 
 Task("Version")
