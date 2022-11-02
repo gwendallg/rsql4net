@@ -28,12 +28,12 @@ pool:
 steps:
   
   - task: gitversion/setup@0
-    displayName: GitVersion install tools
+    displayName: 'GitVersion install tools'
     inputs:
       versionSpec: '$(GitVersion)'
 
   - task: gitversion/execute@0
-    displayName: Gitversion set BuildID
+    displayName: 'Execute GitVersion'
     inputs:
       useConfigFile: true
       configFilePath: 'GitVersion.yml'
@@ -93,6 +93,28 @@ steps:
       summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
 
+  - task: replacetokens@5
+    displayName: Replace token Nuspec file
+    inputs:
+      targetFiles: '**/*.nuspec'
+      encoding: 'auto'
+      tokenPattern: 'doublebraces'
+      writeBOM: true
+      verbosity: 'detailed'
+      actionOnMissing: 'warn'
+      keepToken: false
+      actionOnNoFiles: 'continue'
+      enableTransforms: false
+      enableRecursion: false
+      useLegacyPattern: false
+      enableTelemetry: true
+
+  - task: NuGetCommand@2
+    inputs:
+      command: 'pack'
+      packagesToPack: 'src/RSql4Net/RSql4Net.nuspec'
+      versioningScheme: 'off'
+
   - task: Docker@2
     displayName: Docker Build and Publish
     inputs:
@@ -108,6 +130,6 @@ steps:
     #    succeeded(), 
     #    eq(
     #      variables['Build.SourceBranch'], 
-    #      'refs/heads/main')
+    #     'refs/heads/develop')
     #    )
     #  )

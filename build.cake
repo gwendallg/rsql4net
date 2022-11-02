@@ -2,7 +2,6 @@
 #addin nuget:?package=Cake.FileHelpers&version=5.0.0
 #addin nuget:?package=Cake.Sonar&version=1.1.30
 
-#tool "dotnet:?package=GitVersion.Tool&version=5.10.3"
 #tool "nuget:?package=ReportGenerator&version=5.1.10"
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
 
@@ -15,13 +14,6 @@ var coverageFilePath = coverageDirectory + File(coverageFileName);
 var mergeCoverageFileName = "merge-coverage.xml";
 var mergeCoverageFilePath = coverageDirectory + File(mergeCoverageFileName);
 var coverageReportTypes = "Html";
-
-// arfifact configuration
-var artifactDirectory = Directory(@"./artifacts/");
-var artifactFileName = "RSql4Net.nuspec";
-var artifactFilePath = artifactDirectory + File(artifactFileName);
-
-GitVersion version;
 
 // sonarcloud configuration
 var sonarCloudLogin = EnvironmentVariable("SONAR_CLOUD_LOGIN") ?? "";
@@ -42,18 +34,8 @@ Task("Clean")
         CleanDirectory(artifactDirectory);
 });
 
-Task("Version")
-    .IsDependentOn("Clean")
-    .Does(()=>{
-        version = GitVersion(
-            new GitVersionSettings {
-                //UpdateAssemblyInfo = true
-        });
-        Information($"SemVer: {version.SemVer}");
-});
-
 Task("Restore")
-    .IsDependentOn("Version")
+    .IsDependentOn("Clean")
     .Does(()=>{
       DotNetRestore("./RSql4Net.sln");
 });
@@ -128,19 +110,6 @@ Task("SonarEnd")
             });
         }
     });
-    
 
-Task("Package")
-    .IsDependentOn("SonarEnd")
-    .Does(() =>{
-        CopyFile("./src/RSql4Net/RSql4Net.nuspec",artifactFilePath);
-        ReplaceTextInFiles(artifactFilePath,"{{version}}",version.SemVer);
-        ReplaceTextInFiles(artifactFilePath,"{{configuration}}",configuration);
-        NuGetPack(artifactFilePath, new NuGetPackSettings{
-            OutputDirectory = artifactDirectory,
-            Verbosity = NuGetVerbosity.Detailed,
-        });
-    });
-
-var target = Argument("target", "Package");
+var target = Argument("target", "SonarEnd");
 RunTarget(target);

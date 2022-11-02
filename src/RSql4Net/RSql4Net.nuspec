@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>RSql4Net</id>
-    <version>{{version}}</version>
+    <version>{{GitVersion.LegacySemVer}}</version>
     <authors>Gwendall Garnier</authors>
     <owners>Gwendall Garnier</owners>
     <description>RSql4Net is a aspNet .net core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a HTTP request who is in RSQL format to C# lambda expression.</description>
@@ -37,6 +37,7 @@
     <files>
       <file src="../src/RSql4Net/bin/{{configuration}}/netcoreapp3.1/RSql4Net.dll" target="lib/netcoreapp3.1" />
       <file src="../src/RSql4Net/bin/{{configuration}}/net5.0/RSql4Net.dll" target="lib/net5.0" />
+      <file src="../src/RSql4Net/bin/{{configuration}}/net6.0/RSql4Net.dll" target="lib/net6.0" />
       <file src="../docs/icon.png" target="" />
     </files>
 </package>
