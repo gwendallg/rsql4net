@@ -72,7 +72,7 @@ steps:
     displayName: 'Cake execute script'
     inputs:
       script: build.cake
-      target: Package
+      target: SonarEnd
       verbosity: Verbose
       arguments: '--configuration=Release'
     env:
