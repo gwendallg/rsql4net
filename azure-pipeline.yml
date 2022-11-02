@@ -101,7 +101,7 @@ steps:
       command: 'buildAndPush'
       Dockerfile: 'Dockerfile'
       tags: |-
-       $(Build.BuildId)
+       $(GitVersion.LegacySemVer)
        latest
     #condition: |-
     #  and(
