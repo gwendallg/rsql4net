@@ -117,7 +117,7 @@ steps:
       command: 'buildAndPush'
       Dockerfile: 'Dockerfile'
       tags: |-
-       $(GitVersion.LegacySemVer)
+        $(GitVersion.LegacySemVer)
     condition: |-
       and(
         succeeded(), 
