@@ -88,7 +88,5 @@ steps:
     repository: 'rsql4net-sample'
     command: 'buildAndPush'
     Dockerfile: 'dockerfile'
-    tags:
-      - $(Build.BuildId)
-      - latest
+    tags: $(Build.BuildId)
      
