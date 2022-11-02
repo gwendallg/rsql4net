@@ -118,12 +118,27 @@ steps:
       Dockerfile: 'Dockerfile'
       tags: |-
        $(GitVersion.LegacySemVer)
-       latest
     condition: |-
       and(
         succeeded(), 
         or(
           eq(variables['Build.SourceBranch'], 'refs/heads/master'),
           eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+        )
+      )
+  - task: Docker@2
+    displayName: Docker Build and Publish ( latest )
+    inputs:
+      containerRegistry: 'gwendallg-docker'
+      repository: 'gwendallg/rsql4net-sample'
+      command: 'buildAndPush'
+      Dockerfile: 'Dockerfile'
+      tags: |-
+       latest
+    condition: |-
+      and(
+        succeeded(), 
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
         )
       )
