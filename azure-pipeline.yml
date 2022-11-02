@@ -26,77 +26,88 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+  
+  - task: gitversion/setup@0
+    displayName: GitVersion install tools
+    inputs:
+      versionSpec: '$(GitVersion)'
 
-- task: Bash@3
-  displayName: 'Dotnet tools install components'
-  inputs:
-    targetType: 'inline'
-    script: |-
-      dotnet tool install --global coverlet.console --version 3.2.0 && \
-      dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
+  - task: gitversion/execute@0
+    displayName: Gitversion set BuildID
+    inputs:
+      useConfigFile: true
+      configFilePath: 'GitVersion.yml'
 
-- task: JavaToolInstaller@0
-  displayName: 'Java JDK install'
-  inputs:
-    versionSpec: '11'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
+  - task: Bash@3
+    displayName: 'Dotnet tools install components'
+    inputs:
+      targetType: 'inline'
+      script: |-
+        dotnet tool install --global coverlet.console --version 3.2.0 && \
+        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
 
-- task: Bash@3
-  displayName: 'Generate C# Antlr4 Parser & Visitor'
-  inputs:
-    targetType: 'inline'
-    script: |-
-      java  \
-        -jar $(Build.SourcesDirectory)/grammar/antlr4-4.9.3-complete.jar \
-        $(Build.SourcesDirectory)/grammar/RSqlQuery.g \
-        -o $(Build.SourcesDirectory)/src/RSql4net/Models/Queries \
-        -Dlanguage=CSharp \
-        -listener \
-        -encoding UTF-8 \
-        -visitor \
-        -package RSql4Net.Models.Queries
+  - task: JavaToolInstaller@0
+    displayName: 'Java JDK install'
+    inputs:
+      versionSpec: '11'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
 
-- task: Cake@2
-  displayName: 'Cake execute script'
-  inputs:
-    script: build.cake
-    target: Package
-    verbosity: Verbose
-  env:
-    SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
+  - task: Bash@3
+    displayName: 'Generate C# Antlr4 Parser & Visitor'
+    inputs:
+      targetType: 'inline'
+      script: |-
+        java  \
+          -jar $(Build.SourcesDirectory)/grammar/antlr4-4.9.3-complete.jar \
+          $(Build.SourcesDirectory)/grammar/RSqlQuery.g \
+          -o $(Build.SourcesDirectory)/src/RSql4net/Models/Queries \
+          -Dlanguage=CSharp \
+          -listener \
+          -encoding UTF-8 \
+          -visitor \
+          -package RSql4Net.Models.Queries
 
-- task: reportgenerator@5
-  displayName: 'Generate code coverage report'
-  inputs:
-    reports: '$(Build.SourcesDirectory)/coverage-results/coverage.xml'
-    targetdir: '$(Build.SourcesDirectory)/codecoverage'
-    sourcedirs: '$(System.DefaultWorkingDirectory)/src'
-    verbosity: 'Verbose'
-    historydir: '$(codecoveragehistory.directory)'
+  - task: Cake@2
+    displayName: 'Cake execute script'
+    inputs:
+      script: build.cake
+      target: Package
+      verbosity: Verbose
+    env:
+      SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage report'
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
-    reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
+  - task: reportgenerator@5
+    displayName: 'Generate code coverage report'
+    inputs:
+      reports: '$(Build.SourcesDirectory)/coverage-results/coverage.xml'
+      targetdir: '$(Build.SourcesDirectory)/codecoverage'
+      sourcedirs: '$(System.DefaultWorkingDirectory)/src'
+      verbosity: 'Verbose'
+      historydir: '$(codecoveragehistory.directory)'
 
-- task: Docker@2
-  displayName: Docker Build and Publish
-  inputs:
-    containerRegistry: 'gwendallg-docker'
-    repository: 'rsql4net-sample'
-    command: 'buildAndPush'
-    Dockerfile: 'Dockerfile'
-    tags: |-
-      $(Build.BuildId)
-      latest
-  #condition: |-
-  #  and(
-  #    succeeded(), 
-  #    eq(
-  #      variables['Build.SourceBranch'], 
-  #      'refs/heads/main')
-  #    )
-  #  )
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage report'
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
+      reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
+
+  - task: Docker@2
+    displayName: Docker Build and Publish
+    inputs:
+      containerRegistry: 'gwendallg-docker'
+      repository: 'rsql4net-sample'
+      command: 'buildAndPush'
+      Dockerfile: 'Dockerfile'
+      tags: |-
+       $(Build.BuildId)
+       latest
+    #condition: |-
+    #  and(
+    #    succeeded(), 
+    #    eq(
+    #      variables['Build.SourceBranch'], 
+    #      'refs/heads/main')
+    #    )
+    #  )
