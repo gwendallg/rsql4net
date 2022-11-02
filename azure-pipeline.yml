@@ -81,3 +81,14 @@ steps:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
     reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'gwendallg-docker'
+    repository: 'rsql4net-sample'
+    command: 'buildAndPush'
+    Dockerfile: 'dockerfile'
+    tags:
+      - $(Build.BuildId)
+      - latest
+     
