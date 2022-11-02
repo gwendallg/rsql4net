@@ -122,5 +122,17 @@ Task("SonarEnd")
         }
     });
 
-var target = Argument("target", "SonarEnd");
+Task("Package")
+    .IsDependentOn("SonarEnd")
+    .Does(() =>{
+        CopyFile("./src/RSql4Net/RSql4Net.nuspec",artifactFilePath);
+        ReplaceTextInFiles(artifactFilePath,"{{version}}",version.SemVer);
+        ReplaceTextInFiles(artifactFilePath,"{{configuration}}",configuration);
+        NuGetPack(artifactFilePath, new NuGetPackSettings{
+            OutputDirectory = artifactDirectory,
+            Verbosity = NuGetVerbosity.Detailed,
+        });
+    });
+
+var target = Argument("target", "Package");
 RunTarget(target);

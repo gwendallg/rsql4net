@@ -72,7 +72,7 @@ steps:
     displayName: 'Cake execute script'
     inputs:
       script: build.cake
-      target: SonarEnd
+      target: Package
       verbosity: Verbose
     env:
       SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
@@ -92,28 +92,6 @@ steps:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
-
-  - task: replacetokens@5
-    displayName: Replace token Nuspec file
-    inputs:
-      targetFiles: '**/*.nuspec'
-      encoding: 'auto'
-      tokenPattern: 'doublebraces'
-      writeBOM: true
-      verbosity: 'detailed'
-      actionOnMissing: 'warn'
-      keepToken: false
-      actionOnNoFiles: 'continue'
-      enableTransforms: false
-      enableRecursion: false
-      useLegacyPattern: false
-      enableTelemetry: true
-
-  - task: NuGetCommand@2
-    inputs:
-      command: 'pack'
-      packagesToPack: 'src/RSql4Net/RSql4Net.nuspec'
-      versioningScheme: 'off'
 
   - task: Docker@2
     displayName: Docker Build and Publish
