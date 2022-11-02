@@ -108,7 +108,7 @@ steps:
           eq(variables['Build.SourceBranch'], 'refs/heads/develop')
         )
       )
-      
+
   - task: Docker@2
     displayName: Docker Build and Publish
     inputs:
@@ -122,7 +122,5 @@ steps:
     condition: |-
       and(
         succeeded(), 
-        or(
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
