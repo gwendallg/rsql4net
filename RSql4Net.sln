@@ -12,9 +12,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{940D2D4E-EDC9-4695-875F-39AECF982169}"
 ProjectSection(SolutionItems) = preProject
 	build.cake = build.cake
-	build.sh = build.sh
 	LICENSE = LICENSE
 	README.md = README.md
+	azure-pipeline.yml = azure-pipeline.yml
+	Dockerfile = Dockerfile
+	GitReleaseManager.yaml = GitReleaseManager.yaml
+	GitVersion.yml = GitVersion.yml
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSql4Net.Samples.Tests", "src\RSql4Net.Samples.Tests\RSql4Net.Samples.Tests.csproj", "{C9639735-0DF6-48E7-9EC8-DED9F0E5C89F}"
