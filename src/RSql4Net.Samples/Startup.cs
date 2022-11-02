@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -35,7 +36,7 @@ namespace RSql4Net.Samples
                 .AddJsonOptions(options =>
                     {
                         options
-                            .JsonSerializerOptions.IgnoreNullValues = true;
+                            .JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                         options
                             .JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;
                     }
