@@ -87,6 +87,6 @@ steps:
     containerRegistry: 'gwendallg-docker'
     repository: 'rsql4net-sample'
     command: 'buildAndPush'
-    Dockerfile: 'dockerfile'
+    Dockerfile: 'Dockerfile'
     tags: $(Build.BuildId)
      
