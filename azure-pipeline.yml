@@ -83,10 +83,35 @@ steps:
     reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
 
 - task: Docker@2
+  displayName: Docker Build and Publish $(Build.BuildId)
   inputs:
     containerRegistry: 'gwendallg-docker'
     repository: 'rsql4net-sample'
     command: 'buildAndPush'
     Dockerfile: 'Dockerfile'
     tags: $(Build.BuildId)
+  #condition: |-
+  #  and(
+  #    succeeded(), 
+  #    eq(
+  #      variables['Build.SourceBranch'], 
+  #      'refs/heads/main')
+  #    )
+  #  )
      
+- task: Docker@2
+  displayName: Docker Build and Publish Latest
+  inputs:
+    containerRegistry: 'gwendallg-docker'
+    repository: 'rsql4net-sample'
+    command: 'buildAndPush'
+    Dockerfile: 'Dockerfile'
+    tags: latest
+  #condition: |-
+  #  and(
+  #    succeeded(), 
+  #    eq(
+  #      variables['Build.SourceBranch'], 
+  #      'refs/heads/main')
+  #    )
+  #  )

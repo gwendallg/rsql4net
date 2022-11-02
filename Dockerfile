@@ -4,7 +4,7 @@ WORKDIR /app
 # Copy csproj and restore as distinct layers
 COPY . ./
 RUN dotnet restore RSql4Net.sln
-RUN dotnet publish -f net5.0 -c Release -o out
+RUN dotnet publish -f net6.0 -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
