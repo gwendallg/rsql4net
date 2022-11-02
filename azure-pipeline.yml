@@ -93,6 +93,22 @@ steps:
       summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
 
+  - task: NuGetCommand@2
+    displayName: 'Publish package'
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+      nuGetFeedType: 'external'
+      publishFeedCredentials: 'gwendallg-nuget'
+    condition: |-
+      and(
+        succeeded(), 
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+        )
+      )
+      
   - task: Docker@2
     displayName: Docker Build and Publish
     inputs:
@@ -103,11 +119,10 @@ steps:
       tags: |-
        $(GitVersion.LegacySemVer)
        latest
-    #condition: |-
-    #  and(
-    #    succeeded(), 
-    #    eq(
-    #      variables['Build.SourceBranch'], 
-    #     'refs/heads/develop')
-    #    )
-    #  )
+    condition: |-
+      and(
+        succeeded(), 
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        )
+      )

@@ -140,6 +140,7 @@ Task("Package")
         NuGetPack(artifactFilePath, new NuGetPackSettings{
             OutputDirectory = artifactDirectory,
             Verbosity = NuGetVerbosity.Detailed,
+            Symbols = true
         });
     });
 
