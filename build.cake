@@ -26,7 +26,7 @@ var artifactFileName = "RSql4Net.nuspec";
 var artifactFilePath = artifactDirectory + File(artifactFileName);
 
 // GitVersion
-GitVersion gitVersion;
+GitVersion version;
 
 Task("Clean")
     .Does(() =>
@@ -47,11 +47,11 @@ Task("Clean")
 Task("Version")
     .IsDependentOn("Clean")
     .Does(()=>{
-        gitVersion = GitVersion(
+        version = GitVersion(
             new GitVersionSettings {
                 //UpdateAssemblyInfo = true
         });
-        Information($"SemVer: {gitVersion.SemVer}");
+        Information($"SemVer: {version.SemVer}");
 });
 
 Task("Restore")
@@ -69,7 +69,7 @@ Task("SonarBegin")
                 Language = "C#",
                 Organization = "gwendallg",
                 Key = "gwendallg_rsql4net",
-                Branch = gitVersion.BranchName,
+                Branch = version.BranchName,
                 OpenCoverReportsPath = EnvironmentVariable("SYSTEM_DEFAULTWORKINGDIRECTORY") + "/coverage-results/coverage.xml",
                 Url = "https://sonarcloud.io",
                 Login = sonarCloudLogin
