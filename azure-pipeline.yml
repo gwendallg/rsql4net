@@ -97,7 +97,7 @@ steps:
     displayName: 'Publish package'
     inputs:
       command: 'push'
-      packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+      packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
       nuGetFeedType: 'external'
       publishFeedCredentials: 'gwendallg-nuget'
     condition: |-
