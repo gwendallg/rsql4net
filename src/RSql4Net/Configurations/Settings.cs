@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Caching.Memory;
+using RSql4Net.Models.Queries;
 
 namespace RSql4Net.Configurations
 {
@@ -78,8 +79,9 @@ namespace RSql4Net.Configurations
         ///     Gets or sets the query cache.
         /// </summary>
         /// <value>The memory case of the query.</value>
-        public IMemoryCache QueryCache { get; set; }
+        public IRSqlQueryCache QueryCache { get; set; }
         
+        [Obsolete]
         /// <summary>
         ///  
         /// </summary>

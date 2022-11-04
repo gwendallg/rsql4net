@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 #endif
 using Microsoft.OpenApi.Models;
 using Prometheus;
+using RSql4Net.Models.Queries;
 using RSql4Net.SwaggerGen;
 
 namespace RSql4Net.Samples
@@ -25,12 +26,6 @@ namespace RSql4Net.Samples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // message rsql query cache sample
-            var memoryCache = new MemoryCache(new MemoryCacheOptions()
-            {
-                SizeLimit = 1024
-            });
-
             services
                 .AddControllers()
                 .AddJsonOptions(options =>
@@ -44,14 +39,7 @@ namespace RSql4Net.Samples
                 .AddRSql(options =>
                     options
                         // use the memory cache
-                        .QueryCache(memoryCache)
-                        // when add a new query in cache ...
-                        .OnCreateCacheEntry((o) =>
-                        {
-                            o.Size = 1024;
-                            o.SlidingExpiration = TimeSpan.FromSeconds(25);
-                            o.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                        })
+                        .QueryCache(new MemoryRSqlQueryCache())
                 );
             services.AddSingleton(Helper.Fake());
             services.AddHealthChecks();

@@ -5,20 +5,19 @@ using Antlr4.Runtime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RSql4Net.Configurations;
 
 namespace RSql4Net.Models.Queries
 {
-    public class RSqlQueryModelBinder<T> : IModelBinder where T: class
+    public class RSqlQueryModelBinder<T> : IModelBinder where T : class
     {
         private readonly Settings _settings;
         private readonly IOptions<JsonOptions> _options;
         private readonly ILogger<T> _logger;
 
-        public RSqlQueryModelBinder(Settings settings,IOptions<JsonOptions> options, ILogger<T> logger)
+        public RSqlQueryModelBinder(Settings settings, IOptions<JsonOptions> options, ILogger<T> logger)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -71,9 +70,9 @@ namespace RSql4Net.Models.Queries
         private IRSqlQuery<T> CreateAndAddCacheQuery(string query)
         {
             if (_settings.QueryCache != null
-                && _settings.QueryCache.TryGetValue(query, out var resultCache))
+                && _settings.QueryCache.TryGetValue<T>(query, out var resultCache))
             {
-                return resultCache as IRSqlQuery<T>;
+                return resultCache;
             }
 
             var antlrInputStream = new AntlrInputStream(query);
@@ -84,13 +83,7 @@ namespace RSql4Net.Models.Queries
             var visitor = new RSqlDefaultQueryVisitor<T>(_options.Value.JsonSerializerOptions.PropertyNamingPolicy);
             var value = visitor.Visit(eval);
             var result = new RSqlQuery<T>(value);
-            if (_settings.QueryCache == null)
-            {
-                return result;
-            }
-            var memoryCacheEntryOptions = new MemoryCacheEntryOptions() {Size = 1024};
-            _settings.OnCreateCacheEntry?.Invoke(memoryCacheEntryOptions);
-            _settings.QueryCache.Set(query, result, memoryCacheEntryOptions);
+            _settings.QueryCache?.Set(query, result);
             return result;
         }
     }

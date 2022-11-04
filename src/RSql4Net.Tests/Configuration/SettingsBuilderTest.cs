@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using RSql4Net.Configurations;
 using RSql4Net.Configurations.Exceptions;
 using RSql4Net.Models.Paging.Exceptions;
+using RSql4Net.Models.Queries;
 using Xunit;
 
 namespace RSql4Net.Tests.Configuration
@@ -92,30 +93,12 @@ namespace RSql4Net.Tests.Configuration
         [Fact]
         public void ShouldBeWithQueryCache()
         {
-            var cacheMemory = new MemoryCache(new MemoryCacheOptions());
+            var action = new MemoryRSqlQueryCache();
             var builder =
                 new SettingsBuilder()
-                    .QueryCache(cacheMemory);
+                    .QueryCache(action);
             var expected = builder.Build();
-
             expected.QueryCache.Should()
-                .NotBeNull();
-
-            expected.QueryCache.Should()
-                .Be(cacheMemory);
-        }
-
-        [Fact]
-        public void ShouldBeWithOnCreateCacheEntry()
-        {
-            var action = new Action<MemoryCacheEntryOptions>(m => m.Size = 1024);
-            var builder =
-                new SettingsBuilder()
-                    .OnCreateCacheEntry(action);
-            var expected = builder.Build();
-            expected.OnCreateCacheEntry.Should()
-                .NotBeNull();
-            expected.OnCreateCacheEntry.Should()
                 .Be(action);
         }
     }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Caching.Memory;
 using RSql4Net.Configurations.Exceptions;
 using RSql4Net.Models.Paging.Exceptions;
+using RSql4Net.Models.Queries;
 
 namespace RSql4Net.Configurations
 {
@@ -18,8 +18,7 @@ namespace RSql4Net.Configurations
         private string _pageSizeFieldName = Settings.CDefaultPageSizeFieldName;
         private string _queryFieldName = Settings.CDefaultQueryFieldName;
         private string _sortFieldName = Settings.CDefaultSortFieldName;
-        private IMemoryCache _queryCache;
-        private Action<MemoryCacheEntryOptions> _onCreateCache;
+        private IRSqlQueryCache _queryCache;
         
         /// <summary>
         ///     Ckecks the name of the and register field.
@@ -67,7 +66,6 @@ namespace RSql4Net.Configurations
 
             settings.PageSize = _pageSize;
             settings.QueryCache = _queryCache;
-            settings.OnCreateCacheEntry = _onCreateCache;
             return settings;
         }
 
@@ -98,20 +96,9 @@ namespace RSql4Net.Configurations
         /// <param name="queryCache">default query memory cache</param>
         /// <returns></returns>
 
-        public SettingsBuilder QueryCache(IMemoryCache queryCache)
+        public SettingsBuilder QueryCache(IRSqlQueryCache queryCache)
         {
             _queryCache = queryCache;
-            return this;
-        }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="onCreateCache"></param>
-        /// <returns></returns>
-        public SettingsBuilder OnCreateCacheEntry(Action<MemoryCacheEntryOptions> onCreateCache)
-        {
-            _onCreateCache = onCreateCache;
             return this;
         }
 

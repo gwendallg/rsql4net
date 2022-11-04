@@ -119,8 +119,10 @@ namespace RSql4Net.Tests.Models.Queries
 
             var settings = new Settings
             {
-                QueryCache = new MemoryCache(new MemoryCacheOptions()),
-                OnCreateCacheEntry = (m) => { m.Size = 1024;}
+                QueryCache = new MemoryRSqlQueryCache(
+                    new MemoryCacheOptions(),
+                    onSet: (m) => { m.Size = 1024;}
+                )
             };
             var mockLogger = new Mock<ILogger<Customer>>();
             mockLogger.Setup(m => m.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
@@ -137,7 +139,7 @@ namespace RSql4Net.Tests.Models.Queries
             mock.ModelState
                 .IsValid.Should().BeTrue();
 
-            settings.QueryCache.TryGetValue(query, out var expected2);
+            settings.QueryCache.TryGetValue<Customer>(query, out var expected2);
             expected.Should().Be(expected2);
         }
     }
