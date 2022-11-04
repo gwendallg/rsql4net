@@ -80,11 +80,5 @@ namespace RSql4Net.Configurations
         /// </summary>
         /// <value>The memory case of the query.</value>
         public IRSqlQueryCache QueryCache { get; set; }
-        
-        [Obsolete]
-        /// <summary>
-        ///  
-        /// </summary>
-        public Action<MemoryCacheEntryOptions> OnCreateCacheEntry { get; set; }
     }
 }
