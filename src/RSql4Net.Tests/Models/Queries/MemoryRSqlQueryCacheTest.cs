@@ -1,5 +1,7 @@
 ﻿
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Moq;
 using RSql4Net.Models.Queries;
 using Xunit;
 
@@ -23,7 +25,8 @@ namespace RSql4Net.Tests.Models.Queries
         [Fact]
         public void ShouldBeTryGetValueWithNotValue()
         {
-            var actual = new MemoryRSqlQueryCache();
+            var mock = new Mock<ILoggerFactory>();
+            var actual = new MemoryRSqlQueryCache(loggerFactory:mock.Object);
             var expected = actual.TryGetValue<Customer>("test", out var result);
             expected.Should().BeFalse();
         }
