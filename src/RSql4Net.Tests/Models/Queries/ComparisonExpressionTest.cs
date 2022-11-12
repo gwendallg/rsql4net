@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
 
@@ -170,8 +169,6 @@ namespace RSql4Net.Tests.Models.Queries
             expected(actual)
                 .Should()
                 .BeTrue();
-
-
         }
         
         #endregion
@@ -295,14 +292,16 @@ namespace RSql4Net.Tests.Models.Queries
                 .BeTrue();
             
             // {type}P != childP.{type}P
-            query = $"{Helper.GetJsonPropertyName(obj1)}P!={Helper.GetChildJsonPropertyName(obj1)}";
+            query = $"{Helper.GetJsonPropertyName(obj1)}P!={Helper.GetChildJsonPropertyName(obj1)}P";
+            expected = Helper.Function<MockQuery>(query);
             actual.ChildP = Actual(obj1);
             expected(actual)
                 .Should()
                 .BeTrue();
             
             // {type}P =neq= childP.{type}P
-            query = $"{Helper.GetJsonPropertyName(obj1)}P=neq={Helper.GetChildJsonPropertyName(obj1)}";
+            query = $"{Helper.GetJsonPropertyName(obj1)}P=neq={Helper.GetChildJsonPropertyName(obj1)}P";
+            expected = Helper.Function<MockQuery>(query);
             actual.ChildP = Actual(obj1);
             expected(actual)
                 .Should()
@@ -347,6 +346,7 @@ namespace RSql4Net.Tests.Models.Queries
             
             // {type}NullP =neq= childP.{type}NullP
             query = $"{Helper.GetJsonPropertyName(obj1)}NullP=neq={Helper.GetChildJsonPropertyName(obj1)}NullP";
+            expected = Helper.Function<MockQuery>(query);
             expected(actual)
                 .Should()
                 .BeTrue();
@@ -638,6 +638,7 @@ namespace RSql4Net.Tests.Models.Queries
         ///     - {type}P =ge= manifest1
         ///     - {type}P >= child.{type}P
         ///     - {type}P =ge= child.{type}P
+        /// </summary>        
         protected void OnShouldBeGreaterThanOrEquals()
         {
             var obj2 = Manifest2();

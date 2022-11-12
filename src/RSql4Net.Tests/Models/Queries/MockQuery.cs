@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace RSql4Net.Tests.Models.Queries
@@ -77,5 +78,20 @@ namespace RSql4Net.Tests.Models.Queries
 
         [System.Text.Json.Serialization.JsonPropertyName("Test2")]
         public string OverrideProperty2 { get; set; }
+
+        public EnumWithEnumMembers EnumWithEnumMembersP { get; set; }
+        
+        public EnumWithEnumMembers? EnumWithEnumMembersNullP { get; set; }
+    }
+
+    public enum EnumWithEnumMembers
+    {
+        Default,
+
+        [EnumMember(Value = "item-1")]
+        Item1,
+
+        [EnumMember(Value = "second")]
+        Item2
     }
 }
