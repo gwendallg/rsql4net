@@ -238,7 +238,9 @@ namespace RSql4Net.Models.Queries
                     {
                         try
                         {
-                            return Enum.Parse(enumType, valueContext.GetText(), true);
+                            return EnumMemberReflectionHelper.TryParse(enumType, valueContext.GetText(), out var result)
+                                ? result
+                                : Enum.Parse(enumType, valueContext.GetText(), true);
                         }
                         catch (Exception e)
                         {
@@ -471,13 +473,20 @@ namespace RSql4Net.Models.Queries
             Type enumType,
             JsonNamingPolicy jsonNamingPolicy = null)
         {
-            if (Enum.TryParse(enumType.IsGenericType ? enumType.GetGenericArguments()[0] : enumType,
-                valueContext.GetText(), true, out var result))
+            var type = enumType.IsGenericType ? enumType.GetGenericArguments()[0] : enumType;
+            var text = valueContext.GetText();
+
+            if (Enum.TryParse(type, text, true, out var result))
             {
                 return result;
             }
 
-            if (ExpressionValue.TryParse<T>(parameter, valueContext.GetText(), jsonNamingPolicy, out var expression))
+            if (EnumMemberReflectionHelper.TryParse(type, text, out result))
+            {
+                return result;
+            }
+
+            if (ExpressionValue.TryParse<T>(parameter, text, jsonNamingPolicy, out var expression))
             {
                 return expression;
             }
