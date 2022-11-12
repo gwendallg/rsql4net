@@ -5,6 +5,7 @@
 #tool "nuget:?package=ReportGenerator&version=5.1.10"
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
 #tool "dotnet:?package=GitVersion.Tool&version=5.10.3"
+#tool "nuget:?package=Cake.Coverlet&version=2.5.4"
 
 var configuration = Argument("configuration", "Debug");
 
@@ -119,7 +120,6 @@ Task("Tests")
         File("./src/RSql4Net.Tests/RSql4Net.Tests.csproj"),
         coverletSettings);
 });
-
 Task("SonarEnd")
     .IsDependentOn("Tests")
     .Does(() => {
@@ -130,7 +130,6 @@ Task("SonarEnd")
             });
         }
     });
-
 Task("Package")
     .IsDependentOn("SonarEnd")
     .Does(() =>{
