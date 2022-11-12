@@ -1,11 +1,10 @@
-#addin nuget:?package=Cake.Coverlet&version=2.5.4
+#addin nuget:?package=Cake.Coverlet
 #addin nuget:?package=Cake.FileHelpers&version=5.0.0
 #addin nuget:?package=Cake.Sonar&version=1.1.30
 
 #tool "nuget:?package=ReportGenerator&version=5.1.10"
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
 #tool "dotnet:?package=GitVersion.Tool&version=5.10.3"
-#tool "nuget:?package=Cake.Coverlet&version=2.5.4"
 
 var configuration = Argument("configuration", "Debug");
 
