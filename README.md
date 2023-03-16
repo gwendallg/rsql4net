@@ -3,7 +3,7 @@
 <img src="docs/logo.svg" alt="logo" height="100">
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE) [![Nuget](https://img.shields.io/nuget/v/rsql4net)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/gwendallg/rsql4net/blob/develop/LICENSE) [![Nuget](https://img.shields.io/nuget/v/rsql4net)](https://www.nuget.org/packages/RSql4Net)
 
 RSql4Net is a aspNet .net core extension that will make it easier for you to write your REST APIs. Its purpose is to convert a HTTP request who is in RSQL format to C# lambda expression.
 
