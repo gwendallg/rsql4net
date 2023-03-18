@@ -27,11 +27,6 @@ pool:
 
 steps:
 
-  - task: UseDotNet@2
-    displayName: 'Use .NET Core sdk 6.x'
-    inputs:
-      version: 6.x
-  
   - task: gitversion/setup@0
     displayName: 'GitVersion install tools'
     inputs:
@@ -42,15 +37,6 @@ steps:
     inputs:
       useConfigFile: true
       configFilePath: 'GitVersion.yml'
-
-  - task: Bash@3
-    displayName: 'Dotnet tools install components'
-    inputs:
-      targetType: 'inline'
-      script: |-
-        dotnet tool install --global coverlet.console --version 3.2.0 && \
-        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
-        dotnet tool install --global Cake.Tool --version 3.0.0
 
   - task: JavaToolInstaller@0
     displayName: 'Java JDK install'
@@ -74,11 +60,24 @@ steps:
           -visitor \
           -package RSql4Net.Models.Queries
 
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core sdk 6.x'
+    inputs:
+      version: 6.x
+
+  - task: Bash@3
+    displayName: 'Dotnet tools install components'
+    inputs:
+      targetType: 'inline'
+      script: |-
+        dotnet tool install --global coverlet.console --version 3.2.0 && \
+        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
+        dotnet tool install --global Cake.Tool --version 3.0.0
+
   - task: DotNetCoreCLI@2
     inputs:
-      command: retore
+      command: restore
       projects: RSql4Net.sln
-      feedsToUse: 'select'
       #env:
       #  SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
       
@@ -86,7 +85,6 @@ steps:
     inputs:
       command: build
       projects: RSql4Net.sln
-      feedsToUse: 'select'
 
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
