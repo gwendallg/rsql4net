@@ -92,8 +92,15 @@ steps:
     inputs:
       command: test
       projects: RSql4Net.sln
-      arguments:  --logger trx --collect:"XPlat Code Coverage"
+      arguments:   /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage"
 
+  - task: Bash@3
+    displayName: 'Generate C# Antlr4 Parser & Visitor'
+    inputs:
+      targetType: 'inline'
+      script: |-
+        ls -al 
+        
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
     inputs:
