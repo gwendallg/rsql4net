@@ -79,7 +79,6 @@ steps:
       organization: 'gwendallg'
       projectKey: 'gwendallg_rsql4net'
       scannerMode: 'CLI'
-      configMode: 'file'
 
   - task: DotNetCoreCLI@2
     displayName: Restore package
