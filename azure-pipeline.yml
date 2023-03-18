@@ -87,12 +87,19 @@ steps:
       command: build
       projects: RSql4Net.sln
 
-  - task: DotNetCoreCLI@2
-    displayName: Test solution
+  - task: Bash@3
+    displayName: 'Test solution'
     inputs:
-      command: test
-      projects: RSql4Net.sln
-      arguments: --no-restore --no-build --output $(Build.SourcesDirectory)/TestResults /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage"
+      targetType: 'inline'
+      script: |-
+        dotnet test $(Build.SourcesDirectory)/RSql4Net.sln --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:XPlat Code Coverage
+
+  #- task: DotNetCoreCLI@2
+  #  displayName: Test solution
+  #  inputs:
+  #    command: test
+  #    projects: RSql4Net.sln
+  #    arguments: --no-restore --no-build --output $(Build.SourcesDirectory)/TestResults /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage"
 
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
