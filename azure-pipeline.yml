@@ -74,7 +74,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |-
-        dotnet cake .
+        dotnet cake
     env:
       SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
 
