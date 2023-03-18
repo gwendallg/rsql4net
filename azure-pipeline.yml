@@ -114,8 +114,8 @@ steps:
     displayName: 'Publish code coverage report'
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
+      summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/Cobertura.xml'
+      reportDirectory: '$(Build.SourcesDirectory)/coverage-results'
 
   - task: NuGetCommand@2
     displayName: 'Publish package'
