@@ -69,14 +69,19 @@ steps:
           -visitor \
           -package RSql4Net.Models.Queries
 
-  - task: Bash@3
-    displayName: 'Cake execute script'
+  - task: DotNetCoreCLI@2
     inputs:
-      targetType: 'inline'
-      script: |-
-        dotnet cake
-    env:
-      SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
+      command: retore
+      projects: RSql4Net.sln
+      feedsToUse: 'select'
+      #env:
+      #  SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
+      
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: build
+      projects: RSql4Net.sln
+      feedsToUse: 'select'
 
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
