@@ -59,13 +59,13 @@ steps:
     inputs:
       version: 6.x
 
-  - task: Bash@3
-    displayName: 'Dotnet tools install components'
-    inputs:
-      targetType: 'inline'
-      script: |-
-        dotnet tool install --global coverlet.console --version 3.2.0 && \
-        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
+  #- task: Bash@3
+  #  displayName: 'Dotnet tools install components'
+  #  inputs:
+  #    targetType: 'inline'
+  #    script: |-
+  #      dotnet tool install --global coverlet.console --version 3.2.0 && \
+  #      dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
 
   - task: DotNetCoreCLI@2
     displayName: Restore package
