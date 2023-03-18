@@ -92,8 +92,7 @@ steps:
     inputs:
       command: test
       projects: RSql4Net.sln
-      arguments:  |-
-        --collect:"XPlat Code Coverage"
+      arguments:  --logger trx --collect:"XPlat Code Coverage"
 
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
