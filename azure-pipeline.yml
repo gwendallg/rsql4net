@@ -73,6 +73,14 @@ steps:
         dotnet tool install --global coverlet.console --version 3.2.0 && \
         dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
 
+  - task: SonarCloudPrepare@1
+    inputs:
+      SonarCloud: 'gwendallg-sonar'
+      organization: 'gwendallg'
+      scannerMode: 'MSBuild'
+      projectKey: 'gwendallg_rsql4net'
+      projectName: 'qsdqsd'
+
   - task: DotNetCoreCLI@2
     displayName: Restore package
     inputs:
@@ -122,6 +130,10 @@ steps:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/coverage-results'
+
+  - task: SonarCloudPublish@1
+    inputs:
+      pollingTimeoutSec: '300'
 
   - task: NuGetCommand@2
     displayName: 'Publish package'
