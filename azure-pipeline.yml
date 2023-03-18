@@ -45,6 +45,7 @@ steps:
       script: |-
         dotnet tool install --global coverlet.console --version 3.2.0 && \
         dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
+        dotnet tool install --global Cake.Tool --version 3.0.0
 
   - task: JavaToolInstaller@0
     displayName: 'Java JDK install'
@@ -68,12 +69,12 @@ steps:
           -visitor \
           -package RSql4Net.Models.Queries
 
-  - task: Cake@2
+  - task: Bash@3
     displayName: 'Cake execute script'
     inputs:
-      script: build.cake
-      target: Package
-      verbosity: Verbose
+      targetType: 'inline'
+      script: |-
+        dotnet cake .
     env:
       SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
 
