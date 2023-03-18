@@ -105,7 +105,7 @@ steps:
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
     inputs:
-      reports: */**/coverage.cobertura.xml
+      reports: '*/**/coverage.cobertura.xml'
       targetdir: coverage-results
       sourcedirs: $(System.DefaultWorkingDirectory)/src
       verbosity: 'Verbose'
