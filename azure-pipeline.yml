@@ -81,7 +81,7 @@ steps:
       projectKey: $(SonarCloud.Project.Key)
       projectName: RSql4Net
       extraProperties: |
-        sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/coverage-results/Cobertura.xml
+        sonar.cs.opencover.reportsPaths@=$(Agent.TempDirectory)/coverage-results/Cobertura.xml
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
       
   - task: DotNetCoreCLI@2
@@ -107,7 +107,7 @@ steps:
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
     inputs:
-      reports: '*/**/coverage.cobertura.xml'
+      reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
       targetdir: $(Agent.TempDirectory)/coverage-results
       sourcedirs: $(System.DefaultWorkingDirectory)/src
       verbosity: 'Verbose'
