@@ -92,7 +92,8 @@ steps:
     inputs:
       targetType: 'inline'
       script: |-
-        dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage" 
+        dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build --logger trx --collect:"XPlat Code Coverage" $(Build.SourcesDirectory)/RSql4Net.sln
+
 
   #- task: DotNetCoreCLI@2
   #  displayName: Test solution
@@ -104,9 +105,9 @@ steps:
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
     inputs:
-      reports: coverage.xml
-      targetdir: codecoverage
-      sourcedirs: '$(System.DefaultWorkingDirectory)/src'
+      reports: */**/coverage.cobertura.xml
+      targetdir: coverage-results
+      sourcedirs: $(System.DefaultWorkingDirectory)/src
       verbosity: 'Verbose'
 
   - task: PublishCodeCoverageResults@1
