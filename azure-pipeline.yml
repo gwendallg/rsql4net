@@ -92,7 +92,7 @@ steps:
     inputs:
       command: test
       projects: RSql4Net.sln
-      arguments: --no-restore --no-build --results-directory $(Build.SourcesDirectory)/TestResults /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage"
+      arguments: --no-restore --no-build --output $(Build.SourcesDirectory)/TestResults /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage"
 
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
