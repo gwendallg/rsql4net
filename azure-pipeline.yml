@@ -92,7 +92,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |-
-        dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:XPlat Code Coverage
+        dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage" 
 
   #- task: DotNetCoreCLI@2
   #  displayName: Test solution
