@@ -15,12 +15,6 @@ trigger:
 
 variables:
   - group: rsql4net.vars
-  - name: disable.coverage.autogenerate
-    value: 'true'
-  - name: codecoveragehistory.directory
-    value: '$(Build.ArtifactStagingDirectory)\history'
-  - name: codecoveragehistory.feedName
-    value: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
 
 pool:
   vmImage: ubuntu-latest
@@ -73,20 +67,22 @@ steps:
         dotnet tool install --global coverlet.console --version 3.2.0 && \
         dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
 
-  - task: SonarCloudPrepare@1
-    inputs:
-      SonarCloud: 'gwendallg-sonar'
-      organization: 'gwendallg'
-      projectKey: 'gwendallg_rsql4net'
-      scannerMode: 'CLI'
-
   - task: DotNetCoreCLI@2
     displayName: Restore package
     inputs:
       command: restore
       projects: RSql4Net.sln
-      #env:
-      #  SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
+
+  - task: SonarCloudPrepare@1
+    inputs:
+      SonarCloud: gwendallg-sonar
+      organization: gwendallg
+      scannerMode: MSBuild
+      projectKey: $(SonarCloud.Project.Key)
+      projectName: RSql4Net
+      extraProperties: |
+        sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*.xml
+        sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
       
   - task: DotNetCoreCLI@2
     displayName: Build solution
@@ -94,25 +90,18 @@ steps:
       command: build
       projects: RSql4Net.sln
 
-  #- task: DotNetCoreCLI@2
-  #  displayName: Test solution
-  #  inputs:
-  #    command: test
-  #    projects: RSql4Net.sln
-  #    arguments: --logger trx --no-restore --no-build --logger trx --collect:"XPlat Code Coverage"
-
-  - task: Bash@3
-    displayName: 'Test solution'
+  - task: DotNetCoreCLI@2
+    displayName: Test solution
     inputs:
-      targetType: 'inline'
-      script: |-
-        dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build --logger trx --collect:"XPlat Code Coverage" $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj
-
+      command: test
+      projects: $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj
+      arguments: --configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "Code coverage"
+  
   - task: PublishTestResults@2
     displayName: 'Publish test report'
     inputs:
       testResultsFormat: 'XUnit'
-      testResultsFiles: '**/*.trx'
+      testResultsFiles: $(Agent.TempDirectory)/*.trx
       mergeTestResults: true
 
   - task: reportgenerator@5
