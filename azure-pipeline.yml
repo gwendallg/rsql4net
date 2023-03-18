@@ -81,7 +81,7 @@ steps:
       projectKey: $(SonarCloud.Project.Key)
       projectName: RSql4Net
       extraProperties: |
-        sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*.xml
+        sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/coverage-results/Cobertura.xml
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
       
   - task: DotNetCoreCLI@2
@@ -95,12 +95,12 @@ steps:
     inputs:
       command: test
       projects: $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj
-      arguments: --configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "Code coverage"
+      arguments: --configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "XPlat Code Coverage"
   
   - task: PublishTestResults@2
     displayName: 'Publish test report'
     inputs:
-      testResultsFormat: 'XUnit'
+      testResultsFormat: 'VsTest'
       testResultsFiles: $(Agent.TempDirectory)/*.trx
       mergeTestResults: true
 
@@ -108,7 +108,7 @@ steps:
     displayName: 'Generate code coverage report'
     inputs:
       reports: '*/**/coverage.cobertura.xml'
-      targetdir: coverage-results
+      targetdir: $(Agent.TempDirectory)/coverage-results
       sourcedirs: $(System.DefaultWorkingDirectory)/src
       verbosity: 'Verbose'
 
@@ -116,8 +116,8 @@ steps:
     displayName: 'Publish code coverage report'
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/Cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/coverage-results'
+      summaryFileLocation: '$(Agent.TempDirectory)/coverage-results/Cobertura.xml'
+      reportDirectory: '$(Agent.TempDirectory)/coverage-results'
 
   - task: SonarCloudAnalyze@1
 
