@@ -72,9 +72,9 @@ steps:
       script: |-
         dotnet tool install --global coverlet.console --version 3.2.0 && \
         dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
-        dotnet tool install --global Cake.Tool --version 3.0.0
 
   - task: DotNetCoreCLI@2
+    displayName: Restore package
     inputs:
       command: restore
       projects: RSql4Net.sln
@@ -82,9 +82,18 @@ steps:
       #  SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
       
   - task: DotNetCoreCLI@2
+    displayName: Build solution
     inputs:
       command: build
       projects: RSql4Net.sln
+
+  - task: DotNetCoreCLI@2
+    displayName: Test solution
+    inputs:
+      command: test
+      projects: RSql4Net.sln
+      arguments:  |-
+        --collect:"XPlat Code Coverage"
 
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
