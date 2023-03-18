@@ -94,14 +94,6 @@ steps:
       script: |-
         dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build --logger trx --collect:"XPlat Code Coverage" $(Build.SourcesDirectory)/RSql4Net.sln
 
-
-  #- task: DotNetCoreCLI@2
-  #  displayName: Test solution
-  #  inputs:
-  #    command: test
-  #    projects: RSql4Net.sln
-  #    arguments: --no-restore --no-build --output $(Build.SourcesDirectory)/TestResults /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:"XPlat Code Coverage"
-
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
     inputs:
@@ -114,7 +106,8 @@ steps:
     displayName: 'Publish test report'
     inputs:
       testResultsFormat: 'XUnit'
-      testResultsFiles: '**/*.trx'
+      testResultsFiles: '$(Build.SourcesDirectory)/_temp/**/*.trx'
+      mergeTestResults: true
 
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish code coverage report'
