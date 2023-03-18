@@ -94,6 +94,13 @@ steps:
       script: |-
         dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build --logger trx --collect:"XPlat Code Coverage" $(Build.SourcesDirectory)/RSql4Net.sln
 
+  - task: PublishTestResults@2
+    displayName: 'Publish test report'
+    inputs:
+      testResultsFormat: 'XUnit'
+      testResultsFiles: '**/*.trx'
+      mergeTestResults: true
+      
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
     inputs:
@@ -101,13 +108,6 @@ steps:
       targetdir: coverage-results
       sourcedirs: $(System.DefaultWorkingDirectory)/src
       verbosity: 'Verbose'
-
-  - task: PublishTestResults@2
-    displayName: 'Publish test report'
-    inputs:
-      testResultsFormat: 'XUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/_temp/**/*.trx'
-      mergeTestResults: true
 
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish code coverage report'
