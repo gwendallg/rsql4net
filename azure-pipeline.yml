@@ -87,12 +87,12 @@ steps:
       command: build
       projects: RSql4Net.sln
 
-  - task: DotNetCoreCLI@2
-    displayName: Test solution
-    inputs:
-      command: test
-      projects: RSql4Net.sln
-      arguments: --logger trx --no-restore --no-build --logger trx --collect:"XPlat Code Coverage"
+  #- task: DotNetCoreCLI@2
+  #  displayName: Test solution
+  #  inputs:
+  #    command: test
+  #    projects: RSql4Net.sln
+  #    arguments: --logger trx --no-restore --no-build --logger trx --collect:"XPlat Code Coverage"
 
   - task: Bash@3
     displayName: 'Test solution'
