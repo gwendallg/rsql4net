@@ -131,6 +131,8 @@ steps:
       summaryFileLocation: '$(Build.SourcesDirectory)/coverage-results/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/coverage-results'
 
+  - task: SonarCloudAnalyze@1
+
   - task: SonarCloudPublish@1
     inputs:
       pollingTimeoutSec: '300'
