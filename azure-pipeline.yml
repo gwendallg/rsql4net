@@ -92,7 +92,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |-
-        dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build --logger trx --collect:"XPlat Code Coverage" $(Build.SourcesDirectory)/RSql4Net.sln
+        dotnet test --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build --logger trx --collect:"XPlat Code Coverage" $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj
 
   - task: PublishTestResults@2
     displayName: 'Publish test report'
@@ -100,7 +100,7 @@ steps:
       testResultsFormat: 'XUnit'
       testResultsFiles: '**/*.trx'
       mergeTestResults: true
-      
+
   - task: reportgenerator@5
     displayName: 'Generate code coverage report'
     inputs:
