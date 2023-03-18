@@ -77,9 +77,9 @@ steps:
     inputs:
       SonarCloud: 'gwendallg-sonar'
       organization: 'gwendallg'
-      scannerMode: 'MSBuild'
       projectKey: 'gwendallg_rsql4net'
-      projectName: 'qsdqsd'
+      scannerMode: 'CLI'
+      configMode: 'file'
 
   - task: DotNetCoreCLI@2
     displayName: Restore package
