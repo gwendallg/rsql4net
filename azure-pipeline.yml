@@ -65,7 +65,7 @@ steps:
       command: restore
       projects: RSql4Net.sln
 
-  - task: SonarCloudPrepare@1
+  - task: SonarQubePrepare@5
     inputs:
       SonarCloud: gwendallg-sonar
       organization: gwendallg
@@ -111,9 +111,9 @@ steps:
       summaryFileLocation: '$(Agent.TempDirectory)/coverage-results/Cobertura.xml'
       reportDirectory: '$(Agent.TempDirectory)/coverage-results'
 
-  - task: SonarCloudAnalyze@1
+  - task: SonarQubeAnalyze@5
 
-  - task: SonarCloudPublish@1
+  - task: SonarQubePublish@5
     inputs:
       pollingTimeoutSec: '300'
 
