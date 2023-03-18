@@ -92,7 +92,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |-
-        dotnet test $(Build.SourcesDirectory)/RSql4Net.sln --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:XPlat Code Coverage
+        dotnet test $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj --logger trx --results-directory $(Build.SourcesDirectory)/_temp --no-restore --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --collect:XPlat Code Coverage
 
   #- task: DotNetCoreCLI@2
   #  displayName: Test solution
