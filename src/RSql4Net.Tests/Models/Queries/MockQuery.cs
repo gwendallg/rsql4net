@@ -77,5 +77,9 @@ namespace RSql4Net.Tests.Models.Queries
 
         [System.Text.Json.Serialization.JsonPropertyName("Test2")]
         public string OverrideProperty2 { get; set; }
+
+        public TimeSpan TimeSpanP { get; set; }
+
+        public TimeSpan? TimeSpanNullP { get; set; }
     }
 }

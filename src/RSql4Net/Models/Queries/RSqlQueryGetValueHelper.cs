@@ -25,7 +25,8 @@ namespace RSql4Net.Models.Queries
         public static bool IsGuid(Type type) =>  type == typeof(Guid) || type == typeof(Guid?);
         public static bool IsNumeric(Type type) => IsShort(type) || IsInt(type) || IsLong(type) || IsByte(type) || IsFloat(type) || IsDecimal(type) || IsDouble(type);
         public static bool IsTemporal(Type type) => IsDateTime(type) || IsDateTimeOffset(type);
-        public static bool IsAlphabetic(Type type) => type == typeof(string) || IsChar(type);
+        public static bool IsAlphabetic(Type type) => type == typeof(string) || IsChar(type); 
+        public static bool IsTimeSpan(Type type)=> type == typeof(TimeSpan) || type == typeof(TimeSpan?);
 
         /// <summary>
         /// true if a lower / greater comparison tyme
@@ -34,7 +35,7 @@ namespace RSql4Net.Models.Queries
         /// <returns></returns>
         public static bool IsLowerOrGreaterComparisonType(Type type)
         {
-            return IsNumeric(type) || IsTemporal(type) || IsChar(type);
+            return IsNumeric(type) || IsTemporal(type) || IsChar(type) || IsTimeSpan(type);
         }
         
         /// <summary>
@@ -174,6 +175,18 @@ namespace RSql4Net.Models.Queries
             return items;
         }
 
+        private static List<object> GetTimeSpans(RSqlQueryParser.ArgumentsContext argumentsContext)
+        {
+            var items = new List<object>();
+            foreach (var valueContext in argumentsContext.value())
+            {
+                items.Add(TimeSpan.Parse(valueContext.GetText(), CultureInfo.InvariantCulture));
+            }
+
+            return items;
+        }
+        
+
         private static List<object> GetDateTimeOffsets(RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             var items = new List<object>();
@@ -292,6 +305,12 @@ namespace RSql4Net.Models.Queries
             return GetDateTimes(argumentsContext);
         }
 
+        public static List<object> GetTimeSpanValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
+        {
+            return GetTimeSpans(argumentsContext);
+        }
+        
+
         public static List<object> GetAlphabeticValues(Type type, RSqlQueryParser.ArgumentsContext argumentsContext)
         {
             if (IsChar(type))
@@ -331,6 +350,10 @@ namespace RSql4Net.Models.Queries
             if (IsGuid(type))
             {
                 return GetGuids(argumentsContext);
+            }
+            if (IsTimeSpan(type))
+            {
+                return GetTimeSpanValues(type, argumentsContext);
             }
 
             return IsEnum(type) ? GetEnums(argumentsContext, type) : new List<object>();
@@ -377,7 +400,27 @@ namespace RSql4Net.Models.Queries
             
             return GetDateTime<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
         }
+        public static object GetTimeSpanValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
+            RSqlQueryParser.ComparisonContext context,
+            JsonNamingPolicy jsonNamingPolicy = null)
+        {
 
+           var timeSpanContext =  context.arguments().value()[0];
+            try
+            {
+                return TimeSpan.Parse(timeSpanContext.GetText(), CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                if (ExpressionValue.TryParse<T>(parameter, timeSpanContext.GetText(), jsonNamingPolicy, out var value))
+                {
+                    return value;
+                }
+
+                throw new InvalidConversionException(timeSpanContext, typeof(TimeSpan));
+            }
+        }
+        
         public static object GetNumericValue<T>(ParameterExpression parameter, ExpressionValue expressionValue,
             RSqlQueryParser.ComparisonContext context,
             JsonNamingPolicy jsonNamingPolicy = null)
@@ -451,7 +494,12 @@ namespace RSql4Net.Models.Queries
             {
                 return GetGuid<T>(parameter, context.arguments().value()[0], jsonNamingPolicy);
             }
-            
+
+            if (IsTimeSpan(expressionValue.Property.PropertyType))
+            {
+                return GetTimeSpanValue<T>(parameter, expressionValue, context, jsonNamingPolicy);
+            }
+
             return null;
         }
 
