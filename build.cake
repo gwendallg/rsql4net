@@ -1,4 +1,4 @@
-#addin nuget:?package=Cake.Coverlet&version=2.5.4
+#addin nuget:?package=Cake.Coverlet&version=3.0.4
 #addin nuget:?package=Cake.FileHelpers&version=5.0.0
 #addin nuget:?package=Cake.Sonar&version=1.1.30
 
