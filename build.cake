@@ -1,6 +1,6 @@
 #addin nuget:?package=Cake.Coverlet&version=3.0.4
-#addin nuget:?package=Cake.FileHelpers&version=5.0.0
-#addin nuget:?package=Cake.Sonar&version=1.1.30
+#addin nuget:?package=Cake.FileHelpers&version=6.1.3
+#addin nuget:?package=Cake.Sonar&version=1.1.32
 
 #tool "nuget:?package=ReportGenerator&version=5.1.10"
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
