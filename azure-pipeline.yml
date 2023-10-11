@@ -75,13 +75,15 @@ steps:
       project: 'RSql4Net.sln'
 
   - task: SonarCloudPrepare@1
-    displayName: 'Sonar prepare'
     inputs:
-      SonarCloud: 'SonarCloud'
-      organization: 'gwendallg'
-      scannerMode: 'MSBuild'
+      SonarCloud: gwendallg-sonar
+      organization: gwendallg
+      scannerMode: MSBuild
       projectKey: $(SonarCloud.Project.Key)
-      projectName: 'rsql4net'
+      projectName: RSql4Net
+      extraProperties: |
+        sonar.cs.opencover.reportsPaths@=$(Agent.TempDirectory)/coverage-results/Cobertura.xml
+        sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
   - task: DotNetCoreCLI@2
     displayName: 'Build'
@@ -90,12 +92,37 @@ steps:
       project: 'RSql4Net.sln'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Test'
-    continueOnError: false
+    displayName: Test solution
     inputs:
-      command: 'test'
-      projects: '**/*.Tests.csproj'
-      arguments: '/p:CollectCoverage=true /p:CoverletOutput=../TestResults /p:CoverletOutputFormat=cobertura /p:MergeWith=../TestResults/coverage.json /m:1'
-      publishTestResults: false
+      command: test
+      projects: $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj
+      arguments: --configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "XPlat Code Coverage"
+
+  - task: PublishTestResults@2
+    displayName: 'Publish test report'
+    inputs:
+      testResultsFormat: 'VsTest'
+      testResultsFiles: $(Agent.TempDirectory)/*.trx
+      mergeTestResults: false
+
+  - task: reportgenerator@5
+    displayName: 'Generate code coverage report'
+    inputs:
+      reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+      targetdir: $(Agent.TempDirectory)/coverage-results
+      sourcedirs: $(System.DefaultWorkingDirectory)/src
+      verbosity: 'Verbose'
+
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage report'
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(Agent.TempDirectory)/coverage-results/Cobertura.xml'
+      reportDirectory: '$(Agent.TempDirectory)/coverage-results'
 
   - task: SonarCloudAnalyze@1
+
+  - task: SonarCloudPublish@1
+    inputs:
+      pollingTimeoutSec: '300'
+  
