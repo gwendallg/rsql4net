@@ -69,36 +69,34 @@ steps:
           -package RSql4Net.Models.Queries
         
   - task: DotNetCoreCLI@2
-    displayName: 'Restore'
+    displayName: 'Restore Solution'
     inputs:
       command: 'restore'
       project: 'RSql4Net.sln'
 
   - task: SonarCloudPrepare@1
     inputs:
-      SonarCloud: gwendallg-sonar
-      organization: gwendallg
-      scannerMode: MSBuild
+      SonarCloud: 'gwendallg-sonar'
+      organization: 'gwendallg'
+      scannerMode: 'MSBuild'
       projectKey: $(SonarCloud.Project.Key)
-      projectName: RSql4Net
+      projectName: 'RSql4Net'
       extraProperties: |
         sonar.cs.opencover.reportsPaths@=$(Agent.TempDirectory)/coverage-results/Cobertura.xml
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
   - task: DotNetCoreCLI@2
-    displayName: 'Build'
+    displayName: 'Build Solution'
     inputs:
       command: 'build'
       project: 'RSql4Net.sln'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Test'
-    continueOnError: false
+    displayName: Test solution
     inputs:
-      command: 'test'
-      projects: '**/*.Tests.csproj'
-      arguments: '--configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "XPlat Code Coverage"'
-      publishTestResults: false
+      command: test
+      projects: $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj
+      arguments: --configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "XPlat Code Coverage"
 
   - task: PublishTestResults@2
     displayName: 'Publish test report'
