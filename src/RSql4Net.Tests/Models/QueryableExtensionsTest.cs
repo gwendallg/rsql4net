@@ -43,10 +43,10 @@ namespace RSql4Net.Tests.Models
             var expected = QueryableExtensions.Page(obj.AsQueryable(), pageable);
             var actual = obj.AsQueryable().OrderBy(c => c.BirthDate).ThenByDescending(c => c.Name);
             expected.Content.First()
-                .Should().Equals(actual.First());
+                .Should().Be(actual.First());
             
             expected.Content.Last()
-                .Should().Equals(actual.Last());
+                .Should().Be(actual.Last());
 
         }
     }
