@@ -79,5 +79,14 @@ steps:
     inputs:
       command: 'build'
       project: 'RSql4Net.sln'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Test Solution'
+    continueOnError: false
+    inputs:
+      command: 'test'
+      projects: '**/*.Test.csproj'
+      arguments: '/p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat="json,cobertura" /p:MergeWith=../TestResults/coverage.json /m:1'
+      publishTestResults: false
   
   
