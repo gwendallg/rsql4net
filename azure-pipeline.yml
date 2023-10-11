@@ -67,76 +67,17 @@ steps:
           -encoding UTF-8 \
           -visitor \
           -package RSql4Net.Models.Queries
+        
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore Solution'
+    inputs:
+      command: 'restore'
+      project: 'RSql4Net.sln'
 
-  - task: Cake@2
-    displayName: 'Cake execute script'
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Solution'
     inputs:
-      script: build.cake
-      target: Package
-      verbosity: Verbose
-    env:
-      SONAR_CLOUD_LOGIN: $(SonarCloud.Login)
-
-  - task: reportgenerator@5
-    displayName: 'Generate code coverage report'
-    inputs:
-      reports: '$(Build.SourcesDirectory)/coverage-results/coverage.xml'
-      targetdir: '$(Build.SourcesDirectory)/codecoverage'
-      sourcedirs: '$(System.DefaultWorkingDirectory)/src'
-      verbosity: 'Verbose'
-      historydir: '$(codecoveragehistory.directory)'
-
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage report'
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Build.SourcesDirectory)/codecoverage/Cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/codecoverage'
-
-  - task: NuGetCommand@2
-    displayName: 'Publish package'
-    inputs:
-      command: 'push'
-      packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
-      nuGetFeedType: 'external'
-      publishFeedCredentials: 'gwendallg-nuget'
-    condition: |-
-      and(
-        succeeded(), 
-        or(
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-        )
-      )
-
-  - task: Docker@2
-    displayName: Docker Build and Publish
-    inputs:
-      containerRegistry: 'gwendallg-docker'
-      repository: 'gwendallg/rsql4net-sample'
-      command: 'buildAndPush'
-      Dockerfile: 'Dockerfile'
-      tags: |-
-        $(GitVersion.LegacySemVer)
-    condition: |-
-      and(
-        succeeded(), 
-        or(
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-        )
-      )
-  - task: Docker@2
-    displayName: Docker Build and Publish ( latest )
-    inputs:
-      containerRegistry: 'gwendallg-docker'
-      repository: 'gwendallg/rsql4net-sample'
-      command: 'buildAndPush'
-      Dockerfile: 'Dockerfile'
-      tags: |-
-       latest
-    condition: |-
-      and(
-        succeeded(), 
-        eq(variables['Build.SourceBranch'], 'refs/heads/master')
-      )
+      command: 'build'
+      project: 'RSql4Net.sln'
+  
+  
