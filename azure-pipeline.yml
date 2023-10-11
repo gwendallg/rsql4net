@@ -69,24 +69,33 @@ steps:
           -package RSql4Net.Models.Queries
         
   - task: DotNetCoreCLI@2
-    displayName: 'Restore Solution'
+    displayName: 'Restore'
     inputs:
       command: 'restore'
       project: 'RSql4Net.sln'
 
+  - task: SonarCloudPrepare@1
+    displayName: 'Sonar prepare'
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'gwendallg'
+      scannerMode: 'MSBuild'
+      projectKey: $(SonarCloud.Project.Key)
+      projectName: 'rsql4net'
+
   - task: DotNetCoreCLI@2
-    displayName: 'Build Solution'
+    displayName: 'Build'
     inputs:
       command: 'build'
       project: 'RSql4Net.sln'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Test Solution'
+    displayName: 'Test'
     continueOnError: false
     inputs:
       command: 'test'
       projects: '**/*.Tests.csproj'
-      arguments: '/p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=cobertura /p:MergeWith=../TestResults/coverage.json /m:1'
+      arguments: '/p:CollectCoverage=true /p:CoverletOutput=../TestResults /p:CoverletOutputFormat=cobertura /p:MergeWith=../TestResults/coverage.json /m:1'
       publishTestResults: false
-  
-  
+
+  - task: SonarCloudAnalyze@1
