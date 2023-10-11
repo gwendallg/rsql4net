@@ -129,6 +129,7 @@ steps:
       command: 'pack'
       packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
       nobuild: true
+      versioningScheme: byBuildNumber
     condition: |-
       not(
         and(
