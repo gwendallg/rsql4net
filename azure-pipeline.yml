@@ -85,7 +85,7 @@ steps:
     continueOnError: false
     inputs:
       command: 'test'
-      projects: '**/*.Test.csproj'
+      projects: '**/*.Tests.csproj'
       arguments: '/p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat="json,cobertura" /p:MergeWith=../TestResults/coverage.json /m:1'
       publishTestResults: false
   
