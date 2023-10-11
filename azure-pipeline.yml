@@ -118,8 +118,10 @@ steps:
       reportDirectory: '$(Agent.TempDirectory)/coverage-results'
 
   - task: SonarCloudAnalyze@1
+    displayName: 'SonarCloud analyze'
 
   - task: SonarCloudPublish@1
+    displayName: 'SonarCloud publish'
     inputs:
       pollingTimeoutSec: '300'
       
