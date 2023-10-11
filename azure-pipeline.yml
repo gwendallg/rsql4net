@@ -128,8 +128,9 @@ steps:
     inputs:
       command: 'pack'
       packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
-      nobuild: true
-      versioningScheme: byBuildNumber
+      arguments: '--no-build'
+      versioningScheme: 'byEnvVar'
+      versionEnvVar: 'NugetVersion'
     condition: |-
       not(
         and(
@@ -148,7 +149,7 @@ steps:
       packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'external'
       publishFeedCredentials: 'gwendallg-nuget'
-      nobuild: true
+      noBuild: true
     condition: |-
       and(
         succeeded(), 
