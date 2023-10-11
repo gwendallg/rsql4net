@@ -69,6 +69,7 @@ steps:
       project: 'RSql4Net.sln'
 
   - task: SonarCloudPrepare@1
+    displayName: 'SonarCloud prepare'
     inputs:
       SonarCloud: 'gwendallg-sonar'
       organization: 'gwendallg'
@@ -84,6 +85,8 @@ steps:
     inputs:
       command: 'build'
       project: 'RSql4Net.sln'
+      configuration: $(buildConfiguration)
+      arguments: '--property:Version=$(GitVersion.NuGetVersionV2)'
 
   - task: DotNetCoreCLI@2
     displayName: Test solution
