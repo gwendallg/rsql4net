@@ -92,11 +92,13 @@ steps:
       project: 'RSql4Net.sln'
 
   - task: DotNetCoreCLI@2
-    displayName: Test solution
+    displayName: 'Test'
+    continueOnError: false
     inputs:
-      command: test
-      projects: $(Build.SourcesDirectory)/src/RSql4Net.Tests/RSql4Net.Tests.csproj
-      arguments: --configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "XPlat Code Coverage"
+      command: 'test'
+      projects: '**/*.Tests.csproj'
+      arguments: '--configuration $(buildConfiguration) --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/coverage/ /p:MergeWith=$(Agent.TempDirectory)/coverage/ --collect "XPlat Code Coverage"'
+      publishTestResults: false
 
   - task: PublishTestResults@2
     displayName: 'Publish test report'
@@ -125,4 +127,5 @@ steps:
   - task: SonarCloudPublish@1
     inputs:
       pollingTimeoutSec: '300'
+
   
