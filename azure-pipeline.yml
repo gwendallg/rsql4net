@@ -15,12 +15,6 @@ trigger:
 
 variables:
   - group: rsql4net.vars
-  - name: disable.coverage.autogenerate
-    value: 'true'
-  - name: codecoveragehistory.directory
-    value: '$(Build.ArtifactStagingDirectory)\history'
-  - name: codecoveragehistory.feedName
-    value: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
 
 pool:
   vmImage: ubuntu-latest
@@ -125,5 +119,51 @@ steps:
   - task: SonarCloudPublish@1
     inputs:
       pollingTimeoutSec: '300'
+      
+  - task: NuGetCommand@2
+    displayName: 'Publish package'
+    inputs:
+      command: 'push'
+      packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
+      nuGetFeedType: 'external'
+      publishFeedCredentials: 'gwendallg-nuget'
+    condition: |-
+      and(
+        succeeded(), 
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+        )
+      )
+
+  - task: Docker@2
+    displayName: Docker Build and Publish
+    inputs:
+      containerRegistry: 'gwendallg-docker'
+      repository: 'gwendallg/rsql4net-sample'
+      command: 'buildAndPush'
+      Dockerfile: 'Dockerfile'
+      tags: $(GitVersion.LegacySemVer)
+    condition: |-
+      and(
+        succeeded(), 
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+        )
+      )
+  - task: Docker@2
+    displayName: Docker Build and Publish ( latest )
+    inputs:
+      containerRegistry: 'gwendallg-docker'
+      repository: 'gwendallg/rsql4net-sample'
+      command: 'buildAndPush'
+      Dockerfile: 'Dockerfile'
+      tags: latest
+    condition: |-
+      and(
+        succeeded(), 
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
 
   
