@@ -121,6 +121,22 @@ steps:
       pollingTimeoutSec: '300'
       
   - task: NuGetCommand@2
+    displayName: 'Create package'
+    inputs:
+      command: 'pack'
+      packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
+    condition: |-
+      not(
+        and(
+          succeeded(), 
+          or(
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+          )
+        )
+      )
+      
+  - task: NuGetCommand@2
     displayName: 'Publish package'
     inputs:
       command: 'push'
