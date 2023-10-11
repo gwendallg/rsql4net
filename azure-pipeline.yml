@@ -120,11 +120,12 @@ steps:
     inputs:
       pollingTimeoutSec: '300'
       
-  - task: NuGetCommand@2
+  - task: DotNetCoreCLI@2
     displayName: 'Create package'
     inputs:
       command: 'pack'
       packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
+      nobuild: true
     condition: |-
       not(
         and(
@@ -136,13 +137,14 @@ steps:
         )
       )
       
-  - task: NuGetCommand@2
+  - task: DotNetCoreCLI@2
     displayName: 'Publish package'
     inputs:
       command: 'push'
       packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'external'
       publishFeedCredentials: 'gwendallg-nuget'
+      nobuild: true
     condition: |-
       and(
         succeeded(), 
