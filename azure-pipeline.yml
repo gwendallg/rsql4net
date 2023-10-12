@@ -67,6 +67,7 @@ steps:
     inputs:
       command: 'restore'
       project: 'RSql4Net.sln'
+      verbosityRestore: 'Normal'
 
   - task: SonarCloudPrepare@1
     displayName: 'SonarCloud prepare'
@@ -133,6 +134,7 @@ steps:
       arguments: '--no-build'
       versioningScheme: 'byEnvVar'
       versionEnvVar: 'NugetVersion'
+      verbosityPack: 'Normal'
     condition: |-
       not(
         and(
@@ -151,7 +153,7 @@ steps:
       packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'external'
       publishFeedCredentials: 'gwendallg-nuget'
-      noBuild: true
+      arguments: '--no-build'
     condition: |-
       and(
         succeeded(), 
@@ -168,7 +170,7 @@ steps:
       repository: 'gwendallg/rsql4net-sample'
       command: 'buildAndPush'
       Dockerfile: 'Dockerfile'
-      tags: $(GitVersion.LegacySemVer)
+      tags: $(NugetVersion)
     condition: |-
       and(
         succeeded(), 
