@@ -166,7 +166,6 @@ steps:
       command: 'push'
       packagesToPush: '$(Build.ArtifactStagingDirectory)/**/RSql4Net*.nupkg;!$(Build.ArtifactStagingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'internal'
-      publishVstsFeed: 'gwendallg/rsql4net/rsql4net-feed'
       arguments: '--no-build'
     condition: |-
       and(
