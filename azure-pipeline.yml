@@ -147,10 +147,10 @@ steps:
       )
       
   - task: DotNetCoreCLI@2
-    displayName: 'Publish package (external feed )'
+    displayName: 'Publish package ( external feed )'
     inputs:
       command: 'push'
-      packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/**/RSql4Net*.nupkg;!$(Build.ArtifactStagingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'external'
       publishFeedCredentials: 'gwendallg-nuget'
       arguments: '--no-build'
@@ -164,7 +164,7 @@ steps:
     displayName: 'Publish package ( internal feed )'
     inputs:
       command: 'push'
-      packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/**/RSql4Net*.nupkg;!$(Build.ArtifactStagingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'internal'
       publishFeedCredentials: 'rsql4net-feed'
       arguments: '--no-build'
