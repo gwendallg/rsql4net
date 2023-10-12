@@ -147,7 +147,7 @@ steps:
       )
       
   - task: DotNetCoreCLI@2
-    displayName: 'Publish package'
+    displayName: 'Publish package (external feed )'
     inputs:
       command: 'push'
       packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
@@ -157,12 +157,25 @@ steps:
     condition: |-
       and(
         succeeded(), 
-        or(
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-        )
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
 
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish package ( internal feed )'
+    inputs:
+      command: 'push'
+      packagesToPush: '$(System.DefaultWorkingDirectory)/**/RSql4Net*.nupkg;!$(System.DefaultWorkingDirectory)/**/RSql4Net*.symbols.nupkg'
+      nuGetFeedType: 'internal'
+      publishFeedCredentials: 'rsql4net-feed'
+      arguments: '--no-build'
+    condition: |-
+      and(
+        succeeded(), 
+        not(
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        )
+      )
+     
   - task: Docker@2
     displayName: Docker Build and Publish
     inputs:
