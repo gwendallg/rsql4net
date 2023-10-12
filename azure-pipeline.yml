@@ -159,14 +159,14 @@ steps:
         succeeded(), 
         eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
-
+      
   - task: DotNetCoreCLI@2
     displayName: 'Publish package ( internal feed )'
     inputs:
       command: 'push'
       packagesToPush: '$(Build.ArtifactStagingDirectory)/**/RSql4Net*.nupkg;!$(Build.ArtifactStagingDirectory)/**/RSql4Net*.symbols.nupkg'
       nuGetFeedType: 'internal'
-      publishFeedCredentials: 'rsql4net-feed'
+      publishVstsFeed: 'rsql4net-feed'
       arguments: '--no-build'
     condition: |-
       and(
